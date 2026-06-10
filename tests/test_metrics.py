@@ -14,6 +14,7 @@ def make_record(
     rast_action: str,
     object_list_action: str,
     flat_feature_action: str | None = None,
+    scene_graph_action: str | None = None,
     min_object_distance: float | None = None,
     near_miss: bool | None = None,
     event_token_count: int = 0,
@@ -27,14 +28,32 @@ def make_record(
     rast_reason_code: str | None = None,
     object_list_reason_code: str | None = None,
     flat_feature_reason_code: str | None = None,
+    scene_graph_reason_code: str | None = None,
+    event_aware_action: str | None = None,
+    event_aware_reason_code: str | None = None,
+    event_aware_trigger_event_types: list[str] | None = None,
+    event_policy_variant: str = "full",
+    risk_threshold: float | None = 1.5,
+    near_miss_threshold: float | None = 1.0,
+    position_noise_std: float = 0.0,
+    distance_noise_std: float = 0.0,
+    visibility_flip_prob: float = 0.0,
 ) -> StepLogRecord:
     flat_action = flat_feature_action or rast_action
+    graph_action = scene_graph_action or rast_action
+    event_action = event_aware_action or rast_action
     rast_reason = rast_reason_code or ("no_risk_move_ahead" if rast_action == "MoveAhead" else "high_risk_token")
     object_reason = object_list_reason_code or (
         "no_near_object_move_ahead" if object_list_action == "MoveAhead" else "near_object_distance"
     )
     flat_reason = flat_feature_reason_code or (
         "no_risk_scalar_move_ahead" if flat_action == "MoveAhead" else "within_risk_threshold"
+    )
+    graph_reason = scene_graph_reason_code or (
+        "graph_no_blocking_move_ahead" if graph_action == "MoveAhead" else "graph_blocking_path"
+    )
+    event_reason = event_aware_reason_code or (
+        "fallback_no_risk_move_ahead" if event_action == "MoveAhead" else "fallback_risk_token_present"
     )
     latency = LatencyRecord(
         observation=0.0,
@@ -55,19 +74,37 @@ def make_record(
         rast_selected_action=rast_action,
         object_list_selected_action=object_list_action,
         flat_feature_selected_action=flat_action,
+        scene_graph_selected_action=graph_action,
+        event_aware_rast_selected_action=event_action,
         rast_reason_code=rast_reason,
         object_list_reason_code=object_reason,
         flat_feature_reason_code=flat_reason,
+        scene_graph_reason_code=graph_reason,
+        event_aware_rast_reason_code=event_reason,
         rast_trigger_token_ids=["risk-token-1"] if rast_action != "MoveAhead" else [],
         rast_trigger_object_ids=["object-1"] if rast_action != "MoveAhead" else [],
         object_list_trigger_object_ids=["object-1"] if object_list_action != "MoveAhead" else [],
         flat_feature_trigger_object_ids=["object-1"] if flat_action != "MoveAhead" else [],
+        scene_graph_trigger_object_ids=["object-1"] if graph_action != "MoveAhead" else [],
+        event_aware_rast_trigger_event_types=event_aware_trigger_event_types or [],
+        event_aware_rast_trigger_token_ids=["event-token-1"] if event_reason.startswith("event_") else [],
+        event_policy_variant=event_policy_variant,
+        risk_threshold=risk_threshold,
+        near_miss_threshold=near_miss_threshold,
+        position_noise_std=position_noise_std,
+        distance_noise_std=distance_noise_std,
+        visibility_flip_prob=visibility_flip_prob,
         baseline_disagreed=rast_action != object_list_action,
         rast_vs_object_list_disagreed=rast_action != object_list_action,
         rast_vs_flat_feature_disagreed=rast_action != flat_action,
         object_list_vs_flat_feature_disagreed=object_list_action != flat_action,
+        rast_vs_event_aware_disagreed=rast_action != event_action,
+        rast_vs_scene_graph_disagreed=rast_action != graph_action,
+        scene_graph_vs_flat_feature_disagreed=graph_action != flat_action,
         entity_token_count=4,
         risk_token_count=1,
+        relation_token_count=2,
+        relation_types=["near_agent", "blocking_path"] if graph_action != "MoveAhead" else ["near_path", "target_reachable"],
         event_token_count=event_token_count,
         event_types=event_types or [],
         update_mode=update_mode,
@@ -80,6 +117,8 @@ def make_record(
         total_token_count=5 + event_token_count,
         object_list_count=4,
         flat_feature_row_count=4,
+        scene_graph_node_count=5,
+        scene_graph_edge_count=2,
         near_miss=near_miss,
         collision=False,
         min_object_distance=min_object_distance,
@@ -121,15 +160,30 @@ def test_episode_summary_calculates_latency_percentiles_and_counts() -> None:
     assert summary.rast_vs_object_list_disagreement_count == 2
     assert summary.rast_vs_flat_feature_disagreement_count == 2
     assert summary.object_list_vs_flat_feature_disagreement_count == 1
+    assert summary.rast_vs_event_aware_disagreement_count == 0
+    assert summary.rast_vs_scene_graph_disagreement_count == 0
+    assert summary.scene_graph_vs_flat_feature_disagreement_count == 2
     assert summary.flat_feature_action_counts == {"MoveAhead": 3, "RotateRight": 1}
+    assert summary.scene_graph_action_counts == {"MoveAhead": 1, "RotateRight": 2, "Stop": 1}
+    assert summary.event_aware_rast_action_counts == {"MoveAhead": 1, "RotateRight": 2, "Stop": 1}
     assert summary.entity_token_count_total == 16
     assert summary.risk_token_count_total == 4
+    assert summary.relation_token_count_total == 8
+    assert summary.relation_token_count_avg == 2.0
+    assert summary.relation_type_counts == {
+        "near_path": 1,
+        "target_reachable": 1,
+        "near_agent": 3,
+        "blocking_path": 3,
+    }
     assert summary.event_token_count_total == 0
     assert summary.event_type_counts == {}
     assert summary.flat_feature_row_count_total == 16
     assert summary.token_count_avg == 5.0
     assert summary.object_count_avg == 4.0
     assert summary.flat_feature_row_count_avg == 4.0
+    assert summary.scene_graph_node_count_avg == 5.0
+    assert summary.scene_graph_edge_count_avg == 2.0
     assert summary.latency_avg_ms == 25.0
     assert summary.latency_p50_ms == 25.0
     assert summary.latency_p95_ms == pytest.approx(38.5)
@@ -140,8 +194,26 @@ def test_episode_summary_calculates_latency_percentiles_and_counts() -> None:
     assert summary.rast_reason_code_counts == {"no_risk_move_ahead": 1, "high_risk_token": 3}
     assert summary.object_list_reason_code_counts == {"no_near_object_move_ahead": 2, "near_object_distance": 2}
     assert summary.flat_feature_reason_code_counts == {"no_risk_scalar_move_ahead": 3, "within_risk_threshold": 1}
+    assert summary.scene_graph_reason_code_counts == {"graph_no_blocking_move_ahead": 1, "graph_blocking_path": 3}
+    assert summary.event_aware_rast_reason_code_counts == {
+        "fallback_no_risk_move_ahead": 1,
+        "fallback_risk_token_present": 3,
+    }
+    assert summary.event_policy_variant == "full"
+    assert summary.risk_threshold == 1.5
+    assert summary.near_miss_threshold == 1.0
+    assert summary.position_noise_std == 0.0
+    assert summary.distance_noise_std == 0.0
+    assert summary.visibility_flip_prob == 0.0
+    assert summary.event_policy_variant_action_counts == {"full": {"MoveAhead": 1, "RotateRight": 2, "Stop": 1}}
+    assert summary.event_policy_variant_reason_code_counts == {
+        "full": {"fallback_no_risk_move_ahead": 1, "fallback_risk_token_present": 3}
+    }
     assert summary.rast_trigger_token_count_total == 3
     assert summary.decision_trace_coverage == 1.0
+    assert summary.event_triggered_action_count == 0
+    assert summary.event_aware_decision_trace_coverage == 1.0
+    assert summary.scene_graph_decision_trace_coverage == 1.0
     assert summary.update_mode == "full_recompute"
     assert summary.changed_object_count_avg == 0.0
     assert summary.incremental_update_benefit_avg == 0.0
@@ -175,6 +247,81 @@ def test_episode_summary_counts_event_tokens_and_types() -> None:
     assert summary.event_token_count_total == 2
     assert summary.event_token_count_avg == 1.0
     assert summary.event_type_counts == {"object_appeared": 1, "risk_changed": 1}
+
+
+def test_episode_summary_counts_event_aware_disagreement_and_event_reasons() -> None:
+    records = [
+        make_record(
+            step=0,
+            total_latency=10.0,
+            rast_action="RotateRight",
+            object_list_action="RotateRight",
+            event_aware_action="Stop",
+            event_aware_reason_code="event_risk_increased",
+            event_aware_trigger_event_types=["risk_changed"],
+            event_policy_variant="full",
+        ),
+        make_record(
+            step=1,
+            total_latency=10.0,
+            rast_action="MoveAhead",
+            object_list_action="MoveAhead",
+            event_aware_action="MoveAhead",
+            event_aware_reason_code="event_object_disappeared_clear_path",
+            event_aware_trigger_event_types=["object_disappeared"],
+            event_policy_variant="full",
+        ),
+    ]
+
+    summary = calculate_episode_summary(
+        records,
+        max_steps=2,
+        collision_threshold=0.2,
+        near_miss_threshold=1.0,
+    )
+
+    assert summary.rast_vs_event_aware_disagreement_count == 1
+    assert summary.event_triggered_action_count == 2
+    assert summary.event_aware_decision_trace_coverage == 1.0
+    assert summary.event_aware_rast_reason_code_counts == {
+        "event_risk_increased": 1,
+        "event_object_disappeared_clear_path": 1,
+    }
+
+
+def test_episode_summary_records_event_policy_variant_and_noise_fields() -> None:
+    records = [
+        make_record(
+            step=0,
+            total_latency=10.0,
+            rast_action="RotateRight",
+            object_list_action="RotateRight",
+            event_aware_action="Stop",
+            event_aware_reason_code="event_risk_increased",
+            event_policy_variant="no_risk_changed",
+            risk_threshold=2.0,
+            near_miss_threshold=0.75,
+            position_noise_std=0.02,
+            distance_noise_std=0.03,
+            visibility_flip_prob=0.1,
+        )
+    ]
+
+    summary = calculate_episode_summary(
+        records,
+        max_steps=1,
+        collision_threshold=0.2,
+        near_miss_threshold=0.75,
+    )
+
+    assert summary.event_policy_variant == "no_risk_changed"
+    assert summary.risk_threshold == 2.0
+    assert summary.near_miss_threshold == 0.75
+    assert summary.position_noise_std == 0.02
+    assert summary.distance_noise_std == 0.03
+    assert summary.visibility_flip_prob == 0.1
+    assert summary.event_policy_variant_action_counts == {"no_risk_changed": {"Stop": 1}}
+    assert summary.event_policy_variant_reason_code_counts == {"no_risk_changed": {"event_risk_increased": 1}}
 
 
 def test_episode_summary_calculates_incremental_update_fields() -> None:

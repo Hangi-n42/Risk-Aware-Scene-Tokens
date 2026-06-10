@@ -68,6 +68,33 @@ class RiskToken(BaseToken):
     risk_features: dict[str, Any] = Field(default_factory=dict, description="risk score 계산에 사용한 feature 기록입니다.")
 
 
+class RelationToken(BaseToken):
+    """Navigation planning에 필요한 agent-object relation을 명시적으로 표현합니다."""
+
+    type: Literal["RelationToken"] = "RelationToken"
+    subject_id: str = Field(description="Relation의 주체 id입니다. MVP에서는 주로 agent를 사용합니다.")
+    relation: Literal["near_agent", "near_path", "blocking_path", "target_reachable"] = Field(
+        description="Navigation relation type입니다."
+    )
+    object_id: str = Field(description="Relation의 대상 object 또는 goal id입니다.")
+    timestamp: int | float = Field(description="RelationToken이 생성된 step 또는 timestamp입니다.")
+    confidence: float = Field(
+        default=1.0,
+        ge=0,
+        le=1,
+        description=(
+            "Phase 1 oracle metadata 기반 relation confidence입니다. 실제 learned relation confidence가 아니며 "
+            "후속 perception-bound extractor에서 별도 추정해야 합니다."
+        ),
+    )
+    distance_margin: float | None = Field(
+        default=None,
+        description="Relation threshold까지의 여유 거리입니다. 양수면 threshold 안쪽에 있음을 의미합니다.",
+    )
+    path_segment_id: str | None = Field(default=None, description="Relation이 참조하는 path proxy segment id입니다.")
+    relation_features: dict[str, Any] = Field(default_factory=dict, description="Relation 계산에 사용한 feature 기록입니다.")
+
+
 class EventToken(BaseToken):
     """이전 step과 현재 step 사이의 semantic scene change를 표현합니다."""
 

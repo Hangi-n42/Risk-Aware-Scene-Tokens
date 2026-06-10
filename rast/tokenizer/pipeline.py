@@ -4,13 +4,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from rast.schemas.metrics import GoalSpec
 from rast.schemas.observation import ObservationSnapshot
-from rast.schemas.tokens import EntityToken, EventToken, RiskToken
+from rast.schemas.tokens import EntityToken, EventToken, RelationToken, RiskToken
 from rast.token_memory.diff import state_from_tokens
 from rast.token_memory.incremental_update import UpdateMode, compute_update_stats
 from rast.token_memory.memory import TokenMemory
 from rast.tokenizer.entity_tokenizer import build_entity_tokens
 from rast.tokenizer.event_tokenizer import EventTokenizerConfig, build_event_tokens
+from rast.tokenizer.relation_tokenizer import RelationTokenizerConfig, build_relation_tokens
 from rast.tokenizer.risk_tokenizer import RiskTokenizerConfig, build_risk_tokens
 
 
@@ -20,16 +22,17 @@ class TokenizationResult:
 
     entities: list[EntityToken]
     risks: list[RiskToken]
+    relations: list[RelationToken] = field(default_factory=list)
     events: list[EventToken] = field(default_factory=list)
     update_mode: UpdateMode = "full_recompute"
     changed_object_count: int = 0
     affected_token_count: int = 0
 
     @property
-    def tokens(self) -> list[EntityToken | RiskToken | EventToken]:
+    def tokens(self) -> list[EntityToken | RiskToken | RelationToken | EventToken]:
         """Planner/logging에서 사용할 수 있는 평탄화된 token list입니다."""
 
-        return [*self.entities, *self.risks, *self.events]
+        return [*self.entities, *self.relations, *self.risks, *self.events]
 
 
 def tokenize_snapshot(
@@ -39,6 +42,9 @@ def tokenize_snapshot(
     visible_only: bool = True,
     token_memory: TokenMemory | None = None,
     event_config: EventTokenizerConfig | None = None,
+    relation_config: RelationTokenizerConfig | None = None,
+    goal: GoalSpec | None = None,
+    enable_relations: bool = False,
     enable_events: bool = False,
     update_mode: UpdateMode = "full_recompute",
 ) -> TokenizationResult:
@@ -51,6 +57,16 @@ def tokenize_snapshot(
     event_config = event_config or EventTokenizerConfig()
     entities = build_entity_tokens(snapshot, visible_only=visible_only)
     risks = build_risk_tokens(entities, config=risk_config)
+    relations = (
+        build_relation_tokens(
+            snapshot,
+            entities,
+            config=relation_config or RelationTokenizerConfig(near_agent_threshold=risk_config.near_agent_threshold),
+            goal=goal,
+        )
+        if enable_relations
+        else []
+    )
     events: list[EventToken] = []
     current_state = state_from_tokens(entities, risks)
     previous_state = token_memory.get_previous_state() if token_memory is not None else None
@@ -76,6 +92,7 @@ def tokenize_snapshot(
     return TokenizationResult(
         entities=entities,
         risks=risks,
+        relations=relations,
         events=events,
         update_mode=update_stats.update_mode,
         changed_object_count=update_stats.changed_object_count,

@@ -17,21 +17,25 @@ if str(ROOT) not in sys.path:
 from rast.baselines.audit import flat_feature_table_audit, object_list_audit, rast_audit
 from rast.baselines.flat_feature_table import build_flat_feature_table
 from rast.baselines.object_list import ObjectListItem, build_object_list
+from rast.baselines.scene_graph import build_scene_graph
 from rast.evaluation.jsonl_logger import JSONLLogger
 from rast.evaluation.latency import LatencyTimer, incremental_update_benefit
 from rast.evaluation.metrics import calculate_episode_summary
 from rast.evaluation.records import StepLogRecord
+from rast.planner.event_aware_token_planner import VALID_EVENT_POLICY_VARIANTS, plan_from_event_aware_tokens
 from rast.planner.flat_feature_planner import plan_from_flat_features
 from rast.planner.object_list_planner import ObjectListPlannerConfig, plan_from_object_list
+from rast.planner.scene_graph_planner import plan_from_scene_graph
 from rast.planner.token_planner import plan_from_tokens
 from rast.schemas.common import Vector3
 from rast.schemas.metrics import EpisodeSummary, GoalSpec
-from rast.simulator.windows_metadata_sim import WindowsMetadataSim, vector_distance
+from rast.simulator.windows_metadata_sim import MetadataNoiseConfig, WindowsMetadataSim, vector_distance
 from rast.simulator.windows_scenarios import available_scenarios, build_windows_scenario
 from rast.token_memory.memory import TokenMemory
 from rast.token_memory.incremental_update import VALID_UPDATE_MODES
 from rast.tokenizer.event_tokenizer import EventTokenizerConfig
 from rast.tokenizer.pipeline import tokenize_snapshot
+from rast.tokenizer.relation_tokenizer import RelationTokenizerConfig
 from rast.tokenizer.risk_tokenizer import RiskTokenizerConfig
 
 
@@ -52,7 +56,16 @@ def main() -> int:
     parser.add_argument("--event-movement-threshold", type=float, default=None)
     parser.add_argument("--risk-score-delta-threshold", type=float, default=None)
     parser.add_argument("--update-mode", choices=VALID_UPDATE_MODES, default=None)
-    parser.add_argument("--apply-policy", choices=("rast", "object_list", "flat_feature"), default=None)
+    parser.add_argument(
+        "--apply-policy",
+        choices=("rast", "object_list", "flat_feature", "scene_graph", "event_aware_rast"),
+        default=None,
+    )
+    parser.add_argument("--event-policy-variant", choices=VALID_EVENT_POLICY_VARIANTS, default=None)
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--position-noise-std", type=float, default=None)
+    parser.add_argument("--distance-noise-std", type=float, default=None)
+    parser.add_argument("--visibility-flip-prob", type=float, default=None)
     parser.add_argument("--output-dir", default=None)
     parser.add_argument("--output", default=None)
     args = parser.parse_args()
@@ -112,9 +125,26 @@ def main() -> int:
         else (config.get("apply_policy", scenario.apply_policy) if use_config_defaults else scenario.apply_policy)
     )
     update_mode = str(args.update_mode if args.update_mode is not None else config.get("update_mode", "full_recompute"))
+    event_policy_variant = str(args.event_policy_variant or config.get("event_policy_variant", "full"))
+    seed = int(args.seed if args.seed is not None else config.get("seed", 0))
+    position_noise_std = float(
+        args.position_noise_std if args.position_noise_std is not None else config.get("position_noise_std", 0.0)
+    )
+    distance_noise_std = float(
+        args.distance_noise_std if args.distance_noise_std is not None else config.get("distance_noise_std", 0.0)
+    )
+    visibility_flip_prob = float(
+        args.visibility_flip_prob
+        if args.visibility_flip_prob is not None
+        else config.get("visibility_flip_prob", 0.0)
+    )
 
     output_root = Path(str(args.output_dir or config.get("output_dir", "runs/windows_metadata_sim")))
-    output_path = Path(args.output) if args.output else output_root / scenario_name / update_mode / "step_log.jsonl"
+    output_path = (
+        Path(args.output)
+        if args.output
+        else output_root / scenario_name / update_mode / f"event_policy-{event_policy_variant}" / "step_log.jsonl"
+    )
 
     records = run_simulation(
         sim=scenario.simulator,
@@ -128,6 +158,11 @@ def main() -> int:
         risk_score_delta_threshold=risk_score_delta_threshold,
         update_mode=update_mode,
         apply_policy=apply_policy,
+        event_policy_variant=event_policy_variant,
+        seed=seed,
+        position_noise_std=position_noise_std,
+        distance_noise_std=distance_noise_std,
+        visibility_flip_prob=visibility_flip_prob,
         output_path=output_path,
         goal=scenario.goal,
     )
@@ -153,6 +188,11 @@ def run_simulation(
     risk_score_delta_threshold: float = 0.1,
     update_mode: str = "full_recompute",
     apply_policy: str = "rast",
+    event_policy_variant: str = "full",
+    seed: int = 0,
+    position_noise_std: float = 0.0,
+    distance_noise_std: float = 0.0,
+    visibility_flip_prob: float = 0.0,
     goal: GoalSpec | None = None,
 ) -> list[StepLogRecord]:
     """WindowsMetadataSim에서 controlled episode를 실행하고 step log와 summary를 저장합니다."""
@@ -175,8 +215,15 @@ def run_simulation(
     if update_mode not in VALID_UPDATE_MODES:
         allowed = ", ".join(VALID_UPDATE_MODES)
         raise ValueError(f"update_mode는 다음 중 하나여야 합니다: {allowed}")
-    if apply_policy not in {"rast", "object_list", "flat_feature"}:
-        raise ValueError("apply_policy는 'rast', 'object_list', 'flat_feature' 중 하나여야 합니다.")
+    if apply_policy not in {"rast", "object_list", "flat_feature", "scene_graph", "event_aware_rast"}:
+        raise ValueError(
+            "apply_policy는 'rast', 'object_list', 'flat_feature', 'scene_graph', "
+            "'event_aware_rast' 중 하나여야 합니다."
+        )
+
+    if event_policy_variant not in VALID_EVENT_POLICY_VARIANTS:
+        allowed = ", ".join(VALID_EVENT_POLICY_VARIANTS)
+        raise ValueError(f"지원하지 않는 event_policy_variant입니다: {event_policy_variant}. 허용값: {allowed}")
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -184,8 +231,19 @@ def run_simulation(
         output.unlink()
 
     simulator = sim or WindowsMetadataSim()
+    simulator.noise_config = MetadataNoiseConfig(
+        position_noise_std=position_noise_std,
+        distance_noise_std=distance_noise_std,
+        visibility_flip_prob=visibility_flip_prob,
+        seed=seed,
+    )
     logger = JSONLLogger(output)
     risk_config = RiskTokenizerConfig(near_agent_threshold=risk_threshold)
+    relation_config = RelationTokenizerConfig(
+        near_agent_threshold=risk_threshold,
+        blocking_path_distance_threshold=risk_threshold,
+        target_reachable_distance=max(risk_threshold, near_miss_threshold, 1.5),
+    )
     event_config = EventTokenizerConfig(
         movement_threshold=event_movement_threshold,
         risk_score_delta_threshold=risk_score_delta_threshold,
@@ -214,6 +272,9 @@ def run_simulation(
             risk_config=risk_config,
             token_memory=full_token_memory,
             event_config=event_config,
+            relation_config=relation_config,
+            goal=goal,
+            enable_relations=True,
             enable_events=True,
             update_mode="full_recompute",
         )
@@ -225,6 +286,9 @@ def run_simulation(
             risk_config=risk_config,
             token_memory=incremental_token_memory,
             event_config=event_config,
+            relation_config=relation_config,
+            goal=goal,
+            enable_relations=True,
             enable_events=True,
             update_mode="incremental",
         )
@@ -241,12 +305,22 @@ def run_simulation(
         with timer.stage("planning"):
             object_list = build_object_list(snapshot)
             flat_features = build_flat_feature_table(snapshot, risk_threshold=risk_threshold)
+            scene_graph = build_scene_graph(snapshot, token_result.relations, goal=goal)
             rast_decision = plan_from_tokens(token_result.entities, token_result.risks)
             object_list_decision = plan_from_object_list(object_list, config=object_list_config)
             flat_feature_decision = plan_from_flat_features(flat_features)
+            scene_graph_decision = plan_from_scene_graph(scene_graph)
+            event_aware_decision = plan_from_event_aware_tokens(
+                token_result.entities,
+                token_result.risks,
+                token_result.events,
+                policy_variant=event_policy_variant,
+            )
             rast_action = rast_decision.action
             object_list_action = object_list_decision.action
             flat_feature_action = flat_feature_decision.action
+            scene_graph_action = scene_graph_decision.action
+            event_aware_action = event_aware_decision.action
 
         min_distance = min_object_distance(object_list)
         collision = min_distance is not None and min_distance <= collision_threshold
@@ -255,8 +329,12 @@ def run_simulation(
             action_to_apply = rast_action
         elif apply_policy == "object_list":
             action_to_apply = object_list_action
-        else:
+        elif apply_policy == "flat_feature":
             action_to_apply = flat_feature_action
+        elif apply_policy == "scene_graph":
+            action_to_apply = scene_graph_action
+        else:
+            action_to_apply = event_aware_action
         with timer.stage("action"):
             simulator.step(action_to_apply)
 
@@ -277,27 +355,51 @@ def run_simulation(
             rast_selected_action=rast_action.value,
             object_list_selected_action=object_list_action.value,
             flat_feature_selected_action=flat_feature_action.value,
+            scene_graph_selected_action=scene_graph_action.value,
+            event_aware_rast_selected_action=event_aware_action.value,
             rast_decision=rast_decision,
             object_list_decision=object_list_decision,
             flat_feature_decision=flat_feature_decision,
+            scene_graph_decision=scene_graph_decision,
+            event_aware_rast_decision=event_aware_decision,
             rast_reason_code=rast_decision.reason_code,
             object_list_reason_code=object_list_decision.reason_code,
             flat_feature_reason_code=flat_feature_decision.reason_code,
+            scene_graph_reason_code=scene_graph_decision.reason_code,
+            event_aware_rast_reason_code=event_aware_decision.reason_code,
             rast_trigger_token_ids=rast_decision.trigger_token_ids,
             rast_trigger_object_ids=rast_decision.trigger_object_ids,
             object_list_trigger_object_ids=object_list_decision.trigger_object_ids,
             flat_feature_trigger_object_ids=flat_feature_decision.trigger_object_ids,
+            scene_graph_trigger_object_ids=scene_graph_decision.trigger_object_ids,
+            event_aware_rast_trigger_event_types=list(
+                event_aware_decision.trigger_features.get("event_types") or []
+            ),
+            event_aware_rast_trigger_token_ids=event_aware_decision.trigger_token_ids,
+            event_policy_variant=event_policy_variant,
+            risk_threshold=risk_threshold,
+            near_miss_threshold=near_miss_threshold,
+            position_noise_std=position_noise_std,
+            distance_noise_std=distance_noise_std,
+            visibility_flip_prob=visibility_flip_prob,
             baseline_disagreed=rast_action != object_list_action,
             rast_vs_object_list_disagreed=rast_action != object_list_action,
             rast_vs_flat_feature_disagreed=rast_action != flat_feature_action,
             object_list_vs_flat_feature_disagreed=object_list_action != flat_feature_action,
+            rast_vs_event_aware_disagreed=rast_action != event_aware_action,
+            rast_vs_scene_graph_disagreed=rast_action != scene_graph_action,
+            scene_graph_vs_flat_feature_disagreed=scene_graph_action != flat_feature_action,
             entity_token_count=len(token_result.entities),
             risk_token_count=len(token_result.risks),
+            relation_token_count=len(token_result.relations),
+            relation_types=[relation.relation for relation in token_result.relations],
             event_token_count=len(token_result.events),
             event_types=[event.event_type for event in token_result.events],
             total_token_count=len(token_result.tokens),
             object_list_count=len(object_list),
             flat_feature_row_count=len(flat_features),
+            scene_graph_node_count=scene_graph.node_count,
+            scene_graph_edge_count=scene_graph.edge_count,
             update_mode=update_mode,
             changed_object_count=token_result.changed_object_count,
             affected_token_count=token_result.affected_token_count,
@@ -314,12 +416,17 @@ def run_simulation(
                 "phase_note": "deterministic metadata simulator; real 3D rendering/perception 결과가 아닙니다.",
                 "scenario": scenario_name,
                 "apply_policy": apply_policy,
+                "event_policy_variant": event_policy_variant,
+                "seed": seed,
                 "risk_threshold": risk_threshold,
                 "object_list_threshold": object_threshold,
                 "collision_threshold": collision_threshold,
                 "near_miss_threshold": near_miss_threshold,
                 "event_movement_threshold": event_movement_threshold,
                 "risk_score_delta_threshold": risk_score_delta_threshold,
+                "position_noise_std": position_noise_std,
+                "distance_noise_std": distance_noise_std,
+                "visibility_flip_prob": visibility_flip_prob,
                 "update_mode": update_mode,
                 "incremental_measurement_note": (
                     "full_recompute and incremental candidates are both measured on the same metadata snapshot; "
@@ -333,6 +440,20 @@ def run_simulation(
                     rast_audit(input_unit_count=len(token_result.tokens)).to_dict(),
                     object_list_audit(input_unit_count=len(object_list)).to_dict(),
                     flat_feature_table_audit(input_unit_count=len(flat_features)).to_dict(),
+                    {
+                        "baseline_type": "scene_graph",
+                        "input_unit_count": scene_graph.edge_count,
+                        "accessible_fields": [
+                            "agent_node",
+                            "object_nodes",
+                            "goal_node",
+                            "near_agent",
+                            "near_path",
+                            "blocking_path",
+                            "target_reachable",
+                        ],
+                        "forbidden_fields": ["risk_type", "severity", "recommended_policy", "risk_score"],
+                    },
                 ],
             },
         )
@@ -340,12 +461,18 @@ def run_simulation(
         records.append(record)
         print(
             f"step={step} tokens={len(token_result.tokens)} risks={len(token_result.risks)} "
+            f"relations={len(token_result.relations)} "
             f"events={len(token_result.events)} "
             f"update_mode={update_mode} changed={token_result.changed_object_count} "
             f"affected={token_result.affected_token_count} "
             f"rast={rast_action.value} object_list={object_list_action.value} "
             f"flat_feature={flat_feature_action.value} "
+            f"scene_graph={scene_graph_action.value} "
+            f"event_aware={event_aware_action.value} "
+            f"event_policy={event_policy_variant} "
             f"rast_reason={rast_decision.reason_code} "
+            f"scene_graph_reason={scene_graph_decision.reason_code} "
+            f"event_aware_reason={event_aware_decision.reason_code} "
             f"applied={action_to_apply.value} collision={collision} near_miss={near_miss} "
             f"goal_reached={goal_reached} total_ms={latency.total:.3f} "
             f"full_ms={full_recompute_latency_ms:.3f} incremental_ms={incremental_update_latency_ms:.3f}"

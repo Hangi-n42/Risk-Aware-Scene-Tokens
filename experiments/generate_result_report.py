@@ -28,7 +28,8 @@ def main() -> int:
     print(f"result_report: {Path(args.output).resolve()}")
     print(
         "report_sections: baseline comparison, EventToken Summary, "
-        "Incremental Update Summary, Decision Trace Summary, limitations"
+        "Incremental Update Summary, Decision Trace Summary, Event-aware Planner Summary, "
+        "Event-aware Ablation Summary, Threshold and Noise Sensitivity Summary, limitations"
     )
     print(
         "one-line example: python experiments\\generate_result_report.py "

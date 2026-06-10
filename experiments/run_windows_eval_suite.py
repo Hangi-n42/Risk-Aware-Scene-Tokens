@@ -35,7 +35,11 @@ class SuiteRunSpec:
     near_miss_threshold: float
     collision_threshold: float
     apply_policy: str
+    event_policy_variant: str
     update_mode: str
+    position_noise_std: float
+    distance_noise_std: float
+    visibility_flip_prob: float
     max_steps: int
 
 
@@ -84,6 +88,11 @@ def main() -> int:
                 near_miss_threshold=spec.near_miss_threshold,
                 update_mode=spec.update_mode,
                 apply_policy=spec.apply_policy,
+                event_policy_variant=spec.event_policy_variant,
+                seed=spec.seed,
+                position_noise_std=spec.position_noise_std,
+                distance_noise_std=spec.distance_noise_std,
+                visibility_flip_prob=spec.visibility_flip_prob,
                 output_path=output_path,
                 goal=scenario.goal,
             )
@@ -91,7 +100,7 @@ def main() -> int:
             metadata["summary_path"] = str(run_dir / "episode_summary.json")
             print(
                 f"[ok] {index + 1}/{len(specs)} {spec.scenario} seed={spec.seed} "
-                f"policy={spec.apply_policy} update_mode={spec.update_mode}"
+                f"policy={spec.apply_policy} event_policy={spec.event_policy_variant} update_mode={spec.update_mode}"
             )
         except Exception as exc:  # suite infrastructure는 실패 run을 aggregate에 남깁니다.
             metadata["status"] = "failed"
@@ -100,7 +109,7 @@ def main() -> int:
             failure_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             print(
                 f"[failed] {index + 1}/{len(specs)} {spec.scenario} seed={spec.seed} "
-                f"update_mode={spec.update_mode}: {exc}"
+                f"event_policy={spec.event_policy_variant} update_mode={spec.update_mode}: {exc}"
             )
         run_metadata.append(metadata)
 
@@ -121,30 +130,41 @@ def build_suite_specs(config: dict[str, Any]) -> list[SuiteRunSpec]:
     risk_thresholds = [float(item) for item in _as_list(config.get("risk_thresholds", [1.5]))]
     near_miss_thresholds = [float(item) for item in _as_list(config.get("near_miss_thresholds", [1.0]))]
     apply_policies = [str(item) for item in _as_list(config.get("apply_policies", ["rast"]))]
+    event_policy_variants = [str(item) for item in _as_list(config.get("event_policy_variants", ["full"]))]
     update_modes = [str(item) for item in _as_list(config.get("update_modes", ["full_recompute"]))]
+    noise_settings = _noise_settings(config.get("noise_settings"))
     collision_threshold = float(config.get("collision_threshold", 0.2))
     max_steps = int(config.get("max_steps", 10))
 
-    return [
-        SuiteRunSpec(
-            scenario=scenario,
-            seed=seed,
-            risk_threshold=risk_threshold,
-            near_miss_threshold=near_miss_threshold,
-            collision_threshold=collision_threshold,
-            apply_policy=apply_policy,
-            update_mode=update_mode,
-            max_steps=max_steps,
-        )
-        for scenario, seed, risk_threshold, near_miss_threshold, apply_policy, update_mode in product(
-            scenarios,
-            seeds,
-            risk_thresholds,
-            near_miss_thresholds,
-            apply_policies,
-            update_modes,
-        )
-    ]
+    specs: list[SuiteRunSpec] = []
+    for scenario, seed, risk_threshold, near_miss_threshold, apply_policy, update_mode, noise in product(
+        scenarios,
+        seeds,
+        risk_thresholds,
+        near_miss_thresholds,
+        apply_policies,
+        update_modes,
+        noise_settings,
+    ):
+        variants = event_policy_variants if apply_policy == "event_aware_rast" else ["full"]
+        for event_policy_variant in variants:
+            specs.append(
+                SuiteRunSpec(
+                    scenario=scenario,
+                    seed=seed,
+                    risk_threshold=risk_threshold,
+                    near_miss_threshold=near_miss_threshold,
+                    collision_threshold=collision_threshold,
+                    apply_policy=apply_policy,
+                    event_policy_variant=event_policy_variant,
+                    update_mode=update_mode,
+                    position_noise_std=float(noise.get("position_noise_std", 0.0)),
+                    distance_noise_std=float(noise.get("distance_noise_std", 0.0)),
+                    visibility_flip_prob=float(noise.get("visibility_flip_prob", 0.0)),
+                    max_steps=max_steps,
+                )
+            )
+    return specs
 
 
 def base_run_metadata(*, suite_run_id: str, spec: SuiteRunSpec, episode_output_dir: Path) -> dict[str, Any]:
@@ -155,10 +175,14 @@ def base_run_metadata(*, suite_run_id: str, spec: SuiteRunSpec, episode_output_d
         "scenario": spec.scenario,
         "seed": spec.seed,
         "apply_policy": spec.apply_policy,
+        "event_policy_variant": spec.event_policy_variant,
         "update_mode": spec.update_mode,
         "risk_threshold": spec.risk_threshold,
         "near_miss_threshold": spec.near_miss_threshold,
         "collision_threshold": spec.collision_threshold,
+        "position_noise_std": spec.position_noise_std,
+        "distance_noise_std": spec.distance_noise_std,
+        "visibility_flip_prob": spec.visibility_flip_prob,
         "episode_output_dir": str(episode_output_dir),
         "summary_path": str(episode_output_dir / "episode_summary.json"),
         "status": "pending",
@@ -171,9 +195,13 @@ def run_directory_name(index: int, spec: SuiteRunSpec) -> str:
 
     risk = str(spec.risk_threshold).replace(".", "p")
     near = str(spec.near_miss_threshold).replace(".", "p")
+    pos_noise = str(spec.position_noise_std).replace(".", "p")
+    dist_noise = str(spec.distance_noise_std).replace(".", "p")
+    vis_noise = str(spec.visibility_flip_prob).replace(".", "p")
     return (
         f"{index:04d}_scenario-{spec.scenario}_seed-{spec.seed}_"
-        f"risk-{risk}_near-{near}_policy-{spec.apply_policy}_update-{spec.update_mode}"
+        f"risk-{risk}_near-{near}_policy-{spec.apply_policy}_event-{spec.event_policy_variant}_"
+        f"noise-p{pos_noise}-d{dist_noise}-v{vis_noise}_update-{spec.update_mode}"
     )
 
 
@@ -207,6 +235,10 @@ def load_simple_yaml_subset(path: Path) -> dict[str, Any]:
 def parse_scalar_or_inline_list(value: str) -> Any:
     """YAML subset의 scalar와 `[a, b]` 형태 list를 파싱합니다."""
 
+    try:
+        return ast.literal_eval(value)
+    except (ValueError, SyntaxError):
+        pass
     if value.startswith("[") and value.endswith("]"):
         inner = value[1:-1].strip()
         if not inner:
@@ -226,6 +258,25 @@ def _as_list(value: Any) -> list[Any]:
     if isinstance(value, tuple):
         return list(value)
     return [value]
+
+
+def _noise_settings(value: Any) -> list[dict[str, float]]:
+    """suite config의 noise_settings를 표준 dict 목록으로 정규화합니다."""
+
+    if value in (None, ""):
+        return [{"position_noise_std": 0.0, "distance_noise_std": 0.0, "visibility_flip_prob": 0.0}]
+    settings: list[dict[str, float]] = []
+    for item in _as_list(value):
+        if not isinstance(item, dict):
+            raise ValueError("noise_settings 항목은 dict여야 합니다.")
+        settings.append(
+            {
+                "position_noise_std": float(item.get("position_noise_std", 0.0)),
+                "distance_noise_std": float(item.get("distance_noise_std", 0.0)),
+                "visibility_flip_prob": float(item.get("visibility_flip_prob", 0.0)),
+            }
+        )
+    return settings
 
 
 if __name__ == "__main__":
