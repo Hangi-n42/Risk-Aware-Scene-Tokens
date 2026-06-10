@@ -1,0 +1,9 @@
+scenarios: [clear_path, near_obstacle, far_obstacle, unknown_near_path, planner_disagreement, target_reachable, object_appears, object_disappears, object_moves, risk_increases]
+seeds: [0]
+max_steps: 10
+risk_thresholds: [1.5]
+near_miss_thresholds: [1.0]
+collision_threshold: 0.2
+apply_policies: [rast, object_list, flat_feature]
+update_modes: [full_recompute, incremental]
+output_dir: runs/windows_eval_suite

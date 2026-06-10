@@ -1,0 +1,70 @@
+scene_id: WindowsRoom1
+scenario: clear_path
+max_steps: 5
+risk_threshold: 1.5
+object_list_threshold: 1.5
+collision_threshold: 0.2
+near_miss_threshold: 1.0
+event_movement_threshold: 0.1
+risk_score_delta_threshold: 0.1
+update_mode: full_recompute
+output_dir: runs/windows_metadata_sim
+apply_policy: rast
+
+initial_agent_pose:
+  position:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  yaw_degrees: 0.0
+  horizon: 0.0
+
+objects:
+  - object_id: Chair|windows|near|+00.00|+00.00|+00.80
+    object_type: Chair
+    position:
+      x: 0.0
+      y: 0.0
+      z: 0.8
+    size:
+      x: 0.6
+      y: 0.9
+      z: 0.6
+    bbox_2d:
+      x: 32.0
+      y: 80.0
+      width: 72.0
+      height: 120.0
+
+  - object_id: Sofa|windows|far|+02.40|+00.00|+02.60
+    object_type: Sofa
+    position:
+      x: 2.4
+      y: 0.0
+      z: 2.6
+    size:
+      x: 1.8
+      y: 0.8
+      z: 0.9
+
+  - object_id: Mug|windows|target|+01.20|+00.90|+01.30
+    object_type: Mug
+    position:
+      x: 1.2
+      y: 0.9
+      z: 1.3
+    size:
+      x: 0.12
+      y: 0.12
+      z: 0.12
+
+  - object_id: UnknownObject|windows|+00.90|+00.00|-00.60
+    object_type: UnknownObject
+    position:
+      x: 0.9
+      y: 0.0
+      z: -0.6
+    size:
+      x: 0.5
+      y: 0.5
+      z: 0.5
