@@ -1,0 +1,12 @@
+# RAST MVP-0 vertical slice 기본 설정입니다.
+scene: FloorPlan1
+max_steps: 3
+output_dir: runs/mvp0_vertical_slice
+risk_threshold: 1.5
+baseline_type: rast
+run_both_planners: true
+seed: 42
+deterministic: true
+use_fixture: false
+use_fixture_fallback: true
+cloud_rendering: false

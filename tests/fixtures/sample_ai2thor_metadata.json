@@ -1,0 +1,41 @@
+{
+  "sceneName": "FloorPlan1",
+  "agent": {
+    "position": {"x": 0.0, "y": 0.0, "z": 0.0},
+    "rotation": {"x": 0.0, "y": 90.0, "z": 0.0},
+    "cameraHorizon": 0.0
+  },
+  "objects": [
+    {
+      "objectId": "Chair|near|+00.40|+00.00|+00.30",
+      "objectType": "Chair",
+      "position": {"x": 0.4, "y": 0.0, "z": 0.3},
+      "visible": true,
+      "distance": 0.5,
+      "bbox2D": {"x": 12, "y": 34, "width": 80, "height": 120}
+    },
+    {
+      "objectId": "Sofa|far|+04.00|+00.00|+03.00",
+      "objectType": "Sofa",
+      "position": {"x": 4.0, "y": 0.0, "z": 3.0},
+      "visible": true,
+      "distance": 5.0,
+      "bbox2D": {"x": 200, "y": 80, "width": 140, "height": 90}
+    },
+    {
+      "objectId": "Mug|target|+01.20|+00.90|+00.80",
+      "objectType": "Mug",
+      "position": {"x": 1.2, "y": 0.9, "z": 0.8},
+      "visible": true,
+      "distance": 1.7,
+      "bbox2D": {"x": 300, "y": 150, "width": 32, "height": 44}
+    },
+    {
+      "objectId": "Box|hidden|+00.20|+00.00|-00.20",
+      "objectType": "Box",
+      "position": {"x": 0.2, "y": 0.0, "z": -0.2},
+      "visible": false,
+      "distance": 0.3
+    }
+  ]
+}

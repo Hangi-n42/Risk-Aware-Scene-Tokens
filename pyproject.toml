@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "risk-aware-scene-tokens"
+version = "0.1.0"
+description = "RAST MVP-0 foundation for risk-aware scene token experiments."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2,<3",
+  "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+]
+sim = [
+  "ai2thor",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+  "sim: tests that require an installed AI2-THOR simulator runtime",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["rast*"]
+exclude = [
+  "tests*",
+  "experiments*",
+  "configs*",
+  "runs*",
+  "myenv*"
+]
