@@ -110,9 +110,16 @@ def test_generate_result_report_markdown_contains_required_sections_and_limits(t
     assert "## EventToken Summary" in markdown
     assert "## Incremental Update Summary" in markdown
     assert "## Decision Trace Summary" in markdown
-    assert "EventToken does not affect planner action" in markdown
+    assert "## RelationToken Summary" in markdown
+    assert "## Scene Graph Baseline Summary" in markdown
+    assert "## Event-aware Planner Summary" in markdown
+    assert "## Event-aware Ablation Summary" in markdown
+    assert "## Threshold and Noise Sensitivity Summary" in markdown
+    assert "Event-aware RAST planner" in markdown
     assert "incremental update optimization is experimental" in markdown
     assert "rule-based planner explanations" in markdown
+    assert "simplified graph" in markdown
+    assert "learned relation extraction" in markdown
     assert "## Limitations" in markdown
 
 
@@ -134,9 +141,13 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
         "scenario",
         "seed",
         "apply_policy",
+        "event_policy_variant",
         "risk_threshold",
         "near_miss_threshold",
         "collision_threshold",
+        "position_noise_std",
+        "distance_noise_std",
+        "visibility_flip_prob",
         "success",
         "goal_reached",
         "completed_steps",
@@ -161,8 +172,15 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
         "rast_reason_code_counts",
         "object_list_reason_code_counts",
         "flat_feature_reason_code_counts",
+        "event_aware_rast_action_counts",
+        "event_aware_rast_reason_code_counts",
+        "event_policy_variant_action_counts",
+        "event_policy_variant_reason_code_counts",
         "rast_trigger_token_count_total",
         "decision_trace_coverage",
+        "rast_vs_event_aware_disagreement_count",
+        "event_triggered_action_count",
+        "event_aware_decision_trace_coverage",
         "latency_avg_ms",
         "latency_p50_ms",
         "latency_p95_ms",
@@ -177,9 +195,13 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
             "scenario": "object_appears",
             "seed": "0",
             "apply_policy": "rast",
+            "event_policy_variant": "full",
             "risk_threshold": "1.5",
             "near_miss_threshold": "1.0",
             "collision_threshold": "0.2",
+            "position_noise_std": "0.02",
+            "distance_noise_std": "0.02",
+            "visibility_flip_prob": "0.0",
             "success": "True",
             "goal_reached": "False",
             "completed_steps": "5",
@@ -204,8 +226,15 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
             "rast_reason_code_counts": '{"high_risk_token": 1, "no_risk_move_ahead": 4}',
             "object_list_reason_code_counts": '{"near_object_distance": 1, "no_near_object_move_ahead": 4}',
             "flat_feature_reason_code_counts": '{"within_risk_threshold": 1, "no_risk_scalar_move_ahead": 4}',
+            "event_aware_rast_action_counts": '{"Stop": 1, "MoveAhead": 4}',
+            "event_aware_rast_reason_code_counts": '{"event_risk_increased": 1, "fallback_no_risk_move_ahead": 4}',
+            "event_policy_variant_action_counts": '{"full": {"Stop": 1, "MoveAhead": 4}}',
+            "event_policy_variant_reason_code_counts": '{"full": {"event_risk_increased": 1, "fallback_no_risk_move_ahead": 4}}',
             "rast_trigger_token_count_total": "1",
             "decision_trace_coverage": "1.0",
+            "rast_vs_event_aware_disagreement_count": "1",
+            "event_triggered_action_count": "1",
+            "event_aware_decision_trace_coverage": "1.0",
             "latency_avg_ms": "0.3",
             "latency_p50_ms": "0.3",
             "latency_p95_ms": "0.4",
@@ -227,11 +256,19 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
     assert "semantic event" in markdown
     assert "object_appeared" in markdown
     assert "risk_changed" in markdown
-    assert "does not affect planner action" in markdown
+    assert "## Event-aware Planner Summary" in markdown
+    assert "## Event-aware Ablation Summary" in markdown
+    assert "## Threshold and Noise Sensitivity Summary" in markdown
+    assert "event_risk_increased" in markdown
+    assert "full" in markdown
+    assert "synthetic noise" in markdown
+    assert "Event-aware planner는 deterministic rule-based policy" in markdown
     assert "## Incremental Update Summary" in markdown
     assert "incremental update optimization is experimental" in markdown
     assert "incremental" in markdown
     assert "## Decision Trace Summary" in markdown
+    assert "## RelationToken Summary" in markdown
+    assert "## Scene Graph Baseline Summary" in markdown
     assert "high_risk_token" in markdown
     assert "decision_trace_coverage" in markdown
-    assert "does not affect planner action" in markdown
+    assert "EventToken affects only the separate Event-aware RAST experimental planner" in markdown

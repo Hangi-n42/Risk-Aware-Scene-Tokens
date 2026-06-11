@@ -13,6 +13,9 @@ def write_fake_summary(
     event_type_counts: dict[str, int] | None = None,
     update_mode: str | None = None,
     include_decision_fields: bool = False,
+    include_scene_graph_fields: bool = False,
+    include_event_aware_fields: bool = False,
+    include_sensitivity_fields: bool = False,
 ) -> None:
     payload = {
         "success": success,
@@ -51,6 +54,35 @@ def write_fake_summary(
         payload["flat_feature_reason_code_counts"] = {"within_risk_threshold": 2}
         payload["rast_trigger_token_count_total"] = 2
         payload["decision_trace_coverage"] = 1.0
+    if include_scene_graph_fields:
+        payload["relation_token_count_total"] = 4
+        payload["relation_token_count_avg"] = 0.4
+        payload["relation_type_counts"] = {"near_agent": 2, "blocking_path": 2}
+        payload["scene_graph_action_counts"] = {"RotateRight": 2}
+        payload["scene_graph_reason_code_counts"] = {"graph_blocking_path": 2}
+        payload["scene_graph_node_count_avg"] = 3.0
+        payload["scene_graph_edge_count_avg"] = 2.0
+        payload["rast_vs_scene_graph_disagreement_count"] = 1
+        payload["scene_graph_vs_flat_feature_disagreement_count"] = 1
+        payload["scene_graph_decision_trace_coverage"] = 1.0
+    if include_event_aware_fields:
+        payload["event_aware_rast_action_counts"] = {"Stop": 1, "MoveAhead": 1}
+        payload["event_aware_rast_reason_code_counts"] = {
+            "event_risk_increased": 1,
+            "fallback_no_risk_move_ahead": 1,
+        }
+        payload["rast_vs_event_aware_disagreement_count"] = 1
+        payload["event_triggered_action_count"] = 1
+        payload["event_aware_decision_trace_coverage"] = 1.0
+    if include_sensitivity_fields:
+        payload["event_policy_variant"] = "no_risk_changed"
+        payload["risk_threshold"] = 2.0
+        payload["near_miss_threshold"] = 0.75
+        payload["position_noise_std"] = 0.02
+        payload["distance_noise_std"] = 0.03
+        payload["visibility_flip_prob"] = 0.1
+        payload["event_policy_variant_action_counts"] = {"no_risk_changed": {"Stop": 1}}
+        payload["event_policy_variant_reason_code_counts"] = {"no_risk_changed": {"event_risk_increased": 1}}
     path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
 
 
@@ -108,6 +140,13 @@ def test_aggregate_episode_summaries_writes_csv_and_json(tmp_path: Path) -> None
     assert rows[0]["incremental_update_benefit_avg"] == 0.0
     assert rows[0]["rast_reason_code_counts"] == {}
     assert rows[0]["decision_trace_coverage"] == 0.0
+    assert rows[0]["event_aware_rast_reason_code_counts"] == {}
+    assert rows[0]["rast_vs_event_aware_disagreement_count"] == 0
+    assert rows[0]["event_triggered_action_count"] == 0
+    assert rows[0]["event_policy_variant"] == "full"
+    assert rows[0]["position_noise_std"] == 0.0
+    assert rows[0]["distance_noise_std"] == 0.0
+    assert rows[0]["visibility_flip_prob"] == 0.0
 
 
 def test_aggregate_episode_summaries_includes_event_fields(tmp_path: Path) -> None:
@@ -217,6 +256,129 @@ def test_aggregate_episode_summaries_includes_decision_trace_fields(tmp_path: Pa
     assert rows[0]["flat_feature_reason_code_counts"] == {"within_risk_threshold": 2}
     assert rows[0]["rast_trigger_token_count_total"] == 2
     assert rows[0]["decision_trace_coverage"] == 1.0
+
+
+def test_aggregate_episode_summaries_includes_scene_graph_fields(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run_scene_graph"
+    run_dir.mkdir()
+    summary_path = run_dir / "episode_summary.json"
+    write_fake_summary(
+        summary_path,
+        success=True,
+        near_miss_count=1,
+        include_scene_graph_fields=True,
+    )
+
+    rows = aggregate_episode_summaries(
+        [
+            {
+                "suite_run_id": "suite_test",
+                "scenario": "near_obstacle",
+                "seed": 0,
+                "apply_policy": "scene_graph",
+                "risk_threshold": 1.5,
+                "near_miss_threshold": 1.0,
+                "collision_threshold": 0.2,
+                "summary_path": str(summary_path),
+                "episode_output_dir": str(run_dir),
+                "status": "success",
+            }
+        ],
+        output_dir=tmp_path,
+    )
+
+    assert rows[0]["relation_token_count_total"] == 4
+    assert rows[0]["relation_token_count_avg"] == 0.4
+    assert rows[0]["relation_type_counts"] == {"near_agent": 2, "blocking_path": 2}
+    assert rows[0]["scene_graph_action_counts"] == {"RotateRight": 2}
+    assert rows[0]["scene_graph_reason_code_counts"] == {"graph_blocking_path": 2}
+    assert rows[0]["scene_graph_node_count_avg"] == 3.0
+    assert rows[0]["scene_graph_edge_count_avg"] == 2.0
+    assert rows[0]["rast_vs_scene_graph_disagreement_count"] == 1
+    assert rows[0]["scene_graph_vs_flat_feature_disagreement_count"] == 1
+    assert rows[0]["scene_graph_decision_trace_coverage"] == 1.0
+
+
+def test_aggregate_episode_summaries_includes_event_aware_fields(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run_event_aware"
+    run_dir.mkdir()
+    summary_path = run_dir / "episode_summary.json"
+    write_fake_summary(
+        summary_path,
+        success=True,
+        near_miss_count=1,
+        include_event_aware_fields=True,
+    )
+
+    rows = aggregate_episode_summaries(
+        [
+            {
+                "suite_run_id": "suite_test",
+                "scenario": "risk_increases",
+                "seed": 0,
+                "apply_policy": "event_aware_rast",
+                "risk_threshold": 1.5,
+                "near_miss_threshold": 1.0,
+                "collision_threshold": 0.2,
+                "summary_path": str(summary_path),
+                "episode_output_dir": str(run_dir),
+                "status": "success",
+            }
+        ],
+        output_dir=tmp_path,
+    )
+
+    assert rows[0]["event_aware_rast_action_counts"] == {"Stop": 1, "MoveAhead": 1}
+    assert rows[0]["event_aware_rast_reason_code_counts"] == {
+        "event_risk_increased": 1,
+        "fallback_no_risk_move_ahead": 1,
+    }
+    assert rows[0]["rast_vs_event_aware_disagreement_count"] == 1
+    assert rows[0]["event_triggered_action_count"] == 1
+    assert rows[0]["event_aware_decision_trace_coverage"] == 1.0
+
+
+def test_aggregate_episode_summaries_includes_variant_threshold_and_noise_fields(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run_sensitivity"
+    run_dir.mkdir()
+    summary_path = run_dir / "episode_summary.json"
+    write_fake_summary(
+        summary_path,
+        success=True,
+        near_miss_count=1,
+        include_sensitivity_fields=True,
+    )
+
+    rows = aggregate_episode_summaries(
+        [
+            {
+                "suite_run_id": "suite_test",
+                "scenario": "risk_increases",
+                "seed": 0,
+                "apply_policy": "event_aware_rast",
+                "event_policy_variant": "no_risk_changed",
+                "risk_threshold": 2.0,
+                "near_miss_threshold": 0.75,
+                "collision_threshold": 0.2,
+                "position_noise_std": 0.02,
+                "distance_noise_std": 0.03,
+                "visibility_flip_prob": 0.1,
+                "summary_path": str(summary_path),
+                "episode_output_dir": str(run_dir),
+                "status": "success",
+            }
+        ],
+        output_dir=tmp_path,
+    )
+
+    assert rows[0]["event_policy_variant"] == "no_risk_changed"
+    assert rows[0]["risk_threshold"] == 2.0
+    assert rows[0]["near_miss_threshold"] == 0.75
+    assert rows[0]["position_noise_std"] == 0.02
+    assert rows[0]["distance_noise_std"] == 0.03
+    assert rows[0]["visibility_flip_prob"] == 0.1
+    assert rows[0]["event_policy_variant_action_counts"] == {"no_risk_changed": {"Stop": 1}}
+    assert rows[0]["event_policy_variant_reason_code_counts"] == {"no_risk_changed": {"event_risk_increased": 1}}
 
 
 def test_aggregate_keeps_failed_run_metadata(tmp_path: Path) -> None:

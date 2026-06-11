@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import random
 from dataclasses import dataclass, field
 from math import cos, radians, sin, sqrt
 from typing import Any
@@ -50,6 +52,32 @@ class WindowsMetadataSimConfig:
     room_max_z: float = 3.0
 
 
+@dataclass(frozen=True)
+class MetadataNoiseConfig:
+    """metadata 출력에만 적용하는 seed 기반 synthetic noise 설정입니다."""
+
+    position_noise_std: float = 0.0
+    distance_noise_std: float = 0.0
+    visibility_flip_prob: float = 0.0
+    seed: int = 0
+
+    def __post_init__(self) -> None:
+        if self.position_noise_std < 0:
+            raise ValueError("position_noise_std는 0 이상이어야 합니다.")
+        if self.distance_noise_std < 0:
+            raise ValueError("distance_noise_std는 0 이상이어야 합니다.")
+        if not 0 <= self.visibility_flip_prob <= 1:
+            raise ValueError("visibility_flip_prob는 0과 1 사이여야 합니다.")
+
+    def to_dict(self) -> dict[str, float | int]:
+        return {
+            "position_noise_std": self.position_noise_std,
+            "distance_noise_std": self.distance_noise_std,
+            "visibility_flip_prob": self.visibility_flip_prob,
+            "seed": self.seed,
+        }
+
+
 @dataclass
 class WindowsMetadataSim:
     """AI2-THOR 없이 metadata-like dict를 생성하는 deterministic simulator입니다."""
@@ -60,6 +88,7 @@ class WindowsMetadataSim:
     )
     objects: list[SimObject] = field(default_factory=list)
     object_schedule: dict[int, list[SimObject]] = field(default_factory=dict)
+    noise_config: MetadataNoiseConfig = field(default_factory=MetadataNoiseConfig)
     step_index: int = 0
     last_action: str | None = None
     _initial_agent: AgentPose = field(init=False, repr=False)
@@ -94,7 +123,13 @@ class WindowsMetadataSim:
         )
         raw_objects = data.get("objects")
         objects = [_object_from_dict(item) for item in raw_objects] if isinstance(raw_objects, list) else default_objects()
-        return cls(config=config, agent=agent, objects=objects)
+        noise = MetadataNoiseConfig(
+            position_noise_std=float(data.get("position_noise_std", 0.0)),
+            distance_noise_std=float(data.get("distance_noise_std", 0.0)),
+            visibility_flip_prob=float(data.get("visibility_flip_prob", 0.0)),
+            seed=int(data.get("seed", 0)),
+        )
+        return cls(config=config, agent=agent, objects=objects, noise_config=noise)
 
     def reset(self) -> dict[str, Any]:
         """step을 0으로 되돌리고 현재 metadata를 반환합니다."""
@@ -137,6 +172,7 @@ class WindowsMetadataSim:
                 "cameraHorizon": self.agent.horizon,
             },
             "objects": [self._object_metadata(obj) for obj in self.objects],
+            "noise": self.noise_config.to_dict(),
         }
 
     def snapshot(self, *, episode_id: str | None = None) -> ObservationSnapshot:
@@ -159,13 +195,16 @@ class WindowsMetadataSim:
         )
 
     def _object_metadata(self, obj: SimObject) -> dict[str, Any]:
-        distance = vector_distance(self.agent.position, obj.position)
+        noisy_position = self._noisy_position(obj)
+        distance = self._noisy_distance(vector_distance(self.agent.position, noisy_position), obj)
+        visible = distance <= self.config.visible_distance
+        visible = self._maybe_flip_visibility(visible, obj)
         return {
             "objectId": obj.object_id,
             "objectType": obj.object_type,
-            "position": obj.position.to_dict(),
+            "position": noisy_position.to_dict(),
             "size": obj.size.to_dict(),
-            "visible": distance <= self.config.visible_distance,
+            "visible": visible,
             "distance": distance,
             "bbox2D": obj.bbox_2d,
         }
@@ -176,6 +215,38 @@ class WindowsMetadataSim:
         if self.step_index not in self.object_schedule:
             return
         self.objects = _copy_objects(self.object_schedule[self.step_index])
+
+    def _noisy_position(self, obj: SimObject) -> Vector3:
+        """object id/category는 보존하고 metadata position에만 noise를 더합니다."""
+
+        std = self.noise_config.position_noise_std
+        if std == 0:
+            return obj.position
+        rng = self._rng_for("position", obj.object_id)
+        return Vector3(
+            x=obj.position.x + rng.gauss(0.0, std),
+            y=obj.position.y + rng.gauss(0.0, std),
+            z=obj.position.z + rng.gauss(0.0, std),
+        )
+
+    def _noisy_distance(self, distance: float, obj: SimObject) -> float:
+        std = self.noise_config.distance_noise_std
+        if std == 0:
+            return distance
+        rng = self._rng_for("distance", obj.object_id)
+        return max(0.0, distance + rng.gauss(0.0, std))
+
+    def _maybe_flip_visibility(self, visible: bool, obj: SimObject) -> bool:
+        probability = self.noise_config.visibility_flip_prob
+        if probability == 0:
+            return visible
+        rng = self._rng_for("visibility", obj.object_id)
+        return not visible if rng.random() < probability else visible
+
+    def _rng_for(self, *parts: str) -> random.Random:
+        key = "|".join([str(self.noise_config.seed), str(self.step_index), *parts])
+        digest = hashlib.sha256(key.encode("utf-8")).hexdigest()
+        return random.Random(int(digest[:16], 16))
 
 
 def default_objects() -> list[SimObject]:

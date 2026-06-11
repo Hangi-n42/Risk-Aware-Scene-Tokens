@@ -22,6 +22,8 @@ def step_metrics_from_record(
     rast_action = record.rast_selected_action or record.selected_action
     object_list_action = record.object_list_selected_action or record.extra.get("object_list_action") or ""
     flat_feature_action = record.flat_feature_selected_action or record.extra.get("flat_feature_action") or ""
+    scene_graph_action = record.scene_graph_selected_action or record.extra.get("scene_graph_action") or ""
+    event_aware_action = record.event_aware_rast_selected_action or record.extra.get("event_aware_rast_action") or ""
 
     rast_vs_object_list = record.rast_vs_object_list_disagreed
     if rast_vs_object_list is None:
@@ -33,6 +35,17 @@ def step_metrics_from_record(
     if object_list_vs_flat_feature is None:
         object_list_vs_flat_feature = bool(
             object_list_action and flat_feature_action and object_list_action != flat_feature_action
+        )
+    rast_vs_event_aware = record.rast_vs_event_aware_disagreed
+    if rast_vs_event_aware is None:
+        rast_vs_event_aware = bool(event_aware_action and rast_action != event_aware_action)
+    rast_vs_scene_graph = record.rast_vs_scene_graph_disagreed
+    if rast_vs_scene_graph is None:
+        rast_vs_scene_graph = bool(scene_graph_action and rast_action != scene_graph_action)
+    scene_graph_vs_flat_feature = record.scene_graph_vs_flat_feature_disagreed
+    if scene_graph_vs_flat_feature is None:
+        scene_graph_vs_flat_feature = bool(
+            scene_graph_action and flat_feature_action and scene_graph_action != flat_feature_action
         )
 
     baseline_disagreed = record.baseline_disagreed
@@ -47,11 +60,15 @@ def step_metrics_from_record(
 
     entity_count = record.entity_token_count or int(record.extra.get("entity_count", 0))
     risk_count = record.risk_token_count or int(record.extra.get("risk_count", 0))
+    relation_count = record.relation_token_count or int(record.extra.get("relation_token_count", 0))
+    relation_types = record.relation_types or list(record.extra.get("relation_types", []))
     event_count = record.event_token_count or int(record.extra.get("event_token_count", 0))
     event_types = record.event_types or list(record.extra.get("event_types", []))
     total_count = record.total_token_count or len(record.tokens)
     object_count = record.object_list_count or int(record.extra.get("object_list_count", 0))
     flat_row_count = record.flat_feature_row_count or int(record.extra.get("flat_feature_row_count", 0))
+    scene_node_count = record.scene_graph_node_count or int(record.extra.get("scene_graph_node_count", 0))
+    scene_edge_count = record.scene_graph_edge_count or int(record.extra.get("scene_graph_edge_count", 0))
     token_generation_latency = record.token_generation_latency_ms or record.latency.token_generation
 
     return StepMetrics(
@@ -62,24 +79,38 @@ def step_metrics_from_record(
         rast_selected_action=rast_action,
         object_list_selected_action=object_list_action,
         flat_feature_selected_action=flat_feature_action,
+        scene_graph_selected_action=scene_graph_action,
+        event_aware_rast_selected_action=event_aware_action,
         rast_reason_code=_decision_reason(record, "rast"),
         object_list_reason_code=_decision_reason(record, "object_list"),
         flat_feature_reason_code=_decision_reason(record, "flat_feature"),
+        scene_graph_reason_code=_decision_reason(record, "scene_graph"),
+        event_aware_rast_reason_code=_decision_reason(record, "event_aware_rast"),
         rast_trigger_token_ids=list(record.rast_trigger_token_ids),
         rast_trigger_object_ids=list(record.rast_trigger_object_ids),
         object_list_trigger_object_ids=list(record.object_list_trigger_object_ids),
         flat_feature_trigger_object_ids=list(record.flat_feature_trigger_object_ids),
+        scene_graph_trigger_object_ids=list(record.scene_graph_trigger_object_ids),
+        event_aware_rast_trigger_event_types=list(record.event_aware_rast_trigger_event_types),
+        event_aware_rast_trigger_token_ids=list(record.event_aware_rast_trigger_token_ids),
         baseline_disagreed=bool(baseline_disagreed),
         rast_vs_object_list_disagreed=bool(rast_vs_object_list),
         rast_vs_flat_feature_disagreed=bool(rast_vs_flat_feature),
         object_list_vs_flat_feature_disagreed=bool(object_list_vs_flat_feature),
+        rast_vs_event_aware_disagreed=bool(rast_vs_event_aware),
+        rast_vs_scene_graph_disagreed=bool(rast_vs_scene_graph),
+        scene_graph_vs_flat_feature_disagreed=bool(scene_graph_vs_flat_feature),
         entity_token_count=entity_count,
         risk_token_count=risk_count,
+        relation_token_count=relation_count,
+        relation_types=relation_types,
         event_token_count=event_count,
         event_types=event_types,
         total_token_count=total_count,
         object_list_count=object_count,
         flat_feature_row_count=flat_row_count,
+        scene_graph_node_count=scene_node_count,
+        scene_graph_edge_count=scene_edge_count,
         near_miss=near_miss,
         collision=collision,
         min_object_distance=record.min_object_distance,
@@ -92,6 +123,12 @@ def step_metrics_from_record(
         full_recompute_latency_ms=record.full_recompute_latency_ms,
         incremental_update_latency_ms=record.incremental_update_latency_ms,
         incremental_update_benefit=record.incremental_update_benefit,
+        event_policy_variant=record.event_policy_variant,
+        risk_threshold=record.risk_threshold,
+        near_miss_threshold=record.near_miss_threshold,
+        position_noise_std=record.position_noise_std,
+        distance_noise_std=record.distance_noise_std,
+        visibility_flip_prob=record.visibility_flip_prob,
     )
 
 
@@ -136,6 +173,7 @@ def calculate_episode_summary(
     )
     success = (goal_reached and collision_count == 0) if goal is not None else (len(metrics) >= max_steps and collision_count == 0)
     rast_vs_object_list_count = sum(1 for item in metrics if item.rast_vs_object_list_disagreed)
+    event_variant = metrics[0].event_policy_variant or "full"
 
     return EpisodeSummary(
         run_id=metrics[0].run_id,
@@ -152,9 +190,27 @@ def calculate_episode_summary(
         rast_action_counts=dict(Counter(item.rast_selected_action for item in metrics)),
         object_list_action_counts=dict(Counter(item.object_list_selected_action for item in metrics)),
         flat_feature_action_counts=dict(Counter(item.flat_feature_selected_action for item in metrics if item.flat_feature_selected_action)),
+        scene_graph_action_counts=dict(Counter(item.scene_graph_selected_action for item in metrics if item.scene_graph_selected_action)),
+        event_aware_rast_action_counts=dict(
+            Counter(item.event_aware_rast_selected_action for item in metrics if item.event_aware_rast_selected_action)
+        ),
         rast_reason_code_counts=dict(Counter(item.rast_reason_code for item in metrics if item.rast_reason_code)),
         object_list_reason_code_counts=dict(Counter(item.object_list_reason_code for item in metrics if item.object_list_reason_code)),
         flat_feature_reason_code_counts=dict(Counter(item.flat_feature_reason_code for item in metrics if item.flat_feature_reason_code)),
+        scene_graph_reason_code_counts=dict(Counter(item.scene_graph_reason_code for item in metrics if item.scene_graph_reason_code)),
+        event_aware_rast_reason_code_counts=dict(
+            Counter(item.event_aware_rast_reason_code for item in metrics if item.event_aware_rast_reason_code)
+        ),
+        event_policy_variant_action_counts={
+            event_variant: dict(
+                Counter(item.event_aware_rast_selected_action for item in metrics if item.event_aware_rast_selected_action)
+            )
+        },
+        event_policy_variant_reason_code_counts={
+            event_variant: dict(
+                Counter(item.event_aware_rast_reason_code for item in metrics if item.event_aware_rast_reason_code)
+            )
+        },
         rast_trigger_token_count_total=sum(len(item.rast_trigger_token_ids) for item in metrics),
         decision_trace_coverage=average(1.0 if _has_decision_trace(item) else 0.0 for item in metrics),
         baseline_disagreement_count=rast_vs_object_list_count,
@@ -163,8 +219,25 @@ def calculate_episode_summary(
         object_list_vs_flat_feature_disagreement_count=sum(
             1 for item in metrics if item.object_list_vs_flat_feature_disagreed
         ),
+        rast_vs_event_aware_disagreement_count=sum(1 for item in metrics if item.rast_vs_event_aware_disagreed),
+        rast_vs_scene_graph_disagreement_count=sum(1 for item in metrics if item.rast_vs_scene_graph_disagreed),
+        scene_graph_vs_flat_feature_disagreement_count=sum(
+            1 for item in metrics if item.scene_graph_vs_flat_feature_disagreed
+        ),
+        event_triggered_action_count=sum(1 for item in metrics if _is_event_triggered_reason(item.event_aware_rast_reason_code)),
+        event_aware_decision_trace_coverage=average(
+            1.0 if item.event_aware_rast_selected_action and item.event_aware_rast_reason_code else 0.0
+            for item in metrics
+        ),
+        scene_graph_decision_trace_coverage=average(
+            1.0 if item.scene_graph_selected_action and item.scene_graph_reason_code else 0.0
+            for item in metrics
+        ),
         entity_token_count_total=sum(item.entity_token_count for item in metrics),
         risk_token_count_total=sum(item.risk_token_count for item in metrics),
+        relation_token_count_total=sum(item.relation_token_count for item in metrics),
+        relation_token_count_avg=average(item.relation_token_count for item in metrics),
+        relation_type_counts=dict(Counter(relation_type for item in metrics for relation_type in item.relation_types)),
         event_token_count_total=sum(item.event_token_count for item in metrics),
         event_token_count_avg=average(item.event_token_count for item in metrics),
         event_type_counts=dict(Counter(event_type for item in metrics for event_type in item.event_types)),
@@ -172,6 +245,8 @@ def calculate_episode_summary(
         token_count_avg=average(item.total_token_count for item in metrics),
         object_count_avg=average(item.object_list_count for item in metrics),
         flat_feature_row_count_avg=average(item.flat_feature_row_count for item in metrics),
+        scene_graph_node_count_avg=average(item.scene_graph_node_count for item in metrics),
+        scene_graph_edge_count_avg=average(item.scene_graph_edge_count for item in metrics),
         latency_avg_ms=total_latency_avg,
         latency_p50_ms=percentile(total_latencies, 50),
         latency_p95_ms=percentile(total_latencies, 95),
@@ -187,6 +262,12 @@ def calculate_episode_summary(
         full_recompute_latency_avg_ms=average(item.full_recompute_latency_ms for item in metrics),
         incremental_update_latency_avg_ms=average(item.incremental_update_latency_ms for item in metrics),
         incremental_update_benefit_avg=average(item.incremental_update_benefit for item in metrics),
+        event_policy_variant=event_variant,
+        risk_threshold=metrics[0].risk_threshold,
+        near_miss_threshold=metrics[0].near_miss_threshold,
+        position_noise_std=metrics[0].position_noise_std,
+        distance_noise_std=metrics[0].distance_noise_std,
+        visibility_flip_prob=metrics[0].visibility_flip_prob,
     )
 
 
@@ -238,17 +319,32 @@ def _empty_summary(*, max_steps: int, goal: GoalSpec | None) -> EpisodeSummary:
         rast_action_counts={},
         object_list_action_counts={},
         flat_feature_action_counts={},
+        scene_graph_action_counts={},
+        event_aware_rast_action_counts={},
         rast_reason_code_counts={},
         object_list_reason_code_counts={},
         flat_feature_reason_code_counts={},
+        scene_graph_reason_code_counts={},
+        event_aware_rast_reason_code_counts={},
+        event_policy_variant_action_counts={},
+        event_policy_variant_reason_code_counts={},
         rast_trigger_token_count_total=0,
         decision_trace_coverage=0.0,
         baseline_disagreement_count=0,
         rast_vs_object_list_disagreement_count=0,
         rast_vs_flat_feature_disagreement_count=0,
         object_list_vs_flat_feature_disagreement_count=0,
+        rast_vs_event_aware_disagreement_count=0,
+        rast_vs_scene_graph_disagreement_count=0,
+        scene_graph_vs_flat_feature_disagreement_count=0,
+        event_triggered_action_count=0,
+        event_aware_decision_trace_coverage=0.0,
+        scene_graph_decision_trace_coverage=0.0,
         entity_token_count_total=0,
         risk_token_count_total=0,
+        relation_token_count_total=0,
+        relation_token_count_avg=0.0,
+        relation_type_counts={},
         event_token_count_total=0,
         event_token_count_avg=0.0,
         event_type_counts={},
@@ -256,6 +352,8 @@ def _empty_summary(*, max_steps: int, goal: GoalSpec | None) -> EpisodeSummary:
         token_count_avg=0.0,
         object_count_avg=0.0,
         flat_feature_row_count_avg=0.0,
+        scene_graph_node_count_avg=0.0,
+        scene_graph_edge_count_avg=0.0,
         latency_avg_ms=0.0,
         latency_p50_ms=0.0,
         latency_p95_ms=0.0,
@@ -269,6 +367,12 @@ def _empty_summary(*, max_steps: int, goal: GoalSpec | None) -> EpisodeSummary:
         full_recompute_latency_avg_ms=0.0,
         incremental_update_latency_avg_ms=0.0,
         incremental_update_benefit_avg=0.0,
+        event_policy_variant="full",
+        risk_threshold=None,
+        near_miss_threshold=None,
+        position_noise_std=0.0,
+        distance_noise_std=0.0,
+        visibility_flip_prob=0.0,
     )
 
 
@@ -283,9 +387,15 @@ def _decision_reason(record: StepLogRecord, planner_prefix: str) -> str:
 
 
 def _has_decision_trace(item: StepMetrics) -> bool:
-    """세 planner 모두 reason_code를 남긴 step을 trace-covered step으로 봅니다."""
+    """기존 core planner 세 가지가 모두 reason_code를 갖는지 확인합니다."""
 
     return bool(item.rast_reason_code and item.object_list_reason_code and item.flat_feature_reason_code)
+
+
+def _is_event_triggered_reason(reason_code: str) -> bool:
+    """Event-aware planner의 event 기반 reason_code 여부를 판정합니다."""
+
+    return reason_code.startswith("event_")
 
 
 def _validate_safety_thresholds(*, collision_threshold: float, near_miss_threshold: float) -> None:
