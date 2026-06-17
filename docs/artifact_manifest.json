@@ -1,0 +1,249 @@
+{
+  "project": "RAST MVP-0",
+  "last_updated_batch": "16E",
+  "last_updated_date": "2026-06-17",
+  "canonical_reports": [
+    {
+      "path": "docs/result_report.md",
+      "purpose": "Latest sampled extended evaluation report with replay, coverage, seed stability, and sample-size convergence artifact links.",
+      "source_inputs": [
+        "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/aggregate_results.csv",
+        "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/aggregate_summary.csv",
+        "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/suite_metadata.json",
+        "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/replays/replay_index.json",
+        "docs/sampling_coverage_report.md",
+        "docs/seed_stability_report.md",
+        "docs/sample_size_convergence_report.md"
+      ],
+      "generation_command": "python experiments\\generate_result_report.py --results runs\\windows_eval_suite_extended\\windows_eval_suite_20260612_224531\\aggregate_results.csv --summary runs\\windows_eval_suite_extended\\windows_eval_suite_20260612_224531\\aggregate_summary.csv --suite-metadata runs\\windows_eval_suite_extended\\windows_eval_suite_20260612_224531\\suite_metadata.json --replay-index runs\\windows_eval_suite_extended\\windows_eval_suite_20260612_224531\\replays\\replay_index.json --sampling-coverage docs\\sampling_coverage_report.md --seed-stability docs\\seed_stability_report.md --sample-size-convergence docs\\sample_size_convergence_report.md --output docs\\result_report.md",
+      "cautions": [
+        "Sampled extended subset, not exhaustive extended grid.",
+        "WindowsMetadataSim metadata-only result.",
+        "Does not support real-world performance or safety claims."
+      ]
+    },
+    {
+      "path": "docs/technical_report.md",
+      "purpose": "Paper-style technical description of RAST MVP-0 scope, method, architecture, observed results, and limitations.",
+      "source_inputs": [
+        "docs/result_report.md",
+        "prd.md",
+        "stack.md",
+        "tasks.md"
+      ],
+      "generation_command": "Manual documentation update; cross-check against docs\\result_report.md and canonical run artifacts.",
+      "cautions": [
+        "Technical report is explanatory, not a final research claim.",
+        "Numeric claims should be checked against the latest result report."
+      ]
+    },
+    {
+      "path": "docs/eval_comparison_report.md",
+      "purpose": "Comparison between the default baseline suite and sampled extended candidate suite.",
+      "source_inputs": [
+        "runs/windows_eval_suite/windows_eval_suite_20260612_162821/aggregate_results.csv",
+        "runs/windows_eval_suite/windows_eval_suite_20260612_162821/aggregate_summary.csv",
+        "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/aggregate_results.csv",
+        "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/aggregate_summary.csv",
+        "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/suite_metadata.json",
+        "docs/sampling_coverage_report.md",
+        "docs/seed_stability_report.md",
+        "docs/sample_size_convergence_report.md"
+      ],
+      "generation_command": "python experiments\\compare_eval_runs.py --baseline-results runs\\windows_eval_suite\\windows_eval_suite_20260612_162821\\aggregate_results.csv --baseline-summary runs\\windows_eval_suite\\windows_eval_suite_20260612_162821\\aggregate_summary.csv --candidate-results runs\\windows_eval_suite_extended\\windows_eval_suite_20260612_224531\\aggregate_results.csv --candidate-summary runs\\windows_eval_suite_extended\\windows_eval_suite_20260612_224531\\aggregate_summary.csv --candidate-metadata runs\\windows_eval_suite_extended\\windows_eval_suite_20260612_224531\\suite_metadata.json --candidate-coverage docs\\sampling_coverage_report.md --candidate-seed-stability docs\\seed_stability_report.md --candidate-sample-size-convergence docs\\sample_size_convergence_report.md --output docs\\eval_comparison_report.md",
+      "cautions": [
+        "Differences may come from sample composition.",
+        "Comparison is sensitivity exploration, not planner superiority evidence."
+      ]
+    },
+    {
+      "path": "docs/sampling_coverage_report.md",
+      "purpose": "Coverage analysis for sampled extended evaluation axes.",
+      "source_inputs": [
+        "runs/windows_eval_suite_extended_seed_sweep/seed_sweep_20260612_231815/seed_42/windows_eval_suite_20260612_231908/aggregate_results.csv",
+        "runs/windows_eval_suite_extended_seed_sweep/seed_sweep_20260612_231815/seed_42/windows_eval_suite_20260612_231908/suite_metadata.json"
+      ],
+      "generation_command": "python experiments\\analyze_sampling_coverage.py --results runs\\windows_eval_suite_extended_seed_sweep\\seed_sweep_20260612_231815\\seed_42\\windows_eval_suite_20260612_231908\\aggregate_results.csv --metadata runs\\windows_eval_suite_extended_seed_sweep\\seed_sweep_20260612_231815\\seed_42\\windows_eval_suite_20260612_231908\\suite_metadata.json --output docs\\sampling_coverage_report.md",
+      "cautions": [
+        "Coverage is a sampling representativeness check.",
+        "Coverage score is not a model or planner performance metric."
+      ]
+    },
+    {
+      "path": "docs/seed_stability_report.md",
+      "purpose": "Seed-to-seed stability analysis for sampled extended evaluation.",
+      "source_inputs": [
+        "runs/windows_eval_suite_extended_seed_sweep/seed_sweep_20260612_231815/seed_sweep_index.json"
+      ],
+      "generation_command": "python experiments\\compare_seed_sweep.py --seed-sweep-index runs\\windows_eval_suite_extended_seed_sweep\\seed_sweep_20260612_231815\\seed_sweep_index.json --output docs\\seed_stability_report.md",
+      "cautions": [
+        "Seed variation is sampling sensitivity, not real-world performance variation."
+      ]
+    },
+    {
+      "path": "docs/sample_size_convergence_report.md",
+      "purpose": "Sample-size convergence and sampling quality score report for sampled extended evaluation.",
+      "source_inputs": [
+        "runs/windows_eval_suite_sample_size_sweep/sample_size_sweep_20260613_010716/sample_size_sweep_index.json"
+      ],
+      "generation_command": "python experiments\\analyze_sample_size_convergence.py --sample-size-sweep-index runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_sweep_index.json --output docs\\sample_size_convergence_report.md",
+      "cautions": [
+        "Sampling quality score is a heuristic reliability score.",
+        "It is not a RAST performance score."
+      ]
+    }
+  ],
+  "canonical_runs": [
+    {
+      "path": "runs/windows_eval_suite/windows_eval_suite_20260612_162821",
+      "type": "default_baseline",
+      "config": "configs/windows_eval_suite.yaml",
+      "sample_size": null,
+      "sample_seed": null,
+      "sampling_mode": null,
+      "total_runs": 900,
+      "failed_runs": 0,
+      "generated_outputs": [
+        "aggregate_results.csv",
+        "aggregate_results.json",
+        "aggregate_summary.csv",
+        "aggregate_summary.json"
+      ],
+      "suite_metadata_path": null,
+      "replay_index_path": null,
+      "exists": true
+    },
+    {
+      "path": "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531",
+      "type": "sampled_extended_candidate",
+      "config": "configs/windows_eval_suite_extended.yaml",
+      "sample_size": 500,
+      "sample_seed": 42,
+      "sampling_mode": "stratified",
+      "planned_runs_total": 8294400,
+      "total_runs": 500,
+      "failed_runs": 0,
+      "generated_outputs": [
+        "aggregate_results.csv",
+        "aggregate_results.json",
+        "aggregate_summary.csv",
+        "aggregate_summary.json",
+        "suite_metadata.json",
+        "replays/replay_index.json"
+      ],
+      "suite_metadata_path": "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/suite_metadata.json",
+      "replay_index_path": "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/replays/replay_index.json",
+      "exists": true
+    },
+    {
+      "path": "runs/windows_eval_suite_extended_seed_sweep/seed_sweep_20260612_231815",
+      "type": "seed_sweep",
+      "config": "configs/windows_eval_suite_extended.yaml",
+      "sample_size": 500,
+      "sample_seeds": [
+        7,
+        13,
+        42
+      ],
+      "sampling_mode": "stratified",
+      "total_runs": 1500,
+      "failed_runs": 0,
+      "generated_outputs": [
+        "seed_sweep_index.json",
+        "per-seed aggregate_results.csv",
+        "per-seed aggregate_summary.csv",
+        "per-seed suite_metadata.json",
+        "per-seed replays/replay_index.json"
+      ],
+      "suite_metadata_path": null,
+      "replay_index_path": "per-seed replay indexes recorded in seed_sweep_index.json",
+      "exists": true
+    },
+    {
+      "path": "runs/windows_eval_suite_sample_size_sweep/sample_size_sweep_20260613_010716",
+      "type": "sample_size_sweep",
+      "config": "configs/windows_eval_suite_extended.yaml",
+      "sample_sizes": [
+        100,
+        200,
+        500
+      ],
+      "sample_seeds": [
+        7,
+        13,
+        42
+      ],
+      "sampling_mode": "stratified",
+      "total_runs": 2400,
+      "failed_runs": 0,
+      "generated_outputs": [
+        "sample_size_sweep_index.json",
+        "per-run aggregate_results.csv",
+        "per-run aggregate_summary.csv",
+        "per-run suite_metadata.json",
+        "per-run replays/replay_index.json"
+      ],
+      "suite_metadata_path": null,
+      "replay_index_path": "per-run replay indexes recorded in sample_size_sweep_index.json",
+      "exists": true
+    }
+  ],
+  "configs": [
+    {
+      "path": "configs/windows_eval_suite.yaml",
+      "purpose": "Fast default evaluation suite.",
+      "expected_use": "Routine regression and default report regeneration.",
+      "safe_for_default_execution": true,
+      "requires_sampling": false,
+      "known_planned_run_scale": 900
+    },
+    {
+      "path": "configs/windows_eval_suite_extended.yaml",
+      "purpose": "Large threshold, uncertainty, relation, and noise sensitivity grid.",
+      "expected_use": "Dry-run or sampled extended evaluation.",
+      "safe_for_default_execution": false,
+      "requires_sampling": true,
+      "known_planned_run_scale": 8294400
+    },
+    {
+      "path": "configs/windows_eval_suite_sampled.yaml",
+      "purpose": "Sampled execution profile for the extended grid.",
+      "expected_use": "Use with --sample-size and --sample-seed.",
+      "safe_for_default_execution": false,
+      "requires_sampling": true,
+      "known_planned_run_scale": 8294400
+    },
+    {
+      "path": "configs/windows_metadata_sim.yaml",
+      "purpose": "Single WindowsMetadataSim episode configuration.",
+      "expected_use": "Local smoke or diagnostic episode run.",
+      "safe_for_default_execution": true,
+      "requires_sampling": false,
+      "known_planned_run_scale": 1
+    }
+  ],
+  "replay_artifacts": {
+    "canonical_replay_index": "runs/windows_eval_suite_extended/windows_eval_suite_20260612_224531/replays/replay_index.json",
+    "supported_case_types": [
+      "collision",
+      "near_miss",
+      "planner_disagreement",
+      "rast_vs_scene_graph_disagreement",
+      "rast_vs_uncertainty_aware_disagreement",
+      "rast_vs_affordance_aware_disagreement",
+      "event_triggered_action",
+      "uncertainty_triggered_action",
+      "affordance_triggered_action",
+      "high_risk_token",
+      "high_uncertainty_token"
+    ],
+    "limitation": "Replay artifacts reconstruct metadata/action/evidence traces, not visual replay."
+  },
+  "interpretation_boundaries": [
+    "WindowsMetadataSim deterministic metadata simulator only.",
+    "Not real robot, real perception, or real sensor evidence.",
+    "Sampled extended result is not exhaustive grid result.",
+    "Sampling quality score is a heuristic reliability score, not RAST performance.",
+    "Planners are deterministic rule-based experimental policies."
+  ]
+}

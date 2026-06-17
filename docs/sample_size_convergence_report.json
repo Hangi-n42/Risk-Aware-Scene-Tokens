@@ -1,0 +1,4889 @@
+{
+  "sample_size_sweep_id": "sample_size_sweep_20260613_010716",
+  "config_path": "configs\\windows_eval_suite_extended.yaml",
+  "sampling_mode": "stratified",
+  "sample_sizes": [
+    100,
+    200,
+    500
+  ],
+  "seeds": [
+    7,
+    13,
+    42
+  ],
+  "total_sampled_runs": 2400,
+  "failed_runs": 0,
+  "run_summaries": [
+    {
+      "sample_size": 100,
+      "seed": 7,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_7\\windows_eval_suite_20260613_010717",
+      "run_count": 100,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 2.13,
+        "latency_avg_ms": 0.8062245999857018,
+        "token_generation_latency_avg_ms": 0.16172196669322147,
+        "planning_latency_avg_ms": 0.3501669999689814,
+        "rast_vs_object_list_disagreement_avg": 2.87,
+        "rast_vs_flat_feature_disagreement_avg": 0.0,
+        "rast_vs_scene_graph_disagreement_avg": 1.59,
+        "rast_vs_event_aware_disagreement_avg": 0.29,
+        "rast_vs_uncertainty_aware_disagreement_avg": 0.68,
+        "rast_vs_affordance_aware_disagreement_avg": 6.13,
+        "event_triggered_action_count_avg": 2.07,
+        "uncertainty_triggered_action_count_avg": 3.06,
+        "affordance_triggered_action_count_avg": 8.58,
+        "evidence_token_count_avg": 8.854666666666665,
+        "affordance_token_count_avg": 1.0250000000000001,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_7\\windows_eval_suite_20260613_010717\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_7\\windows_eval_suite_20260613_010717\\suite_metadata.json",
+        "row_count": 100,
+        "suite_run_id": "windows_eval_suite_20260613_010717",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 4,
+              "blocking_relation_without_high_risk": 4,
+              "clear_path": 4,
+              "event_changes_risk_but_graph_static": 4,
+              "far_obstacle": 4,
+              "inspect_required_uncertain_path": 4,
+              "low_sensor_agreement": 4,
+              "narrow_passage": 4,
+              "near_obstacle": 4,
+              "noisy_position_boundary": 4,
+              "object_appears": 4,
+              "object_disappears": 4,
+              "object_moves": 4,
+              "partially_occluded_obstacle": 4,
+              "passable_clear_gap": 4,
+              "planner_disagreement": 4,
+              "relation_near_but_low_risk": 4,
+              "risk_increases": 4,
+              "risk_without_graph_blocking": 4,
+              "target_reachable": 4,
+              "target_reachable_affordance": 4,
+              "uncertainty_near_path": 4,
+              "uncertainty_without_high_risk": 4,
+              "unknown_near_path": 4,
+              "unknown_uncertain_object": 4
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "object_list",
+              "rast",
+              "scene_graph"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 25,
+              "object_list": 25,
+              "rast": 25,
+              "scene_graph": 25
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 0.5714285714285714,
+            "missing_values": [
+              "event_aware_rast",
+              "flat_feature",
+              "uncertainty_aware_rast"
+            ],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "update_mode": {
+            "observed_values": [
+              "incremental"
+            ],
+            "observed_counts": {
+              "incremental": 100
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 0.5,
+            "missing_values": [
+              "full_recompute"
+            ],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "event_policy_variant": {
+            "observed_values": [],
+            "observed_counts": {},
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 0.0,
+            "missing_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 0
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 33,
+              "1.5": 34,
+              "2": 33
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 46,
+              "1": 54
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 46,
+              "1.5": 54
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 51,
+              "0.75": 49
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 46,
+              "0.5": 54
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 52,
+              "0.6": 48
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 56,
+              "0.05": 44
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 54,
+              "0.5": 46
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 57,
+              "0.7": 43
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 33,
+              "0.02": 34,
+              "0.05": 33
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 36,
+              "0.02": 34,
+              "0.05": 30
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 51,
+              "0.05": 49
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    },
+    {
+      "sample_size": 100,
+      "seed": 13,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_13\\windows_eval_suite_20260613_010723",
+      "run_count": 100,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 1.62,
+        "latency_avg_ms": 0.8530602333103161,
+        "token_generation_latency_avg_ms": 0.2146706332726656,
+        "planning_latency_avg_ms": 0.35456033334533765,
+        "rast_vs_object_list_disagreement_avg": 3.32,
+        "rast_vs_flat_feature_disagreement_avg": 0.07,
+        "rast_vs_scene_graph_disagreement_avg": 1.95,
+        "rast_vs_event_aware_disagreement_avg": 0.15,
+        "rast_vs_uncertainty_aware_disagreement_avg": 1.01,
+        "rast_vs_affordance_aware_disagreement_avg": 5.89,
+        "event_triggered_action_count_avg": 1.46,
+        "uncertainty_triggered_action_count_avg": 3.14,
+        "affordance_triggered_action_count_avg": 8.63,
+        "evidence_token_count_avg": 8.757666666666667,
+        "affordance_token_count_avg": 1.0310000000000001,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_13\\windows_eval_suite_20260613_010723\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_13\\windows_eval_suite_20260613_010723\\suite_metadata.json",
+        "row_count": 100,
+        "suite_run_id": "windows_eval_suite_20260613_010723",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 4,
+              "blocking_relation_without_high_risk": 4,
+              "clear_path": 4,
+              "event_changes_risk_but_graph_static": 4,
+              "far_obstacle": 4,
+              "inspect_required_uncertain_path": 4,
+              "low_sensor_agreement": 4,
+              "narrow_passage": 4,
+              "near_obstacle": 4,
+              "noisy_position_boundary": 4,
+              "object_appears": 4,
+              "object_disappears": 4,
+              "object_moves": 4,
+              "partially_occluded_obstacle": 4,
+              "passable_clear_gap": 4,
+              "planner_disagreement": 4,
+              "relation_near_but_low_risk": 4,
+              "risk_increases": 4,
+              "risk_without_graph_blocking": 4,
+              "target_reachable": 4,
+              "target_reachable_affordance": 4,
+              "uncertainty_near_path": 4,
+              "uncertainty_without_high_risk": 4,
+              "unknown_near_path": 4,
+              "unknown_uncertain_object": 4
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "event_aware_rast",
+              "flat_feature",
+              "uncertainty_aware_rast"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 25,
+              "event_aware_rast": 25,
+              "flat_feature": 25,
+              "uncertainty_aware_rast": 25
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 0.5714285714285714,
+            "missing_values": [
+              "object_list",
+              "rast",
+              "scene_graph"
+            ],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "update_mode": {
+            "observed_values": [
+              "full_recompute"
+            ],
+            "observed_counts": {
+              "full_recompute": 100
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 0.5,
+            "missing_values": [
+              "incremental"
+            ],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "event_policy_variant": {
+            "observed_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "observed_counts": {
+              "full": 4,
+              "logging_only": 4,
+              "no_object_appeared": 4,
+              "no_object_disappeared": 5,
+              "no_object_moved": 4,
+              "no_risk_changed": 4
+            },
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 25
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 33,
+              "1.5": 33,
+              "2": 34
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 49,
+              "1": 51
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 57,
+              "1.5": 43
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 48,
+              "0.75": 52
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 50,
+              "0.5": 50
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 50,
+              "0.6": 50
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 58,
+              "0.05": 42
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 49,
+              "0.5": 51
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 44,
+              "0.7": 56
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 36,
+              "0.02": 34,
+              "0.05": 30
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 33,
+              "0.02": 36,
+              "0.05": 31
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 54,
+              "0.05": 46
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    },
+    {
+      "sample_size": 100,
+      "seed": 42,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_42\\windows_eval_suite_20260613_010729",
+      "run_count": 100,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 1.56,
+        "latency_avg_ms": 0.8635391333221683,
+        "token_generation_latency_avg_ms": 0.21926603330575745,
+        "planning_latency_avg_ms": 0.35112926667958766,
+        "rast_vs_object_list_disagreement_avg": 3.41,
+        "rast_vs_flat_feature_disagreement_avg": 0.0,
+        "rast_vs_scene_graph_disagreement_avg": 2.39,
+        "rast_vs_event_aware_disagreement_avg": 0.08,
+        "rast_vs_uncertainty_aware_disagreement_avg": 0.59,
+        "rast_vs_affordance_aware_disagreement_avg": 5.84,
+        "event_triggered_action_count_avg": 1.72,
+        "uncertainty_triggered_action_count_avg": 2.87,
+        "affordance_triggered_action_count_avg": 8.63,
+        "evidence_token_count_avg": 8.824333333333334,
+        "affordance_token_count_avg": 1.0260000000000002,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_42\\windows_eval_suite_20260613_010729\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_100\\seed_42\\windows_eval_suite_20260613_010729\\suite_metadata.json",
+        "row_count": 100,
+        "suite_run_id": "windows_eval_suite_20260613_010729",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 4,
+              "blocking_relation_without_high_risk": 4,
+              "clear_path": 4,
+              "event_changes_risk_but_graph_static": 4,
+              "far_obstacle": 4,
+              "inspect_required_uncertain_path": 4,
+              "low_sensor_agreement": 4,
+              "narrow_passage": 4,
+              "near_obstacle": 4,
+              "noisy_position_boundary": 4,
+              "object_appears": 4,
+              "object_disappears": 4,
+              "object_moves": 4,
+              "partially_occluded_obstacle": 4,
+              "passable_clear_gap": 4,
+              "planner_disagreement": 4,
+              "relation_near_but_low_risk": 4,
+              "risk_increases": 4,
+              "risk_without_graph_blocking": 4,
+              "target_reachable": 4,
+              "target_reachable_affordance": 4,
+              "uncertainty_near_path": 4,
+              "uncertainty_without_high_risk": 4,
+              "unknown_near_path": 4,
+              "unknown_uncertain_object": 4
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "flat_feature",
+              "rast",
+              "uncertainty_aware_rast"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 25,
+              "flat_feature": 25,
+              "rast": 25,
+              "uncertainty_aware_rast": 25
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 0.5714285714285714,
+            "missing_values": [
+              "event_aware_rast",
+              "object_list",
+              "scene_graph"
+            ],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "update_mode": {
+            "observed_values": [
+              "full_recompute"
+            ],
+            "observed_counts": {
+              "full_recompute": 100
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 0.5,
+            "missing_values": [
+              "incremental"
+            ],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "event_policy_variant": {
+            "observed_values": [],
+            "observed_counts": {},
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 0.0,
+            "missing_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 0
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 33,
+              "1.5": 33,
+              "2": 34
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 49,
+              "1": 51
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 56,
+              "1.5": 44
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 45,
+              "0.75": 55
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 39,
+              "0.5": 61
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 51,
+              "0.6": 49
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 41,
+              "0.05": 59
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 61,
+              "0.5": 39
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 53,
+              "0.7": 47
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 34,
+              "0.02": 30,
+              "0.05": 36
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 33,
+              "0.02": 34,
+              "0.05": 33
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 48,
+              "0.05": 52
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 100
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    },
+    {
+      "sample_size": 200,
+      "seed": 7,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_7\\windows_eval_suite_20260613_010735",
+      "run_count": 200,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 1.75,
+        "latency_avg_ms": 0.9422342999547859,
+        "token_generation_latency_avg_ms": 0.19424103329311038,
+        "planning_latency_avg_ms": 0.41062518332031067,
+        "rast_vs_object_list_disagreement_avg": 3.175,
+        "rast_vs_flat_feature_disagreement_avg": 0.0,
+        "rast_vs_scene_graph_disagreement_avg": 2.005,
+        "rast_vs_event_aware_disagreement_avg": 0.195,
+        "rast_vs_uncertainty_aware_disagreement_avg": 0.565,
+        "rast_vs_affordance_aware_disagreement_avg": 6.02,
+        "event_triggered_action_count_avg": 1.96,
+        "uncertainty_triggered_action_count_avg": 2.845,
+        "affordance_triggered_action_count_avg": 8.475,
+        "evidence_token_count_avg": 8.885666666666662,
+        "affordance_token_count_avg": 1.0119999999999998,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_7\\windows_eval_suite_20260613_010735\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_7\\windows_eval_suite_20260613_010735\\suite_metadata.json",
+        "row_count": 200,
+        "suite_run_id": "windows_eval_suite_20260613_010735",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 8,
+              "blocking_relation_without_high_risk": 8,
+              "clear_path": 8,
+              "event_changes_risk_but_graph_static": 8,
+              "far_obstacle": 8,
+              "inspect_required_uncertain_path": 8,
+              "low_sensor_agreement": 8,
+              "narrow_passage": 8,
+              "near_obstacle": 8,
+              "noisy_position_boundary": 8,
+              "object_appears": 8,
+              "object_disappears": 8,
+              "object_moves": 8,
+              "partially_occluded_obstacle": 8,
+              "passable_clear_gap": 8,
+              "planner_disagreement": 8,
+              "relation_near_but_low_risk": 8,
+              "risk_increases": 8,
+              "risk_without_graph_blocking": 8,
+              "target_reachable": 8,
+              "target_reachable_affordance": 8,
+              "uncertainty_near_path": 8,
+              "uncertainty_without_high_risk": 8,
+              "unknown_near_path": 8,
+              "unknown_uncertain_object": 8
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "event_aware_rast",
+              "flat_feature",
+              "object_list",
+              "rast",
+              "scene_graph",
+              "uncertainty_aware_rast"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 25,
+              "event_aware_rast": 25,
+              "flat_feature": 25,
+              "object_list": 25,
+              "rast": 50,
+              "scene_graph": 25,
+              "uncertainty_aware_rast": 25
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "update_mode": {
+            "observed_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "observed_counts": {
+              "full_recompute": 25,
+              "incremental": 175
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [
+              "full_recompute"
+            ],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "event_policy_variant": {
+            "observed_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "observed_counts": {
+              "full": 4,
+              "logging_only": 5,
+              "no_object_appeared": 4,
+              "no_object_disappeared": 4,
+              "no_object_moved": 4,
+              "no_risk_changed": 4
+            },
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 25
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 66,
+              "1.5": 67,
+              "2": 67
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 97,
+              "1": 103
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 100,
+              "1.5": 100
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 99,
+              "0.75": 101
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 98,
+              "0.5": 102
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 110,
+              "0.6": 90
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 114,
+              "0.05": 86
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 95,
+              "0.5": 105
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 109,
+              "0.7": 91
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 66,
+              "0.02": 65,
+              "0.05": 69
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 69,
+              "0.02": 65,
+              "0.05": 66
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 98,
+              "0.05": 102
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    },
+    {
+      "sample_size": 200,
+      "seed": 13,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_13\\windows_eval_suite_20260613_010748",
+      "run_count": 200,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 1.825,
+        "latency_avg_ms": 0.8907812832597604,
+        "token_generation_latency_avg_ms": 0.22153544997369556,
+        "planning_latency_avg_ms": 0.37020053331828734,
+        "rast_vs_object_list_disagreement_avg": 3.11,
+        "rast_vs_flat_feature_disagreement_avg": 0.05,
+        "rast_vs_scene_graph_disagreement_avg": 1.845,
+        "rast_vs_event_aware_disagreement_avg": 0.22,
+        "rast_vs_uncertainty_aware_disagreement_avg": 0.855,
+        "rast_vs_affordance_aware_disagreement_avg": 5.905,
+        "event_triggered_action_count_avg": 1.675,
+        "uncertainty_triggered_action_count_avg": 2.955,
+        "affordance_triggered_action_count_avg": 8.475,
+        "evidence_token_count_avg": 8.811166666666663,
+        "affordance_token_count_avg": 1.011,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_13\\windows_eval_suite_20260613_010748\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_13\\windows_eval_suite_20260613_010748\\suite_metadata.json",
+        "row_count": 200,
+        "suite_run_id": "windows_eval_suite_20260613_010748",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 8,
+              "blocking_relation_without_high_risk": 8,
+              "clear_path": 8,
+              "event_changes_risk_but_graph_static": 8,
+              "far_obstacle": 8,
+              "inspect_required_uncertain_path": 8,
+              "low_sensor_agreement": 8,
+              "narrow_passage": 8,
+              "near_obstacle": 8,
+              "noisy_position_boundary": 8,
+              "object_appears": 8,
+              "object_disappears": 8,
+              "object_moves": 8,
+              "partially_occluded_obstacle": 8,
+              "passable_clear_gap": 8,
+              "planner_disagreement": 8,
+              "relation_near_but_low_risk": 8,
+              "risk_increases": 8,
+              "risk_without_graph_blocking": 8,
+              "target_reachable": 8,
+              "target_reachable_affordance": 8,
+              "uncertainty_near_path": 8,
+              "uncertainty_without_high_risk": 8,
+              "unknown_near_path": 8,
+              "unknown_uncertain_object": 8
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "event_aware_rast",
+              "flat_feature",
+              "object_list",
+              "rast",
+              "scene_graph",
+              "uncertainty_aware_rast"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 25,
+              "event_aware_rast": 25,
+              "flat_feature": 25,
+              "object_list": 25,
+              "rast": 25,
+              "scene_graph": 25,
+              "uncertainty_aware_rast": 50
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "update_mode": {
+            "observed_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "observed_counts": {
+              "full_recompute": 175,
+              "incremental": 25
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [
+              "incremental"
+            ],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "event_policy_variant": {
+            "observed_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "observed_counts": {
+              "full": 4,
+              "logging_only": 4,
+              "no_object_appeared": 4,
+              "no_object_disappeared": 5,
+              "no_object_moved": 4,
+              "no_risk_changed": 4
+            },
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 25
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 66,
+              "1.5": 67,
+              "2": 67
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 98,
+              "1": 102
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 106,
+              "1.5": 94
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 96,
+              "0.75": 104
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 97,
+              "0.5": 103
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 102,
+              "0.6": 98
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 113,
+              "0.05": 87
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 97,
+              "0.5": 103
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 91,
+              "0.7": 109
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 72,
+              "0.02": 65,
+              "0.05": 63
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 66,
+              "0.02": 69,
+              "0.05": 65
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 101,
+              "0.05": 99
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    },
+    {
+      "sample_size": 200,
+      "seed": 42,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_42\\windows_eval_suite_20260613_010800",
+      "run_count": 200,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 1.865,
+        "latency_avg_ms": 0.888856949988015,
+        "token_generation_latency_avg_ms": 0.22138816666665664,
+        "planning_latency_avg_ms": 0.3704060333154,
+        "rast_vs_object_list_disagreement_avg": 3.02,
+        "rast_vs_flat_feature_disagreement_avg": 0.02,
+        "rast_vs_scene_graph_disagreement_avg": 2.13,
+        "rast_vs_event_aware_disagreement_avg": 0.21,
+        "rast_vs_uncertainty_aware_disagreement_avg": 0.75,
+        "rast_vs_affordance_aware_disagreement_avg": 5.915,
+        "event_triggered_action_count_avg": 1.745,
+        "uncertainty_triggered_action_count_avg": 2.975,
+        "affordance_triggered_action_count_avg": 8.575,
+        "evidence_token_count_avg": 8.820499999999996,
+        "affordance_token_count_avg": 1.0245000000000002,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_42\\windows_eval_suite_20260613_010800\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_200\\seed_42\\windows_eval_suite_20260613_010800\\suite_metadata.json",
+        "row_count": 200,
+        "suite_run_id": "windows_eval_suite_20260613_010800",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 8,
+              "blocking_relation_without_high_risk": 8,
+              "clear_path": 8,
+              "event_changes_risk_but_graph_static": 8,
+              "far_obstacle": 8,
+              "inspect_required_uncertain_path": 8,
+              "low_sensor_agreement": 8,
+              "narrow_passage": 8,
+              "near_obstacle": 8,
+              "noisy_position_boundary": 8,
+              "object_appears": 8,
+              "object_disappears": 8,
+              "object_moves": 8,
+              "partially_occluded_obstacle": 8,
+              "passable_clear_gap": 8,
+              "planner_disagreement": 8,
+              "relation_near_but_low_risk": 8,
+              "risk_increases": 8,
+              "risk_without_graph_blocking": 8,
+              "target_reachable": 8,
+              "target_reachable_affordance": 8,
+              "uncertainty_near_path": 8,
+              "uncertainty_without_high_risk": 8,
+              "unknown_near_path": 8,
+              "unknown_uncertain_object": 8
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "event_aware_rast",
+              "flat_feature",
+              "object_list",
+              "rast",
+              "scene_graph",
+              "uncertainty_aware_rast"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 50,
+              "event_aware_rast": 25,
+              "flat_feature": 25,
+              "object_list": 25,
+              "rast": 25,
+              "scene_graph": 25,
+              "uncertainty_aware_rast": 25
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "update_mode": {
+            "observed_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "observed_counts": {
+              "full_recompute": 175,
+              "incremental": 25
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [
+              "incremental"
+            ],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "event_policy_variant": {
+            "observed_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "observed_counts": {
+              "full": 4,
+              "logging_only": 5,
+              "no_object_appeared": 4,
+              "no_object_disappeared": 4,
+              "no_object_moved": 4,
+              "no_risk_changed": 4
+            },
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 25
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 67,
+              "1.5": 66,
+              "2": 67
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 90,
+              "1": 110
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 105,
+              "1.5": 95
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 92,
+              "0.75": 108
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 87,
+              "0.5": 113
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 95,
+              "0.6": 105
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 87,
+              "0.05": 113
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 104,
+              "0.5": 96
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 103,
+              "0.7": 97
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 66,
+              "0.02": 66,
+              "0.05": 68
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 66,
+              "0.02": 68,
+              "0.05": 66
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 101,
+              "0.05": 99
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 200
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    },
+    {
+      "sample_size": 500,
+      "seed": 7,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_7\\windows_eval_suite_20260613_010812",
+      "run_count": 500,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 1.726,
+        "latency_avg_ms": 0.8654931800235015,
+        "token_generation_latency_avg_ms": 0.19076824667608888,
+        "planning_latency_avg_ms": 0.3737294600040817,
+        "rast_vs_object_list_disagreement_avg": 3.06,
+        "rast_vs_flat_feature_disagreement_avg": 0.022,
+        "rast_vs_scene_graph_disagreement_avg": 2.018,
+        "rast_vs_event_aware_disagreement_avg": 0.202,
+        "rast_vs_uncertainty_aware_disagreement_avg": 0.732,
+        "rast_vs_affordance_aware_disagreement_avg": 5.986,
+        "event_triggered_action_count_avg": 1.926,
+        "uncertainty_triggered_action_count_avg": 2.886,
+        "affordance_triggered_action_count_avg": 8.504,
+        "evidence_token_count_avg": 8.845933333333337,
+        "affordance_token_count_avg": 1.0141999999999987,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_7\\windows_eval_suite_20260613_010812\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_7\\windows_eval_suite_20260613_010812\\suite_metadata.json",
+        "row_count": 500,
+        "suite_run_id": "windows_eval_suite_20260613_010812",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 20,
+              "blocking_relation_without_high_risk": 20,
+              "clear_path": 20,
+              "event_changes_risk_but_graph_static": 20,
+              "far_obstacle": 20,
+              "inspect_required_uncertain_path": 20,
+              "low_sensor_agreement": 20,
+              "narrow_passage": 20,
+              "near_obstacle": 20,
+              "noisy_position_boundary": 20,
+              "object_appears": 20,
+              "object_disappears": 20,
+              "object_moves": 20,
+              "partially_occluded_obstacle": 20,
+              "passable_clear_gap": 20,
+              "planner_disagreement": 20,
+              "relation_near_but_low_risk": 20,
+              "risk_increases": 20,
+              "risk_without_graph_blocking": 20,
+              "target_reachable": 20,
+              "target_reachable_affordance": 20,
+              "uncertainty_near_path": 20,
+              "uncertainty_without_high_risk": 20,
+              "unknown_near_path": 20,
+              "unknown_uncertain_object": 20
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "event_aware_rast",
+              "flat_feature",
+              "object_list",
+              "rast",
+              "scene_graph",
+              "uncertainty_aware_rast"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 75,
+              "event_aware_rast": 75,
+              "flat_feature": 50,
+              "object_list": 75,
+              "rast": 75,
+              "scene_graph": 75,
+              "uncertainty_aware_rast": 75
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "update_mode": {
+            "observed_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "observed_counts": {
+              "full_recompute": 175,
+              "incremental": 325
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "event_policy_variant": {
+            "observed_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "observed_counts": {
+              "full": 12,
+              "logging_only": 13,
+              "no_object_appeared": 13,
+              "no_object_disappeared": 12,
+              "no_object_moved": 12,
+              "no_risk_changed": 13
+            },
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 75
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 166,
+              "1.5": 167,
+              "2": 167
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 265,
+              "1": 235
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 241,
+              "1.5": 259
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 259,
+              "0.75": 241
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 266,
+              "0.5": 234
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 256,
+              "0.6": 244
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 274,
+              "0.05": 226
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 247,
+              "0.5": 253
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 255,
+              "0.7": 245
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 167,
+              "0.02": 168,
+              "0.05": 165
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 165,
+              "0.02": 168,
+              "0.05": 167
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 246,
+              "0.05": 254
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    },
+    {
+      "sample_size": 500,
+      "seed": 13,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_13\\windows_eval_suite_20260613_010841",
+      "run_count": 500,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 1.846,
+        "latency_avg_ms": 0.9253094466554709,
+        "token_generation_latency_avg_ms": 0.22002489999928623,
+        "planning_latency_avg_ms": 0.39491788664551364,
+        "rast_vs_object_list_disagreement_avg": 3.084,
+        "rast_vs_flat_feature_disagreement_avg": 0.022,
+        "rast_vs_scene_graph_disagreement_avg": 2.14,
+        "rast_vs_event_aware_disagreement_avg": 0.198,
+        "rast_vs_uncertainty_aware_disagreement_avg": 0.816,
+        "rast_vs_affordance_aware_disagreement_avg": 6.024,
+        "event_triggered_action_count_avg": 1.788,
+        "uncertainty_triggered_action_count_avg": 2.954,
+        "affordance_triggered_action_count_avg": 8.534,
+        "evidence_token_count_avg": 8.8306,
+        "affordance_token_count_avg": 1.0183999999999989,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_13\\windows_eval_suite_20260613_010841\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_13\\windows_eval_suite_20260613_010841\\suite_metadata.json",
+        "row_count": 500,
+        "suite_run_id": "windows_eval_suite_20260613_010841",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 20,
+              "blocking_relation_without_high_risk": 20,
+              "clear_path": 20,
+              "event_changes_risk_but_graph_static": 20,
+              "far_obstacle": 20,
+              "inspect_required_uncertain_path": 20,
+              "low_sensor_agreement": 20,
+              "narrow_passage": 20,
+              "near_obstacle": 20,
+              "noisy_position_boundary": 20,
+              "object_appears": 20,
+              "object_disappears": 20,
+              "object_moves": 20,
+              "partially_occluded_obstacle": 20,
+              "passable_clear_gap": 20,
+              "planner_disagreement": 20,
+              "relation_near_but_low_risk": 20,
+              "risk_increases": 20,
+              "risk_without_graph_blocking": 20,
+              "target_reachable": 20,
+              "target_reachable_affordance": 20,
+              "uncertainty_near_path": 20,
+              "uncertainty_without_high_risk": 20,
+              "unknown_near_path": 20,
+              "unknown_uncertain_object": 20
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "event_aware_rast",
+              "flat_feature",
+              "object_list",
+              "rast",
+              "scene_graph",
+              "uncertainty_aware_rast"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 75,
+              "event_aware_rast": 75,
+              "flat_feature": 75,
+              "object_list": 50,
+              "rast": 75,
+              "scene_graph": 75,
+              "uncertainty_aware_rast": 75
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "update_mode": {
+            "observed_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "observed_counts": {
+              "full_recompute": 325,
+              "incremental": 175
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "event_policy_variant": {
+            "observed_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "observed_counts": {
+              "full": 13,
+              "logging_only": 12,
+              "no_object_appeared": 13,
+              "no_object_disappeared": 13,
+              "no_object_moved": 12,
+              "no_risk_changed": 12
+            },
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 75
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 166,
+              "1.5": 167,
+              "2": 167
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 243,
+              "1": 257
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 252,
+              "1.5": 248
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 254,
+              "0.75": 246
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 244,
+              "0.5": 256
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 265,
+              "0.6": 235
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 266,
+              "0.05": 234
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 249,
+              "0.5": 251
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 246,
+              "0.7": 254
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 168,
+              "0.02": 167,
+              "0.05": 165
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 167,
+              "0.02": 168,
+              "0.05": 165
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 252,
+              "0.05": 248
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    },
+    {
+      "sample_size": 500,
+      "seed": 42,
+      "run_dir": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_42\\windows_eval_suite_20260613_010910",
+      "run_count": 500,
+      "failed_runs": 0,
+      "metrics": {
+        "success_rate": 1.0,
+        "near_miss_count_avg": 1.858,
+        "latency_avg_ms": 0.9462065733137327,
+        "token_generation_latency_avg_ms": 0.2224903666661703,
+        "planning_latency_avg_ms": 0.40239761332486523,
+        "rast_vs_object_list_disagreement_avg": 2.98,
+        "rast_vs_flat_feature_disagreement_avg": 0.028,
+        "rast_vs_scene_graph_disagreement_avg": 1.968,
+        "rast_vs_event_aware_disagreement_avg": 0.218,
+        "rast_vs_uncertainty_aware_disagreement_avg": 0.74,
+        "rast_vs_affordance_aware_disagreement_avg": 5.934,
+        "event_triggered_action_count_avg": 1.872,
+        "uncertainty_triggered_action_count_avg": 2.906,
+        "affordance_triggered_action_count_avg": 8.492,
+        "evidence_token_count_avg": 8.836066666666675,
+        "affordance_token_count_avg": 1.0143999999999989,
+        "decision_trace_coverage": 1.0,
+        "replay_count": 3.0
+      },
+      "coverage": {
+        "results_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_42\\windows_eval_suite_20260613_010910\\aggregate_results.csv",
+        "metadata_path": "C:\\Projects\\Risk-Aware-Scene-Tokens\\runs\\windows_eval_suite_sample_size_sweep\\sample_size_sweep_20260613_010716\\sample_size_500\\seed_42\\windows_eval_suite_20260613_010910\\suite_metadata.json",
+        "row_count": 500,
+        "suite_run_id": "windows_eval_suite_20260613_010910",
+        "axes": {
+          "scenario": {
+            "observed_values": [
+              "avoid_required_blocking_path",
+              "blocking_relation_without_high_risk",
+              "clear_path",
+              "event_changes_risk_but_graph_static",
+              "far_obstacle",
+              "inspect_required_uncertain_path",
+              "low_sensor_agreement",
+              "narrow_passage",
+              "near_obstacle",
+              "noisy_position_boundary",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "partially_occluded_obstacle",
+              "passable_clear_gap",
+              "planner_disagreement",
+              "relation_near_but_low_risk",
+              "risk_increases",
+              "risk_without_graph_blocking",
+              "target_reachable",
+              "target_reachable_affordance",
+              "uncertainty_near_path",
+              "uncertainty_without_high_risk",
+              "unknown_near_path",
+              "unknown_uncertain_object"
+            ],
+            "observed_counts": {
+              "avoid_required_blocking_path": 20,
+              "blocking_relation_without_high_risk": 20,
+              "clear_path": 20,
+              "event_changes_risk_but_graph_static": 20,
+              "far_obstacle": 20,
+              "inspect_required_uncertain_path": 20,
+              "low_sensor_agreement": 20,
+              "narrow_passage": 20,
+              "near_obstacle": 20,
+              "noisy_position_boundary": 20,
+              "object_appears": 20,
+              "object_disappears": 20,
+              "object_moves": 20,
+              "partially_occluded_obstacle": 20,
+              "passable_clear_gap": 20,
+              "planner_disagreement": 20,
+              "relation_near_but_low_risk": 20,
+              "risk_increases": 20,
+              "risk_without_graph_blocking": 20,
+              "target_reachable": 20,
+              "target_reachable_affordance": 20,
+              "uncertainty_near_path": 20,
+              "uncertainty_without_high_risk": 20,
+              "unknown_near_path": 20,
+              "unknown_uncertain_object": 20
+            },
+            "expected_values": [
+              "clear_path",
+              "near_obstacle",
+              "far_obstacle",
+              "unknown_near_path",
+              "target_reachable",
+              "planner_disagreement",
+              "object_appears",
+              "object_disappears",
+              "object_moves",
+              "risk_increases",
+              "relation_near_but_low_risk",
+              "blocking_relation_without_high_risk",
+              "risk_without_graph_blocking",
+              "event_changes_risk_but_graph_static",
+              "unknown_uncertain_object",
+              "partially_occluded_obstacle",
+              "noisy_position_boundary",
+              "low_sensor_agreement",
+              "uncertainty_without_high_risk",
+              "uncertainty_near_path",
+              "narrow_passage",
+              "passable_clear_gap",
+              "inspect_required_uncertain_path",
+              "avoid_required_blocking_path",
+              "target_reachable_affordance"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "apply_policy": {
+            "observed_values": [
+              "affordance_aware_rast",
+              "event_aware_rast",
+              "flat_feature",
+              "object_list",
+              "rast",
+              "scene_graph",
+              "uncertainty_aware_rast"
+            ],
+            "observed_counts": {
+              "affordance_aware_rast": 75,
+              "event_aware_rast": 50,
+              "flat_feature": 75,
+              "object_list": 75,
+              "rast": 75,
+              "scene_graph": 75,
+              "uncertainty_aware_rast": 75
+            },
+            "expected_values": [
+              "object_list",
+              "flat_feature",
+              "scene_graph",
+              "rast",
+              "event_aware_rast",
+              "uncertainty_aware_rast",
+              "affordance_aware_rast"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "update_mode": {
+            "observed_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "observed_counts": {
+              "full_recompute": 325,
+              "incremental": 175
+            },
+            "expected_values": [
+              "full_recompute",
+              "incremental"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "event_policy_variant": {
+            "observed_values": [
+              "full",
+              "logging_only",
+              "no_object_appeared",
+              "no_object_disappeared",
+              "no_object_moved",
+              "no_risk_changed"
+            ],
+            "observed_counts": {
+              "full": 9,
+              "logging_only": 9,
+              "no_object_appeared": 8,
+              "no_object_disappeared": 8,
+              "no_object_moved": 8,
+              "no_risk_changed": 8
+            },
+            "expected_values": [
+              "full",
+              "logging_only",
+              "no_risk_changed",
+              "no_object_appeared",
+              "no_object_moved",
+              "no_object_disappeared"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "`apply_policy=event_aware_rast`",
+            "row_count": 50
+          },
+          "risk_threshold": {
+            "observed_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "observed_counts": {
+              "1": 167,
+              "1.5": 166,
+              "2": 167
+            },
+            "expected_values": [
+              "1",
+              "1.5",
+              "2"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_miss_threshold": {
+            "observed_values": [
+              "0.75",
+              "1"
+            ],
+            "observed_counts": {
+              "0.75": 243,
+              "1": 257
+            },
+            "expected_values": [
+              "0.75",
+              "1"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_agent_relation_threshold": {
+            "observed_values": [
+              "1",
+              "1.5"
+            ],
+            "observed_counts": {
+              "1": 273,
+              "1.5": 227
+            },
+            "expected_values": [
+              "1",
+              "1.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "near_path_relation_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.75"
+            ],
+            "observed_counts": {
+              "0.5": 232,
+              "0.75": 268
+            },
+            "expected_values": [
+              "0.5",
+              "0.75"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "blocking_relation_threshold": {
+            "observed_values": [
+              "0.35",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.35": 236,
+              "0.5": 264
+            },
+            "expected_values": [
+              "0.35",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "classification_uncertainty_threshold": {
+            "observed_values": [
+              "0.4",
+              "0.6"
+            ],
+            "observed_counts": {
+              "0.4": 245,
+              "0.6": 255
+            },
+            "expected_values": [
+              "0.4",
+              "0.6"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "position_variance_threshold": {
+            "observed_values": [
+              "0.03",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0.03": 231,
+              "0.05": 269
+            },
+            "expected_values": [
+              "0.03",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "occlusion_ratio_threshold": {
+            "observed_values": [
+              "0.3",
+              "0.5"
+            ],
+            "observed_counts": {
+              "0.3": 233,
+              "0.5": 267
+            },
+            "expected_values": [
+              "0.3",
+              "0.5"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "sensor_agreement_threshold": {
+            "observed_values": [
+              "0.5",
+              "0.7"
+            ],
+            "observed_counts": {
+              "0.5": 256,
+              "0.7": 244
+            },
+            "expected_values": [
+              "0.5",
+              "0.7"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "position_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 165,
+              "0.02": 167,
+              "0.05": 168
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "distance_noise_std": {
+            "observed_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 171,
+              "0.02": 167,
+              "0.05": 162
+            },
+            "expected_values": [
+              "0",
+              "0.02",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          },
+          "visibility_flip_prob": {
+            "observed_values": [
+              "0",
+              "0.05"
+            ],
+            "observed_counts": {
+              "0": 251,
+              "0.05": 249
+            },
+            "expected_values": [
+              "0",
+              "0.05"
+            ],
+            "coverage_rate": 1.0,
+            "missing_values": [],
+            "underrepresented_values": [],
+            "row_scope": "all rows",
+            "row_count": 500
+          }
+        },
+        "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+      }
+    }
+  ],
+  "sample_size_summaries": {
+    "100": {
+      "sample_size": 100,
+      "seed_count": 3,
+      "run_count": 300,
+      "failed_runs": 0,
+      "metric_stats": {
+        "success_rate": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "success rate"
+        },
+        "near_miss_count_avg": {
+          "mean": 1.7700000000000002,
+          "min": 1.56,
+          "max": 2.13,
+          "range": 0.5699999999999998,
+          "std": 0.2557342370508883,
+          "coefficient_of_variation": 0.14448261980276175,
+          "relative_range": 0.3220338983050846,
+          "label": "avg near-miss"
+        },
+        "latency_avg_ms": {
+          "mean": 0.8409413222060621,
+          "min": 0.8062245999857018,
+          "max": 0.8635391333221683,
+          "range": 0.05731453333646641,
+          "std": 0.024918399328726807,
+          "coefficient_of_variation": 0.029631555342479493,
+          "relative_range": 0.06815521109857199,
+          "label": "avg latency ms"
+        },
+        "token_generation_latency_avg_ms": {
+          "mean": 0.19855287775721484,
+          "min": 0.16172196669322147,
+          "max": 0.21926603330575745,
+          "range": 0.05754406661253597,
+          "std": 0.02611087171682678,
+          "coefficient_of_variation": 0.1315058840333428,
+          "relative_range": 0.28981733864819287,
+          "label": "avg token generation latency ms"
+        },
+        "planning_latency_avg_ms": {
+          "mean": 0.3519521999979689,
+          "min": 0.3501669999689814,
+          "max": 0.35456033334533765,
+          "range": 0.004393333376356279,
+          "std": 0.0018856049380906877,
+          "coefficient_of_variation": 0.005357559742776347,
+          "relative_range": 0.012482755829858807,
+          "label": "avg planning latency ms"
+        },
+        "rast_vs_object_list_disagreement_avg": {
+          "mean": 3.1999999999999997,
+          "min": 2.87,
+          "max": 3.41,
+          "range": 0.54,
+          "std": 0.2362202362203543,
+          "coefficient_of_variation": 0.07381882381886072,
+          "relative_range": 0.16875000000000004,
+          "label": "RAST vs Object List disagreement"
+        },
+        "rast_vs_flat_feature_disagreement_avg": {
+          "mean": 0.023333333333333334,
+          "min": 0.0,
+          "max": 0.07,
+          "range": 0.07,
+          "std": 0.03299831645537222,
+          "coefficient_of_variation": 1.414213562373095,
+          "relative_range": 3.0,
+          "label": "RAST vs Flat Feature disagreement"
+        },
+        "rast_vs_scene_graph_disagreement_avg": {
+          "mean": 1.9766666666666666,
+          "min": 1.59,
+          "max": 2.39,
+          "range": 0.8,
+          "std": 0.3271425105702746,
+          "coefficient_of_variation": 0.16550211327332612,
+          "relative_range": 0.4047217537942665,
+          "label": "RAST vs Scene Graph disagreement"
+        },
+        "rast_vs_event_aware_disagreement_avg": {
+          "mean": 0.17333333333333334,
+          "min": 0.08,
+          "max": 0.29,
+          "range": 0.20999999999999996,
+          "std": 0.08730533902472529,
+          "coefficient_of_variation": 0.5036846482195689,
+          "relative_range": 1.2115384615384612,
+          "label": "RAST vs Event-aware disagreement"
+        },
+        "rast_vs_uncertainty_aware_disagreement_avg": {
+          "mean": 0.7600000000000001,
+          "min": 0.59,
+          "max": 1.01,
+          "range": 0.42000000000000004,
+          "std": 0.18055470085267789,
+          "coefficient_of_variation": 0.23757197480615508,
+          "relative_range": 0.5526315789473684,
+          "label": "RAST vs Uncertainty-aware disagreement"
+        },
+        "rast_vs_affordance_aware_disagreement_avg": {
+          "mean": 5.953333333333333,
+          "min": 5.84,
+          "max": 6.13,
+          "range": 0.29000000000000004,
+          "std": 0.1265789169736502,
+          "coefficient_of_variation": 0.0212618561545885,
+          "relative_range": 0.04871220604703248,
+          "label": "RAST vs Affordance-aware disagreement"
+        },
+        "event_triggered_action_count_avg": {
+          "mean": 1.75,
+          "min": 1.46,
+          "max": 2.07,
+          "range": 0.6099999999999999,
+          "std": 0.24993332444207322,
+          "coefficient_of_variation": 0.14281904253832756,
+          "relative_range": 0.3485714285714285,
+          "label": "event-triggered actions"
+        },
+        "uncertainty_triggered_action_count_avg": {
+          "mean": 3.0233333333333334,
+          "min": 2.87,
+          "max": 3.14,
+          "range": 0.27,
+          "std": 0.11323525167642019,
+          "coefficient_of_variation": 0.037453776739720016,
+          "relative_range": 0.08930540242557883,
+          "label": "uncertainty-triggered actions"
+        },
+        "affordance_triggered_action_count_avg": {
+          "mean": 8.613333333333335,
+          "min": 8.58,
+          "max": 8.63,
+          "range": 0.05000000000000071,
+          "std": 0.02357022603955192,
+          "coefficient_of_variation": 0.0027364813513411665,
+          "relative_range": 0.005804953560371598,
+          "label": "affordance-triggered actions"
+        },
+        "evidence_token_count_avg": {
+          "mean": 8.812222222222223,
+          "min": 8.757666666666667,
+          "max": 8.854666666666665,
+          "range": 0.09699999999999775,
+          "std": 0.04051550533856687,
+          "coefficient_of_variation": 0.004597649073850735,
+          "relative_range": 0.011007439162778713,
+          "label": "EvidenceToken avg"
+        },
+        "affordance_token_count_avg": {
+          "mean": 1.0273333333333337,
+          "min": 1.0250000000000001,
+          "max": 1.0310000000000001,
+          "range": 0.006000000000000005,
+          "std": 0.002624669291337254,
+          "coefficient_of_variation": 0.0025548370778753276,
+          "relative_range": 0.005840363400389361,
+          "label": "AffordanceToken avg"
+        },
+        "decision_trace_coverage": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "decision trace coverage"
+        },
+        "replay_count": {
+          "mean": 3.0,
+          "min": 3.0,
+          "max": 3.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "replay count"
+        }
+      },
+      "coverage_by_axis": {
+        "scenario": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 1.0
+        },
+        "apply_policy": {
+          "coverage_rate_avg": 0.5714285714285714,
+          "balance_avg": 0.0
+        },
+        "update_mode": {
+          "coverage_rate_avg": 0.5,
+          "balance_avg": 0.0
+        },
+        "event_policy_variant": {
+          "coverage_rate_avg": 0.3333333333333333,
+          "balance_avg": 0.26666666666666666
+        },
+        "risk_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9705882352941176
+        },
+        "near_miss_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9244734931009441
+        },
+        "near_agent_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.7973173674928061
+        },
+        "near_path_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9006810183280772
+        },
+        "blocking_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8303987047156447
+        },
+        "classification_uncertainty_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9612870789341378
+        },
+        "position_variance_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.7349224903286856
+        },
+        "occlusion_ratio_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.817326809290808
+        },
+        "sensor_agreement_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8089642344855851
+        },
+        "position_noise_std": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8790849673202614
+        },
+        "distance_noise_std": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8883442265795208
+        },
+        "visibility_flip_prob": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9119043628847551
+        }
+      },
+      "quality_scores": {
+        "coverage_score": 0.9002976190476191,
+        "balance_score": 0.7307474784638757,
+        "stability_score": 0.8284004479795253,
+        "overall_sampling_quality_score": 0.8278634255520679
+      },
+      "high_variance_metrics": [
+        {
+          "key": "rast_vs_flat_feature_disagreement_avg",
+          "label": "RAST vs Flat Feature disagreement",
+          "range": 0.07,
+          "coefficient_of_variation": 1.414213562373095
+        },
+        {
+          "key": "rast_vs_event_aware_disagreement_avg",
+          "label": "RAST vs Event-aware disagreement",
+          "range": 0.20999999999999996,
+          "coefficient_of_variation": 0.5036846482195689
+        },
+        {
+          "key": "rast_vs_uncertainty_aware_disagreement_avg",
+          "label": "RAST vs Uncertainty-aware disagreement",
+          "range": 0.42000000000000004,
+          "coefficient_of_variation": 0.23757197480615508
+        },
+        {
+          "key": "rast_vs_scene_graph_disagreement_avg",
+          "label": "RAST vs Scene Graph disagreement",
+          "range": 0.8,
+          "coefficient_of_variation": 0.16550211327332612
+        },
+        {
+          "key": "near_miss_count_avg",
+          "label": "avg near-miss",
+          "range": 0.5699999999999998,
+          "coefficient_of_variation": 0.14448261980276175
+        }
+      ]
+    },
+    "200": {
+      "sample_size": 200,
+      "seed_count": 3,
+      "run_count": 600,
+      "failed_runs": 0,
+      "metric_stats": {
+        "success_rate": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "success rate"
+        },
+        "near_miss_count_avg": {
+          "mean": 1.8133333333333332,
+          "min": 1.75,
+          "max": 1.865,
+          "range": 0.11499999999999999,
+          "std": 0.04766783215358363,
+          "coefficient_of_variation": 0.026287407437638032,
+          "relative_range": 0.06341911764705882,
+          "label": "avg near-miss"
+        },
+        "latency_avg_ms": {
+          "mean": 0.9072908444008538,
+          "min": 0.888856949988015,
+          "max": 0.9422342999547859,
+          "range": 0.053377349966770904,
+          "std": 0.024721240248989806,
+          "coefficient_of_variation": 0.02724731589826075,
+          "relative_range": 0.05883157566967362,
+          "label": "avg latency ms"
+        },
+        "token_generation_latency_avg_ms": {
+          "mean": 0.2123882166444875,
+          "min": 0.19424103329311038,
+          "max": 0.22153544997369556,
+          "range": 0.027294416680585187,
+          "std": 0.012832137280658748,
+          "coefficient_of_variation": 0.06041831078669591,
+          "relative_range": 0.1285119161119601,
+          "label": "avg token generation latency ms"
+        },
+        "planning_latency_avg_ms": {
+          "mean": 0.38374391665133273,
+          "min": 0.37020053331828734,
+          "max": 0.41062518332031067,
+          "range": 0.04042465000202333,
+          "std": 0.019008111090772696,
+          "coefficient_of_variation": 0.049533322265127515,
+          "relative_range": 0.10534277743027497,
+          "label": "avg planning latency ms"
+        },
+        "rast_vs_object_list_disagreement_avg": {
+          "mean": 3.1016666666666666,
+          "min": 3.02,
+          "max": 3.175,
+          "range": 0.1549999999999998,
+          "std": 0.06355225321645865,
+          "coefficient_of_variation": 0.020489710870432665,
+          "relative_range": 0.04997313272434169,
+          "label": "RAST vs Object List disagreement"
+        },
+        "rast_vs_flat_feature_disagreement_avg": {
+          "mean": 0.023333333333333334,
+          "min": 0.0,
+          "max": 0.05,
+          "range": 0.05,
+          "std": 0.020548046676563257,
+          "coefficient_of_variation": 0.880630571852711,
+          "relative_range": 2.142857142857143,
+          "label": "RAST vs Flat Feature disagreement"
+        },
+        "rast_vs_scene_graph_disagreement_avg": {
+          "mean": 1.9933333333333332,
+          "min": 1.845,
+          "max": 2.13,
+          "range": 0.2849999999999999,
+          "std": 0.1166428547128179,
+          "coefficient_of_variation": 0.058516482297400293,
+          "relative_range": 0.1429765886287625,
+          "label": "RAST vs Scene Graph disagreement"
+        },
+        "rast_vs_event_aware_disagreement_avg": {
+          "mean": 0.20833333333333334,
+          "min": 0.195,
+          "max": 0.22,
+          "range": 0.024999999999999994,
+          "std": 0.010274023338281625,
+          "coefficient_of_variation": 0.0493153120237518,
+          "relative_range": 0.11999999999999997,
+          "label": "RAST vs Event-aware disagreement"
+        },
+        "rast_vs_uncertainty_aware_disagreement_avg": {
+          "mean": 0.7233333333333333,
+          "min": 0.565,
+          "max": 0.855,
+          "range": 0.29000000000000004,
+          "std": 0.11988420338902964,
+          "coefficient_of_variation": 0.16573853003091657,
+          "relative_range": 0.4009216589861752,
+          "label": "RAST vs Uncertainty-aware disagreement"
+        },
+        "rast_vs_affordance_aware_disagreement_avg": {
+          "mean": 5.946666666666666,
+          "min": 5.905,
+          "max": 6.02,
+          "range": 0.11499999999999932,
+          "std": 0.05201495511442384,
+          "coefficient_of_variation": 0.008746909492335848,
+          "relative_range": 0.019338565022421414,
+          "label": "RAST vs Affordance-aware disagreement"
+        },
+        "event_triggered_action_count_avg": {
+          "mean": 1.7933333333333332,
+          "min": 1.675,
+          "max": 1.96,
+          "range": 0.2849999999999999,
+          "std": 0.1212664650905416,
+          "coefficient_of_variation": 0.06762070544082247,
+          "relative_range": 0.15892193308550182,
+          "label": "event-triggered actions"
+        },
+        "uncertainty_triggered_action_count_avg": {
+          "mean": 2.9250000000000003,
+          "min": 2.845,
+          "max": 2.975,
+          "range": 0.1299999999999999,
+          "std": 0.05715476066494077,
+          "coefficient_of_variation": 0.019540089116219066,
+          "relative_range": 0.044444444444444405,
+          "label": "uncertainty-triggered actions"
+        },
+        "affordance_triggered_action_count_avg": {
+          "mean": 8.508333333333333,
+          "min": 8.475,
+          "max": 8.575,
+          "range": 0.09999999999999964,
+          "std": 0.047140452079103,
+          "coefficient_of_variation": 0.005540503672372537,
+          "relative_range": 0.011753183153770773,
+          "label": "affordance-triggered actions"
+        },
+        "evidence_token_count_avg": {
+          "mean": 8.839111111111107,
+          "min": 8.811166666666663,
+          "max": 8.885666666666662,
+          "range": 0.07449999999999868,
+          "std": 0.033139529191913694,
+          "coefficient_of_variation": 0.0037491925121583792,
+          "relative_range": 0.00842844931617041,
+          "label": "EvidenceToken avg"
+        },
+        "affordance_token_count_avg": {
+          "mean": 1.0158333333333334,
+          "min": 1.011,
+          "max": 1.0245000000000002,
+          "range": 0.01350000000000029,
+          "std": 0.0061418419242295855,
+          "coefficient_of_variation": 0.006046111820406483,
+          "relative_range": 0.013289581624282483,
+          "label": "AffordanceToken avg"
+        },
+        "decision_trace_coverage": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "decision trace coverage"
+        },
+        "replay_count": {
+          "mean": 3.0,
+          "min": 3.0,
+          "max": 3.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "replay count"
+        }
+      },
+      "coverage_by_axis": {
+        "scenario": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 1.0
+        },
+        "apply_policy": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.5
+        },
+        "update_mode": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.14285714285714285
+        },
+        "event_policy_variant": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8000000000000002
+        },
+        "risk_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9850746268656717
+        },
+        "near_miss_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9069045682409476
+        },
+        "near_agent_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9305181191973645
+        },
+        "near_path_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9183755982435851
+        },
+        "blocking_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8908144636552677
+        },
+        "classification_uncertainty_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8945760122230711
+        },
+        "position_variance_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.7647363245872794
+        },
+        "occlusion_ratio_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9231954668847874
+        },
+        "sensor_agreement_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8704907811525787
+        },
+        "position_noise_std": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9292057402671213
+        },
+        "distance_noise_std": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9515487354362034
+        },
+        "visibility_flip_prob": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9737267844431502
+        }
+      },
+      "quality_scores": {
+        "coverage_score": 1.0,
+        "balance_score": 0.8363765227533856,
+        "stability_score": 0.9147399720283971,
+        "overall_sampling_quality_score": 0.9253349484345348
+      },
+      "high_variance_metrics": [
+        {
+          "key": "rast_vs_flat_feature_disagreement_avg",
+          "label": "RAST vs Flat Feature disagreement",
+          "range": 0.05,
+          "coefficient_of_variation": 0.880630571852711
+        },
+        {
+          "key": "rast_vs_uncertainty_aware_disagreement_avg",
+          "label": "RAST vs Uncertainty-aware disagreement",
+          "range": 0.29000000000000004,
+          "coefficient_of_variation": 0.16573853003091657
+        },
+        {
+          "key": "event_triggered_action_count_avg",
+          "label": "event-triggered actions",
+          "range": 0.2849999999999999,
+          "coefficient_of_variation": 0.06762070544082247
+        },
+        {
+          "key": "token_generation_latency_avg_ms",
+          "label": "avg token generation latency ms",
+          "range": 0.027294416680585187,
+          "coefficient_of_variation": 0.06041831078669591
+        },
+        {
+          "key": "rast_vs_scene_graph_disagreement_avg",
+          "label": "RAST vs Scene Graph disagreement",
+          "range": 0.2849999999999999,
+          "coefficient_of_variation": 0.058516482297400293
+        }
+      ]
+    },
+    "500": {
+      "sample_size": 500,
+      "seed_count": 3,
+      "run_count": 1500,
+      "failed_runs": 0,
+      "metric_stats": {
+        "success_rate": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "success rate"
+        },
+        "near_miss_count_avg": {
+          "mean": 1.8099999999999998,
+          "min": 1.726,
+          "max": 1.858,
+          "range": 0.13200000000000012,
+          "std": 0.05959865770300541,
+          "coefficient_of_variation": 0.032927435195030615,
+          "relative_range": 0.07292817679558018,
+          "label": "avg near-miss"
+        },
+        "latency_avg_ms": {
+          "mean": 0.9123363999975683,
+          "min": 0.8654931800235015,
+          "max": 0.9462065733137327,
+          "range": 0.0807133932902312,
+          "std": 0.03420417049422454,
+          "coefficient_of_variation": 0.03749074408772434,
+          "relative_range": 0.0884688951251384,
+          "label": "avg latency ms"
+        },
+        "token_generation_latency_avg_ms": {
+          "mean": 0.2110945044471818,
+          "min": 0.19076824667608888,
+          "max": 0.2224903666661703,
+          "range": 0.03172211999008143,
+          "std": 0.014408034742324988,
+          "coefficient_of_variation": 0.0682539546922693,
+          "relative_range": 0.15027449470158355,
+          "label": "avg token generation latency ms"
+        },
+        "planning_latency_avg_ms": {
+          "mean": 0.39034831999148684,
+          "min": 0.3737294600040817,
+          "max": 0.40239761332486523,
+          "range": 0.02866815332078354,
+          "std": 0.012141566572733608,
+          "coefficient_of_variation": 0.031104441727835296,
+          "relative_range": 0.07344249187855802,
+          "label": "avg planning latency ms"
+        },
+        "rast_vs_object_list_disagreement_avg": {
+          "mean": 3.0413333333333337,
+          "min": 2.98,
+          "max": 3.084,
+          "range": 0.10400000000000009,
+          "std": 0.044462218668088214,
+          "coefficient_of_variation": 0.0146193178435187,
+          "relative_range": 0.03419552827707149,
+          "label": "RAST vs Object List disagreement"
+        },
+        "rast_vs_flat_feature_disagreement_avg": {
+          "mean": 0.023999999999999997,
+          "min": 0.022,
+          "max": 0.028,
+          "range": 0.006000000000000002,
+          "std": 0.002828427124746191,
+          "coefficient_of_variation": 0.11785113019775798,
+          "relative_range": 0.2500000000000001,
+          "label": "RAST vs Flat Feature disagreement"
+        },
+        "rast_vs_scene_graph_disagreement_avg": {
+          "mean": 2.042,
+          "min": 1.968,
+          "max": 2.14,
+          "range": 0.17200000000000015,
+          "std": 0.07224033960791353,
+          "coefficient_of_variation": 0.03537724760426716,
+          "relative_range": 0.08423114593535758,
+          "label": "RAST vs Scene Graph disagreement"
+        },
+        "rast_vs_event_aware_disagreement_avg": {
+          "mean": 0.206,
+          "min": 0.198,
+          "max": 0.218,
+          "range": 0.01999999999999999,
+          "std": 0.008640987597877141,
+          "coefficient_of_variation": 0.04194654173726768,
+          "relative_range": 0.09708737864077666,
+          "label": "RAST vs Event-aware disagreement"
+        },
+        "rast_vs_uncertainty_aware_disagreement_avg": {
+          "mean": 0.7626666666666666,
+          "min": 0.732,
+          "max": 0.816,
+          "range": 0.08399999999999996,
+          "std": 0.037853518844209025,
+          "coefficient_of_variation": 0.049633110372651695,
+          "relative_range": 0.1101398601398601,
+          "label": "RAST vs Uncertainty-aware disagreement"
+        },
+        "rast_vs_affordance_aware_disagreement_avg": {
+          "mean": 5.981333333333333,
+          "min": 5.934,
+          "max": 6.024,
+          "range": 0.08999999999999986,
+          "std": 0.036890227552685055,
+          "coefficient_of_variation": 0.006167559220801113,
+          "relative_range": 0.015046812304948707,
+          "label": "RAST vs Affordance-aware disagreement"
+        },
+        "event_triggered_action_count_avg": {
+          "mean": 1.862,
+          "min": 1.788,
+          "max": 1.926,
+          "range": 0.1379999999999999,
+          "std": 0.05678027826631353,
+          "coefficient_of_variation": 0.03049424181864314,
+          "relative_range": 0.07411385606874323,
+          "label": "event-triggered actions"
+        },
+        "uncertainty_triggered_action_count_avg": {
+          "mean": 2.9153333333333333,
+          "min": 2.886,
+          "max": 2.954,
+          "range": 0.06800000000000006,
+          "std": 0.028534579412043622,
+          "coefficient_of_variation": 0.009787758773854432,
+          "relative_range": 0.023324948547907634,
+          "label": "uncertainty-triggered actions"
+        },
+        "affordance_triggered_action_count_avg": {
+          "mean": 8.51,
+          "min": 8.492,
+          "max": 8.534,
+          "range": 0.041999999999999815,
+          "std": 0.01766352173265576,
+          "coefficient_of_variation": 0.0020756194750476803,
+          "relative_range": 0.004935370152761435,
+          "label": "affordance-triggered actions"
+        },
+        "evidence_token_count_avg": {
+          "mean": 8.837533333333338,
+          "min": 8.8306,
+          "max": 8.845933333333337,
+          "range": 0.015333333333336086,
+          "std": 0.006345135202716245,
+          "coefficient_of_variation": 0.0007179758155800911,
+          "relative_range": 0.0017350241017481587,
+          "label": "EvidenceToken avg"
+        },
+        "affordance_token_count_avg": {
+          "mean": 1.0156666666666654,
+          "min": 1.0141999999999987,
+          "max": 1.0183999999999989,
+          "range": 0.004200000000000204,
+          "std": 0.00193448241713964,
+          "coefficient_of_variation": 0.0019046430099832383,
+          "relative_range": 0.004135214965540081,
+          "label": "AffordanceToken avg"
+        },
+        "decision_trace_coverage": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "decision trace coverage"
+        },
+        "replay_count": {
+          "mean": 3.0,
+          "min": 3.0,
+          "max": 3.0,
+          "range": 0.0,
+          "std": 0.0,
+          "coefficient_of_variation": 0.0,
+          "relative_range": 0.0,
+          "label": "replay count"
+        }
+      },
+      "coverage_by_axis": {
+        "scenario": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 1.0
+        },
+        "apply_policy": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.6666666666666666
+        },
+        "update_mode": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.5384615384615384
+        },
+        "event_policy_variant": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9116809116809117
+        },
+        "risk_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9940119760479041
+        },
+        "near_miss_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9259476788292588
+        },
+        "near_agent_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9153769153769153
+        },
+        "near_path_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9215591697669497
+        },
+        "blocking_relation_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9089212140198982
+        },
+        "classification_uncertainty_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9335672555185597
+        },
+        "position_variance_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.8544176086160099
+        },
+        "occlusion_ratio_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9469918778400533
+        },
+        "sensor_agreement_threshold": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9608044169111215
+        },
+        "position_noise_std": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9821428571428571
+        },
+        "distance_noise_std": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9705513784461153
+        },
+        "visibility_flip_prob": {
+          "coverage_rate_avg": 1.0,
+          "balance_avg": 0.9815542645482728
+        }
+      },
+      "quality_scores": {
+        "coverage_score": 1.0,
+        "balance_score": 0.9007909831170645,
+        "stability_score": 0.9717440163781039,
+        "overall_sampling_quality_score": 0.9617604998485505
+      },
+      "high_variance_metrics": [
+        {
+          "key": "rast_vs_flat_feature_disagreement_avg",
+          "label": "RAST vs Flat Feature disagreement",
+          "range": 0.006000000000000002,
+          "coefficient_of_variation": 0.11785113019775798
+        },
+        {
+          "key": "token_generation_latency_avg_ms",
+          "label": "avg token generation latency ms",
+          "range": 0.03172211999008143,
+          "coefficient_of_variation": 0.0682539546922693
+        },
+        {
+          "key": "rast_vs_uncertainty_aware_disagreement_avg",
+          "label": "RAST vs Uncertainty-aware disagreement",
+          "range": 0.08399999999999996,
+          "coefficient_of_variation": 0.049633110372651695
+        },
+        {
+          "key": "rast_vs_event_aware_disagreement_avg",
+          "label": "RAST vs Event-aware disagreement",
+          "range": 0.01999999999999999,
+          "coefficient_of_variation": 0.04194654173726768
+        },
+        {
+          "key": "latency_avg_ms",
+          "label": "avg latency ms",
+          "range": 0.0807133932902312,
+          "coefficient_of_variation": 0.03749074408772434
+        }
+      ]
+    }
+  },
+  "interpretation_note": "Sampling quality score is a heuristic coverage/balance/stability score, not a RAST performance score."
+}

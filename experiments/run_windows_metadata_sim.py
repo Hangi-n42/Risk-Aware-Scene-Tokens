@@ -22,21 +22,26 @@ from rast.evaluation.jsonl_logger import JSONLLogger
 from rast.evaluation.latency import LatencyTimer, incremental_update_benefit
 from rast.evaluation.metrics import calculate_episode_summary
 from rast.evaluation.records import StepLogRecord
+from rast.planner.affordance_aware_token_planner import plan_from_affordance_aware_tokens
 from rast.planner.event_aware_token_planner import VALID_EVENT_POLICY_VARIANTS, plan_from_event_aware_tokens
 from rast.planner.flat_feature_planner import plan_from_flat_features
 from rast.planner.object_list_planner import ObjectListPlannerConfig, plan_from_object_list
 from rast.planner.scene_graph_planner import plan_from_scene_graph
 from rast.planner.token_planner import plan_from_tokens
+from rast.planner.uncertainty_aware_token_planner import plan_from_uncertainty_aware_tokens
 from rast.schemas.common import Vector3
 from rast.schemas.metrics import EpisodeSummary, GoalSpec
 from rast.simulator.windows_metadata_sim import MetadataNoiseConfig, WindowsMetadataSim, vector_distance
 from rast.simulator.windows_scenarios import available_scenarios, build_windows_scenario
 from rast.token_memory.memory import TokenMemory
 from rast.token_memory.incremental_update import VALID_UPDATE_MODES
+from rast.tokenizer.affordance_tokenizer import AffordanceTokenizerConfig
 from rast.tokenizer.event_tokenizer import EventTokenizerConfig
+from rast.tokenizer.evidence_tokenizer import attach_decision_evidence_ids, build_evidence_tokens, count_evidence_types
 from rast.tokenizer.pipeline import tokenize_snapshot
 from rast.tokenizer.relation_tokenizer import RelationTokenizerConfig
 from rast.tokenizer.risk_tokenizer import RiskTokenizerConfig
+from rast.tokenizer.uncertainty_tokenizer import UncertaintyTokenizerConfig
 
 
 DEFAULT_CONFIG_PATH = ROOT / "configs" / "windows_metadata_sim.yaml"
@@ -51,14 +56,29 @@ def main() -> int:
     parser.add_argument("--max-steps", type=int, default=None)
     parser.add_argument("--risk-threshold", type=float, default=None)
     parser.add_argument("--object-list-threshold", type=float, default=None)
+    parser.add_argument("--near-agent-relation-threshold", type=float, default=None)
+    parser.add_argument("--near-path-relation-threshold", type=float, default=None)
+    parser.add_argument("--blocking-relation-threshold", type=float, default=None)
     parser.add_argument("--collision-threshold", type=float, default=None)
     parser.add_argument("--near-miss-threshold", type=float, default=None)
     parser.add_argument("--event-movement-threshold", type=float, default=None)
     parser.add_argument("--risk-score-delta-threshold", type=float, default=None)
+    parser.add_argument("--classification-uncertainty-threshold", type=float, default=None)
+    parser.add_argument("--position-variance-threshold", type=float, default=None)
+    parser.add_argument("--occlusion-ratio-threshold", type=float, default=None)
+    parser.add_argument("--sensor-agreement-threshold", type=float, default=None)
     parser.add_argument("--update-mode", choices=VALID_UPDATE_MODES, default=None)
     parser.add_argument(
         "--apply-policy",
-        choices=("rast", "object_list", "flat_feature", "scene_graph", "event_aware_rast"),
+        choices=(
+            "rast",
+            "object_list",
+            "flat_feature",
+            "scene_graph",
+            "event_aware_rast",
+            "uncertainty_aware_rast",
+            "affordance_aware_rast",
+        ),
         default=None,
     )
     parser.add_argument("--event-policy-variant", choices=VALID_EVENT_POLICY_VARIANTS, default=None)
@@ -91,6 +111,33 @@ def main() -> int:
             else scenario.object_list_threshold
         )
     )
+    near_agent_relation_threshold = float(
+        args.near_agent_relation_threshold
+        if args.near_agent_relation_threshold is not None
+        else (
+            config.get("near_agent_relation_threshold", scenario.resolved_near_agent_relation_threshold)
+            if use_config_defaults
+            else scenario.resolved_near_agent_relation_threshold
+        )
+    )
+    near_path_relation_threshold = float(
+        args.near_path_relation_threshold
+        if args.near_path_relation_threshold is not None
+        else (
+            config.get("near_path_relation_threshold", scenario.resolved_near_path_relation_threshold)
+            if use_config_defaults
+            else scenario.resolved_near_path_relation_threshold
+        )
+    )
+    blocking_relation_threshold = float(
+        args.blocking_relation_threshold
+        if args.blocking_relation_threshold is not None
+        else (
+            config.get("blocking_relation_threshold", scenario.resolved_blocking_relation_threshold)
+            if use_config_defaults
+            else scenario.resolved_blocking_relation_threshold
+        )
+    )
     collision_threshold = float(
         args.collision_threshold
         if args.collision_threshold is not None
@@ -118,6 +165,26 @@ def main() -> int:
         args.risk_score_delta_threshold
         if args.risk_score_delta_threshold is not None
         else config.get("risk_score_delta_threshold", 0.1)
+    )
+    classification_uncertainty_threshold = float(
+        args.classification_uncertainty_threshold
+        if args.classification_uncertainty_threshold is not None
+        else config.get("classification_uncertainty_threshold", 0.5)
+    )
+    position_variance_threshold = float(
+        args.position_variance_threshold
+        if args.position_variance_threshold is not None
+        else config.get("position_variance_threshold", 0.2)
+    )
+    occlusion_ratio_threshold = float(
+        args.occlusion_ratio_threshold
+        if args.occlusion_ratio_threshold is not None
+        else config.get("occlusion_ratio_threshold", 0.5)
+    )
+    sensor_agreement_threshold = float(
+        args.sensor_agreement_threshold
+        if args.sensor_agreement_threshold is not None
+        else config.get("sensor_agreement_threshold", 0.6)
     )
     apply_policy = str(
         args.apply_policy
@@ -152,10 +219,17 @@ def main() -> int:
         max_steps=max_steps,
         risk_threshold=risk_threshold,
         object_list_threshold=object_list_threshold,
+        near_agent_relation_threshold=near_agent_relation_threshold,
+        near_path_relation_threshold=near_path_relation_threshold,
+        blocking_relation_threshold=blocking_relation_threshold,
         collision_threshold=collision_threshold,
         near_miss_threshold=near_miss_threshold,
         event_movement_threshold=event_movement_threshold,
         risk_score_delta_threshold=risk_score_delta_threshold,
+        classification_uncertainty_threshold=classification_uncertainty_threshold,
+        position_variance_threshold=position_variance_threshold,
+        occlusion_ratio_threshold=occlusion_ratio_threshold,
+        sensor_agreement_threshold=sensor_agreement_threshold,
         update_mode=update_mode,
         apply_policy=apply_policy,
         event_policy_variant=event_policy_variant,
@@ -182,10 +256,17 @@ def run_simulation(
     output_path: str | Path,
     scenario_name: str = "custom",
     object_list_threshold: float | None = None,
+    near_agent_relation_threshold: float | None = None,
+    near_path_relation_threshold: float | None = None,
+    blocking_relation_threshold: float | None = None,
     collision_threshold: float = DEFAULT_COLLISION_THRESHOLD,
     near_miss_threshold: float = DEFAULT_NEAR_MISS_THRESHOLD,
     event_movement_threshold: float = 0.1,
     risk_score_delta_threshold: float = 0.1,
+    classification_uncertainty_threshold: float = 0.5,
+    position_variance_threshold: float = 0.2,
+    occlusion_ratio_threshold: float = 0.5,
+    sensor_agreement_threshold: float = 0.6,
     update_mode: str = "full_recompute",
     apply_policy: str = "rast",
     event_policy_variant: str = "full",
@@ -202,8 +283,19 @@ def run_simulation(
     if risk_threshold <= 0:
         raise ValueError("risk_threshold는 0보다 커야 합니다.")
     object_threshold = object_list_threshold if object_list_threshold is not None else risk_threshold
+    relation_near_agent_threshold = (
+        near_agent_relation_threshold if near_agent_relation_threshold is not None else risk_threshold
+    )
+    relation_near_path_threshold = near_path_relation_threshold if near_path_relation_threshold is not None else 0.5
+    relation_blocking_threshold = blocking_relation_threshold if blocking_relation_threshold is not None else risk_threshold
     if object_threshold <= 0:
         raise ValueError("object_list_threshold는 0보다 커야 합니다.")
+    if relation_near_agent_threshold <= 0:
+        raise ValueError("near_agent_relation_threshold는 0보다 커야 합니다.")
+    if relation_near_path_threshold < 0:
+        raise ValueError("near_path_relation_threshold는 0 이상이어야 합니다.")
+    if relation_blocking_threshold <= 0:
+        raise ValueError("blocking_relation_threshold는 0보다 커야 합니다.")
     if collision_threshold <= 0:
         raise ValueError("collision_threshold는 0보다 커야 합니다.")
     if near_miss_threshold <= collision_threshold:
@@ -215,11 +307,27 @@ def run_simulation(
     if update_mode not in VALID_UPDATE_MODES:
         allowed = ", ".join(VALID_UPDATE_MODES)
         raise ValueError(f"update_mode는 다음 중 하나여야 합니다: {allowed}")
-    if apply_policy not in {"rast", "object_list", "flat_feature", "scene_graph", "event_aware_rast"}:
+    if apply_policy not in {
+        "rast",
+        "object_list",
+        "flat_feature",
+        "scene_graph",
+        "event_aware_rast",
+        "uncertainty_aware_rast",
+        "affordance_aware_rast",
+    }:
         raise ValueError(
             "apply_policy는 'rast', 'object_list', 'flat_feature', 'scene_graph', "
-            "'event_aware_rast' 중 하나여야 합니다."
+            "'event_aware_rast', 'uncertainty_aware_rast' 중 하나여야 합니다."
         )
+    if not 0 <= classification_uncertainty_threshold <= 1:
+        raise ValueError("classification_uncertainty_threshold는 0과 1 사이여야 합니다.")
+    if position_variance_threshold < 0:
+        raise ValueError("position_variance_threshold는 0 이상이어야 합니다.")
+    if not 0 <= occlusion_ratio_threshold <= 1:
+        raise ValueError("occlusion_ratio_threshold는 0과 1 사이여야 합니다.")
+    if not 0 <= sensor_agreement_threshold <= 1:
+        raise ValueError("sensor_agreement_threshold는 0과 1 사이여야 합니다.")
 
     if event_policy_variant not in VALID_EVENT_POLICY_VARIANTS:
         allowed = ", ".join(VALID_EVENT_POLICY_VARIANTS)
@@ -240,13 +348,29 @@ def run_simulation(
     logger = JSONLLogger(output)
     risk_config = RiskTokenizerConfig(near_agent_threshold=risk_threshold)
     relation_config = RelationTokenizerConfig(
-        near_agent_threshold=risk_threshold,
-        blocking_path_distance_threshold=risk_threshold,
-        target_reachable_distance=max(risk_threshold, near_miss_threshold, 1.5),
+        near_agent_threshold=relation_near_agent_threshold,
+        near_path_lateral_threshold=relation_near_path_threshold,
+        blocking_path_distance_threshold=relation_blocking_threshold,
+        target_reachable_distance=max(relation_blocking_threshold, risk_threshold, near_miss_threshold, 1.5),
     )
     event_config = EventTokenizerConfig(
         movement_threshold=event_movement_threshold,
         risk_score_delta_threshold=risk_score_delta_threshold,
+    )
+    uncertainty_config = UncertaintyTokenizerConfig(
+        classification_uncertainty_threshold=classification_uncertainty_threshold,
+        position_variance_threshold=position_variance_threshold,
+        occlusion_ratio_threshold=occlusion_ratio_threshold,
+        sensor_agreement_threshold=sensor_agreement_threshold,
+        path_lateral_threshold=relation_near_path_threshold,
+        risk_threshold=risk_threshold,
+    )
+    affordance_config = AffordanceTokenizerConfig(
+        path_lateral_threshold=relation_near_path_threshold,
+        path_lookahead=relation_config.path_lookahead,
+        narrow_passage_width_threshold=1.0,
+        passable_gap_width_threshold=1.2,
+        collision_clearance=collision_threshold,
     )
     full_token_memory = TokenMemory()
     incremental_token_memory = TokenMemory()
@@ -273,9 +397,13 @@ def run_simulation(
             token_memory=full_token_memory,
             event_config=event_config,
             relation_config=relation_config,
+            uncertainty_config=uncertainty_config,
+            affordance_config=affordance_config,
             goal=goal,
             enable_relations=True,
             enable_events=True,
+            enable_uncertainty=True,
+            enable_affordances=True,
             update_mode="full_recompute",
         )
         full_recompute_latency_ms = (perf_counter() - full_start) * 1000.0
@@ -287,9 +415,13 @@ def run_simulation(
             token_memory=incremental_token_memory,
             event_config=event_config,
             relation_config=relation_config,
+            uncertainty_config=uncertainty_config,
+            affordance_config=affordance_config,
             goal=goal,
             enable_relations=True,
             enable_events=True,
+            enable_uncertainty=True,
+            enable_affordances=True,
             update_mode="incremental",
         )
         incremental_update_latency_ms = (perf_counter() - incremental_start) * 1000.0
@@ -316,11 +448,63 @@ def run_simulation(
                 token_result.events,
                 policy_variant=event_policy_variant,
             )
+            uncertainty_aware_decision = plan_from_uncertainty_aware_tokens(
+                token_result.entities,
+                token_result.risks,
+                token_result.uncertainties,
+                token_result.events,
+            )
+            affordance_aware_decision = plan_from_affordance_aware_tokens(
+                token_result.entities,
+                token_result.risks,
+                token_result.relations,
+                token_result.affordances,
+                token_result.events,
+                token_result.uncertainties,
+            )
+            evidence_tokens = build_evidence_tokens(
+                snapshot,
+                risks=token_result.risks,
+                uncertainties=token_result.uncertainties,
+                events=token_result.events,
+                decisions=[
+                    rast_decision,
+                    object_list_decision,
+                    flat_feature_decision,
+                    scene_graph_decision,
+                    event_aware_decision,
+                    uncertainty_aware_decision,
+                    affordance_aware_decision,
+                ],
+            )
+            (
+                rast_decision,
+                object_list_decision,
+                flat_feature_decision,
+                scene_graph_decision,
+                event_aware_decision,
+                uncertainty_aware_decision,
+                affordance_aware_decision,
+            ) = attach_decision_evidence_ids(
+                [
+                    rast_decision,
+                    object_list_decision,
+                    flat_feature_decision,
+                    scene_graph_decision,
+                    event_aware_decision,
+                    uncertainty_aware_decision,
+                    affordance_aware_decision,
+                ],
+                evidence_tokens,
+            )
+            evidence_type_counts = count_evidence_types(evidence_tokens)
             rast_action = rast_decision.action
             object_list_action = object_list_decision.action
             flat_feature_action = flat_feature_decision.action
             scene_graph_action = scene_graph_decision.action
             event_aware_action = event_aware_decision.action
+            uncertainty_aware_action = uncertainty_aware_decision.action
+            affordance_aware_action = affordance_aware_decision.action
 
         min_distance = min_object_distance(object_list)
         collision = min_distance is not None and min_distance <= collision_threshold
@@ -333,6 +517,10 @@ def run_simulation(
             action_to_apply = flat_feature_action
         elif apply_policy == "scene_graph":
             action_to_apply = scene_graph_action
+        elif apply_policy == "uncertainty_aware_rast":
+            action_to_apply = uncertainty_aware_action
+        elif apply_policy == "affordance_aware_rast":
+            action_to_apply = affordance_aware_action
         else:
             action_to_apply = event_aware_action
         with timer.stage("action"):
@@ -351,22 +539,28 @@ def run_simulation(
             baseline_type="rast",
             latency=latency,
             selected_action=action_to_apply.value,
-            tokens=token_result.tokens,
+            tokens=[*token_result.tokens, *evidence_tokens],
             rast_selected_action=rast_action.value,
             object_list_selected_action=object_list_action.value,
             flat_feature_selected_action=flat_feature_action.value,
             scene_graph_selected_action=scene_graph_action.value,
             event_aware_rast_selected_action=event_aware_action.value,
+            uncertainty_aware_rast_selected_action=uncertainty_aware_action.value,
+            affordance_aware_rast_selected_action=affordance_aware_action.value,
             rast_decision=rast_decision,
             object_list_decision=object_list_decision,
             flat_feature_decision=flat_feature_decision,
             scene_graph_decision=scene_graph_decision,
             event_aware_rast_decision=event_aware_decision,
+            uncertainty_aware_rast_decision=uncertainty_aware_decision,
+            affordance_aware_rast_decision=affordance_aware_decision,
             rast_reason_code=rast_decision.reason_code,
             object_list_reason_code=object_list_decision.reason_code,
             flat_feature_reason_code=flat_feature_decision.reason_code,
             scene_graph_reason_code=scene_graph_decision.reason_code,
             event_aware_rast_reason_code=event_aware_decision.reason_code,
+            uncertainty_aware_rast_reason_code=uncertainty_aware_decision.reason_code,
+            affordance_aware_rast_reason_code=affordance_aware_decision.reason_code,
             rast_trigger_token_ids=rast_decision.trigger_token_ids,
             rast_trigger_object_ids=rast_decision.trigger_object_ids,
             object_list_trigger_object_ids=object_list_decision.trigger_object_ids,
@@ -376,8 +570,13 @@ def run_simulation(
                 event_aware_decision.trigger_features.get("event_types") or []
             ),
             event_aware_rast_trigger_token_ids=event_aware_decision.trigger_token_ids,
+            uncertainty_aware_rast_trigger_token_ids=uncertainty_aware_decision.trigger_token_ids,
+            affordance_aware_rast_trigger_token_ids=affordance_aware_decision.trigger_token_ids,
             event_policy_variant=event_policy_variant,
             risk_threshold=risk_threshold,
+            near_agent_relation_threshold=relation_near_agent_threshold,
+            near_path_relation_threshold=relation_near_path_threshold,
+            blocking_relation_threshold=relation_blocking_threshold,
             near_miss_threshold=near_miss_threshold,
             position_noise_std=position_noise_std,
             distance_noise_std=distance_noise_std,
@@ -387,14 +586,28 @@ def run_simulation(
             rast_vs_flat_feature_disagreed=rast_action != flat_feature_action,
             object_list_vs_flat_feature_disagreed=object_list_action != flat_feature_action,
             rast_vs_event_aware_disagreed=rast_action != event_aware_action,
+            rast_vs_uncertainty_aware_disagreed=rast_action != uncertainty_aware_action,
+            rast_vs_affordance_aware_disagreed=rast_action != affordance_aware_action,
             rast_vs_scene_graph_disagreed=rast_action != scene_graph_action,
             scene_graph_vs_flat_feature_disagreed=scene_graph_action != flat_feature_action,
             entity_token_count=len(token_result.entities),
             risk_token_count=len(token_result.risks),
             relation_token_count=len(token_result.relations),
             relation_types=[relation.relation for relation in token_result.relations],
+            uncertainty_token_count=len(token_result.uncertainties),
+            uncertainty_types=[token.uncertainty_type for token in token_result.uncertainties],
+            high_uncertainty_count=sum(1 for token in token_result.uncertainties if token.level == "high"),
+            affordance_token_count=len(token_result.affordances),
+            affordance_types=[token.affordance for token in token_result.affordances],
             event_token_count=len(token_result.events),
             event_types=[event.event_type for event in token_result.events],
+            evidence_token_count=len(evidence_tokens),
+            evidence_types=[token.evidence_type for token in evidence_tokens],
+            evidence_token_ids=[token.token_id for token in evidence_tokens],
+            risk_evidence_count=evidence_type_counts.get("risk_feature", 0),
+            uncertainty_evidence_count=evidence_type_counts.get("uncertainty_feature", 0),
+            event_evidence_count=evidence_type_counts.get("event_diff", 0),
+            decision_evidence_count=evidence_type_counts.get("planner_decision", 0),
             total_token_count=len(token_result.tokens),
             object_list_count=len(object_list),
             flat_feature_row_count=len(flat_features),
@@ -420,10 +633,17 @@ def run_simulation(
                 "seed": seed,
                 "risk_threshold": risk_threshold,
                 "object_list_threshold": object_threshold,
+                "near_agent_relation_threshold": relation_near_agent_threshold,
+                "near_path_relation_threshold": relation_near_path_threshold,
+                "blocking_relation_threshold": relation_blocking_threshold,
                 "collision_threshold": collision_threshold,
                 "near_miss_threshold": near_miss_threshold,
                 "event_movement_threshold": event_movement_threshold,
                 "risk_score_delta_threshold": risk_score_delta_threshold,
+                "classification_uncertainty_threshold": classification_uncertainty_threshold,
+                "position_variance_threshold": position_variance_threshold,
+                "occlusion_ratio_threshold": occlusion_ratio_threshold,
+                "sensor_agreement_threshold": sensor_agreement_threshold,
                 "position_noise_std": position_noise_std,
                 "distance_noise_std": distance_noise_std,
                 "visibility_flip_prob": visibility_flip_prob,
@@ -462,17 +682,24 @@ def run_simulation(
         print(
             f"step={step} tokens={len(token_result.tokens)} risks={len(token_result.risks)} "
             f"relations={len(token_result.relations)} "
+            f"uncertainties={len(token_result.uncertainties)} "
+            f"affordances={len(token_result.affordances)} "
             f"events={len(token_result.events)} "
+            f"evidence={len(evidence_tokens)} "
             f"update_mode={update_mode} changed={token_result.changed_object_count} "
             f"affected={token_result.affected_token_count} "
             f"rast={rast_action.value} object_list={object_list_action.value} "
             f"flat_feature={flat_feature_action.value} "
             f"scene_graph={scene_graph_action.value} "
             f"event_aware={event_aware_action.value} "
+            f"uncertainty_aware={uncertainty_aware_action.value} "
+            f"affordance_aware={affordance_aware_action.value} "
             f"event_policy={event_policy_variant} "
             f"rast_reason={rast_decision.reason_code} "
             f"scene_graph_reason={scene_graph_decision.reason_code} "
             f"event_aware_reason={event_aware_decision.reason_code} "
+            f"uncertainty_aware_reason={uncertainty_aware_decision.reason_code} "
+            f"affordance_aware_reason={affordance_aware_decision.reason_code} "
             f"applied={action_to_apply.value} collision={collision} near_miss={near_miss} "
             f"goal_reached={goal_reached} total_ms={latency.total:.3f} "
             f"full_ms={full_recompute_latency_ms:.3f} incremental_ms={incremental_update_latency_ms:.3f}"

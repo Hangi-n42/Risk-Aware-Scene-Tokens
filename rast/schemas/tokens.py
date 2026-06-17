@@ -1,4 +1,4 @@
-"""RAST MVP-0에서 사용하는 EntityToken과 RiskToken schema입니다."""
+"""RAST MVP-0에서 사용하는 planner-facing token schema입니다."""
 
 from __future__ import annotations
 
@@ -114,4 +114,99 @@ class EventToken(BaseToken):
             "Phase 1 oracle metadata 기반 event confidence입니다. 실제 perception confidence가 아니며 "
             "Phase 2 perception-bound extractor에서 별도 산정해야 합니다."
         ),
+    )
+
+
+class UncertaintyToken(BaseToken):
+    """분류, 위치, occlusion, sensor agreement 관련 불확실성을 명시적으로 표현합니다."""
+
+    type: Literal["UncertaintyToken"] = "UncertaintyToken"
+    uncertainty_type: Literal[
+        "classification_uncertainty",
+        "position_uncertainty",
+        "partial_occlusion",
+        "low_sensor_agreement",
+        "unknown_object",
+    ] = Field(description="Planner가 구분해 볼 uncertainty type입니다.")
+    entity_id: str = Field(description="불확실성과 연결된 entity id입니다.")
+    level: Literal["low", "medium", "high"] = Field(description="불확실성 수준입니다.")
+    confidence: float = Field(
+        default=1.0,
+        ge=0,
+        le=1,
+        description=(
+            "Phase 1 synthetic metadata 기반 confidence입니다. 실제 perception uncertainty calibration이 아니며 "
+            "후속 perception-bound extractor에서 별도 보정해야 합니다."
+        ),
+    )
+    variance: float | None = Field(default=None, ge=0, description="position uncertainty 등에 사용하는 variance proxy입니다.")
+    possible_categories: list[str] = Field(default_factory=list, description="classification uncertainty 후보 category입니다.")
+    occluded_by: str | None = Field(default=None, description="occlusion을 유발한 object id입니다.")
+    recommended_action: Literal[
+        "proceed",
+        "slow_down",
+        "inspect_before_passing",
+        "replan_around",
+        "treat_as_risk",
+    ] | None = Field(default=None, description="Planner가 참고할 수 있는 보수적 행동 힌트입니다.")
+    sensor_agreement: float | None = Field(default=None, ge=0, le=1, description="synthetic sensor agreement proxy입니다.")
+    uncertainty_features: dict[str, Any] = Field(default_factory=dict, description="uncertainty rule 계산에 사용한 feature 기록입니다.")
+
+class AffordanceToken(BaseToken):
+    """Navigation affordance瑜?planner-facing token?쇰줈 ?쒗쁽?⑸땲??"""
+
+    type: Literal["AffordanceToken"] = "AffordanceToken"
+    entity_id: str = Field(description="Affordance媛 ?곌껐??object id ?먮뒗 region id?낅땲??")
+    affordance: Literal[
+        "passable",
+        "blocking",
+        "narrow_passage",
+        "target_reachable",
+        "inspect_required",
+        "avoid_required",
+    ] = Field(description="Navigation affordance type?낅땲?? manipulation affordance? MVP?먯꽌 ?쒖쇅?⑸땲??")
+    confidence: float = Field(
+        default=1.0,
+        ge=0,
+        le=1,
+        description=(
+            "Phase 1 synthetic metadata 湲곕컲 affordance confidence?낅땲?? "
+            "?ㅼ젣 robot action feasibility 寃利앷낵媛 ?꾨떃?덈떎."
+        ),
+    )
+    preconditions: list[str] = Field(default_factory=list, description="?대떦 affordance媛 ?좏슚?섍린 ?꾪븳 理쒖냼 議곌굔?낅땲??")
+    action_hint: str | None = Field(default=None, description="Planner媛 李멸퀬?????덈뒗 navigation action hint?낅땲??")
+    navigation_margin: float | None = Field(default=None, description="path/gap/goal relation怨??곌껐??margin proxy?낅땲??")
+    failure_risk: float | None = Field(default=None, ge=0, le=1, description="?ㅽ뙣 ?먮뒗 ?뚰뵾 ?꾪뿕 proxy?낅땲??")
+    related_token_ids: list[str] = Field(default_factory=list, description="Affordance? ?곌껐??Risk/Relation/Uncertainty token id 紐⑸줉?낅땲??")
+    evidence_token_ids: list[str] = Field(default_factory=list, description="Affordance? ?곌껐??EvidenceToken id 紐⑸줉?낅땲??")
+    affordance_features: dict[str, Any] = Field(default_factory=dict, description="affordance rule 怨꾩궛???ъ슜??feature 湲곕줉?낅땲??")
+
+
+class EvidenceToken(BaseToken):
+    """Token, event, planner decision이 참조한 metadata 근거 pointer를 기록합니다."""
+
+    type: Literal["EvidenceToken"] = "EvidenceToken"
+    evidence_type: Literal[
+        "metadata_object",
+        "metadata_snapshot",
+        "bbox_2d",
+        "risk_feature",
+        "uncertainty_feature",
+        "event_diff",
+        "planner_decision",
+    ] = Field(description="근거가 가리키는 evidence 종류입니다.")
+    source: str = Field(description="Evidence를 생성한 source입니다. MVP에서는 metadata simulator가 기본입니다.")
+    pointer: str = Field(description="metadata snapshot, object, token, decision을 재확인하기 위한 pointer입니다.")
+    entity_id: str | None = Field(default=None, description="Evidence와 연결된 entity id입니다.")
+    related_token_ids: list[str] = Field(default_factory=list, description="이 evidence가 뒷받침하는 token id 목록입니다.")
+    related_decision_ids: list[str] = Field(default_factory=list, description="이 evidence가 뒷받침하는 planner decision id 목록입니다.")
+    bbox_2d: BBox2D | None = Field(default=None, description="metadata에 bbox-like 정보가 있을 때의 2D bbox pointer입니다.")
+    metadata_path: str | None = Field(default=None, description="metadata 내부 경로 또는 object key path입니다.")
+    snapshot_ref: str | None = Field(default=None, description="ObservationSnapshot 또는 metadata snapshot reference입니다.")
+    frame_id: str | None = Field(default=None, description="향후 RGB/depth frame과 연결하기 위한 optional frame id입니다.")
+    confidence_source: str | None = Field(default=None, description="confidence가 어떤 source에서 왔는지 나타냅니다.")
+    evidence_features: dict[str, Any] = Field(
+        default_factory=dict,
+        description="risk, uncertainty, event diff, planner reason 등 evidence 재구성에 필요한 feature입니다.",
     )

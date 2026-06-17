@@ -1,124 +1,71 @@
-# RAST: Risk-Aware Scene Tokens
+# RAST MVP-0: Risk-Aware Scene Tokens
 
-RAST는 Physical AI / Embodied AI / Robotics 환경에서 raw sensory data와 planner 사이에 둘 수 있는 planning-facing scene token representation을 검증하기 위한 연구형 MVP입니다. 현재 구현은 실제 3D 렌더링 simulator가 아니라 `WindowsMetadataSim` 기반 deterministic metadata simulator에서 동작합니다.
+## One-paragraph Summary
 
-이 저장소의 현재 목표는 RAST가 Object List, Flat Feature Table baseline과 같은 information-bound 조건에서 어떤 로그, metric, decision trace를 남길 수 있는지 검증하는 것입니다. 아직 실제 perception latency, RGB-D detector error, real robot deployment, 상용 수준 safety guarantee를 검증하지 않습니다.
+RAST는 raw observation과 planner 사이에 planner-facing token contract를 두는 연구형 prototype입니다. 현재 MVP-0는 실제 3D simulator가 아니라 `WindowsMetadataSim` 기반 deterministic metadata simulator에서 동작합니다. 구현된 core token set은 `EntityToken`, `RiskToken`, `RelationToken`, `EventToken`, `UncertaintyToken`, `EvidenceToken`, `AffordanceToken`입니다. 비교군은 Object List, Flat Feature Table, Scene Graph, RAST, Event-aware RAST, Uncertainty-aware RAST, Affordance-aware RAST입니다. 실험 harness는 token generation, planner decision trace, evidence pointer, replay artifact, sampled extended evaluation report를 생성합니다. 이 프로젝트는 real-world performance claim이나 real robot safety claim을 하지 않으며, 현재 결과는 metadata-only controlled evaluation infrastructure의 관찰 결과로 해석해야 합니다.
 
-## 현재 진행 상태
+## What This Project Demonstrates
 
-현재 MVP-0는 Batch 10까지 구현되어 있습니다.
+- WindowsMetadataSim에서 controlled scenario suite를 반복 실행할 수 있습니다.
+- 여러 representation/planner를 같은 step log, episode summary, aggregate report contract로 비교할 수 있습니다.
+- token generation, decision trace, evidence pointer, replay artifact를 기록할 수 있습니다.
+- sampled extended evaluation, seed stability, sample-size convergence를 통해 sampling reliability를 점검할 수 있습니다.
+- Object List, Flat Feature Table, Scene Graph와 RAST 계열 planner의 action/reason boundary 차이를 같은 ObservationSnapshot source에서 관찰할 수 있습니다.
 
-- `ObservationSnapshot`, `EntityToken`, `RiskToken`, `EventToken`, `LatencyRecord` schema
-- fixture metadata 및 `WindowsMetadataSim` 기반 deterministic metadata simulation
-- Object List baseline
-- Flat Feature Table baseline
-- RAST token planner
-- Object List planner
-- Flat Feature planner
-- semantic event diff 기반 EventToken logging
-- full recompute vs incremental update latency protocol
-- multi-run evaluation suite
-- aggregate 결과 생성
-- Markdown result report 생성
-- `PlannerDecision` 기반 action trace 및 decision explainability logging
+## What This Project Does Not Claim
 
-## 핵심 구조
+- real-world performance claim이 아닙니다.
+- real robot safety claim이 아닙니다.
+- real RGB-D perception 또는 detector robustness claim이 아닙니다.
+- real perception uncertainty calibration이 아닙니다.
+- visual replay가 아닙니다. Replay는 metadata/action/evidence trace 재구성입니다.
+- exhaustive extended grid result가 아닙니다. Sampled extended result는 seed와 sample size에 의존합니다.
+- learned model interpretability가 아닙니다. 현재 planner 설명은 deterministic rule-based decision trace입니다.
 
-```text
-WindowsMetadataSim
--> ObservationSnapshot
--> EntityToken / RiskToken / EventToken
--> Object List / Flat Feature Table / RAST representation
--> 각 baseline planner
--> PlannerDecision
--> Step JSONL log
--> Episode summary
--> Aggregate result
--> docs/result_report.md
-```
+## Key Documents
 
-## 주요 모듈
+| Document | Purpose | When to read |
+|---|---|---|
+| [Artifact Manifest](docs/artifact_manifest.md) | canonical report, run directory, config, replay artifact 목록 | 어떤 산출물이 기준인지 빠르게 확인할 때 |
+| [Reproducibility Guide](docs/reproducibility_guide.md) | report 재생성 명령과 실행 경고 | 로컬에서 검증 또는 report를 재생성할 때 |
+| [Technical Report](docs/technical_report.md) | MVP-0 방법론, architecture, token/baseline/planner 설명 | 연구형 설명과 한계를 깊게 읽을 때 |
+| [Latest Result Report](docs/result_report.md) | 최신 sampled extended result와 replay/coverage/stability artifact 연결 | 현재 관찰 결과를 볼 때 |
+| [Evaluation Comparison Report](docs/eval_comparison_report.md) | default suite와 sampled extended suite 비교 | evaluation profile 차이를 볼 때 |
+| [Sampling Coverage Report](docs/sampling_coverage_report.md) | sampled run의 axis coverage 점검 | sampled result 대표성을 확인할 때 |
+| [Seed Stability Report](docs/seed_stability_report.md) | seed 7/13/42 기준 sampled stability 점검 | seed-to-seed variation을 볼 때 |
+| [Sample-size Convergence Report](docs/sample_size_convergence_report.md) | sample-size 100/200/500 convergence와 sampling quality score | sample-size reliability를 볼 때 |
 
-```text
-rast/
-  baselines/       Object List, Flat Feature Table, information-bound audit
-  evaluation/      latency, JSONL logging, metrics, aggregate, report generation
-  planner/         Action set, RAST/Object List/Flat Feature planners
-  schemas/         observation, token, latency, metric, decision schemas
-  simulator/       WindowsMetadataSim 및 controlled scenario suite
-  token_memory/    TokenMemory, semantic diff, incremental update protocol
-  tokenizer/       entity/risk/event tokenization pipeline
+## Quick Start
 
-experiments/
-  run_windows_metadata_sim.py
-  run_windows_eval_suite.py
-  generate_result_report.py
-
-configs/
-  windows_metadata_sim.yaml
-  windows_eval_suite.yaml
-
-docs/
-  result_report.md
-```
-
-## Baselines
-
-- Object List: object id, category, position, visibility, distance 중심의 baseline입니다.
-- Flat Feature Table: RAST와 유사한 scalar feature를 받지만 token contract field를 제거한 baseline입니다.
-- RAST: EntityToken, RiskToken, EventToken, PlannerDecision trace를 포함한 planner-facing token path입니다.
-
-## Decision Explainability
-
-Batch 10부터 planner는 단순 action 대신 `PlannerDecision`을 반환합니다.
-
-주요 필드:
-
-- `planner_name`
-- `action`
-- `reason_code`
-- `reason_text`
-- `trigger_object_ids`
-- `trigger_token_ids`
-- `trigger_features`
-- `confidence`
-
-현재 decision trace는 rule-based planner의 내부 규칙 로그입니다. learned model interpretability를 의미하지 않습니다.
-
-## 실행 방법
-
-개발 환경과 dependency 버전은 구현 시점의 공식 문서를 확인해야 합니다. 현재 로컬 검증은 Python 3.11 환경에서 수행했습니다.
+빠른 검증은 unit/regression test로 시작합니다.
 
 ```powershell
 python -m pytest
-python experiments\run_windows_metadata_sim.py --scenario planner_disagreement --max-steps 5 --update-mode incremental
-python experiments\run_windows_eval_suite.py --config configs\windows_eval_suite.yaml
-python experiments\generate_result_report.py --results runs\windows_eval_suite\<RUN_ID>\aggregate_results.csv --summary runs\windows_eval_suite\<RUN_ID>\aggregate_summary.csv --output docs\result_report.md
 ```
 
-## 현재 검증 결과
+default evaluation suite를 재생성하려면 다음을 실행합니다.
 
-최신 로컬 검증 기준:
+```powershell
+python experiments\run_windows_eval_suite.py --config configs\windows_eval_suite.yaml
+```
 
-- `python -m pytest`: 71 passed
-- WindowsMetadataSim evaluation suite: 60 planned runs, 0 failed
-- `docs/result_report.md`에 EventToken Summary, Incremental Update Summary, Decision Trace Summary 포함
+주의: `configs/windows_eval_suite_extended.yaml`의 전체 extended grid는 매우 큽니다. 전체 조합을 실행하지 말고 `--dry-run`, `--sample-size`, 또는 `--limit`를 사용하십시오.
 
-`runs/` 디렉터리는 재생성 가능한 로컬 실험 산출물이므로 git tracking에서 제외합니다. 현재 연구 결과 요약은 `docs/result_report.md`를 source artifact로 둡니다.
+## Reproducibility
 
-## 명시적 한계
+상세 재현 절차는 [Reproducibility Guide](docs/reproducibility_guide.md)를 보십시오. 이 guide에는 default report, sampled extended report, comparison report, sampling coverage, seed stability, sample-size convergence, replay artifact를 재생성하는 명령이 정리되어 있습니다.
 
-- WindowsMetadataSim은 deterministic metadata simulator입니다.
+## Current Canonical Artifacts
+
+canonical report와 run directory 목록은 [Artifact Manifest](docs/artifact_manifest.md)를 기준으로 관리합니다. README에는 긴 run directory 목록을 반복하지 않습니다.
+
+## Limitations
+
+- `WindowsMetadataSim`은 deterministic metadata simulator입니다.
 - 실제 AI2-THOR, Webots, CoppeliaSim, real robot 결과가 아닙니다.
-- 실제 RGB-D perception latency나 detector error를 반영하지 않습니다.
-- EventToken은 현재 planner action에 영향을 주지 않고 logging/summary에만 사용됩니다.
-- incremental update는 최적화 완료가 아니라 full recompute와 비교하기 위한 latency protocol입니다.
-- Decision trace는 rule-based 설명 로그이며 learned planner explanation이 아닙니다.
-- Scene Graph baseline, RelationToken, UncertaintyToken은 아직 포함하지 않았습니다.
-
-## 관련 문서
-
-- `prd.md`: 연구형 PRD
-- `stack.md`: 기술 스택 설계
-- `tasks.md`: MVP-0 vertical slice 작업 계획
-- `docs/result_report.md`: WindowsMetadataSim 기반 최신 결과 보고서
+- 실제 RGB-D perception latency, detector error, sensor fusion, uncertainty calibration을 반영하지 않습니다.
+- EvidenceToken은 metadata pointer 기반이며 real sensor evidence나 image crop을 저장하지 않습니다.
+- Replay artifact는 visual replay가 아니라 metadata/action/evidence trace입니다.
+- sampled extended result는 exhaustive extended grid result가 아닙니다.
+- 모든 planner는 deterministic rule-based experimental policy입니다.
+- 현재 결과는 RAST가 다른 representation보다 일반적으로 우수하다는 결론을 지원하지 않습니다.

@@ -1,4 +1,5 @@
 import csv
+import json
 from pathlib import Path
 
 from rast.evaluation.report import generate_result_report, write_result_report
@@ -106,21 +107,83 @@ def test_generate_result_report_markdown_contains_required_sections_and_limits(t
     assert "WindowsMetadataSim" in markdown
     assert "deterministic metadata simulator" in markdown
     assert "does not support real-world performance claims" in markdown
+    assert "## Suite Execution Metadata" in markdown
     assert "## Baselines" in markdown
     assert "## EventToken Summary" in markdown
     assert "## Incremental Update Summary" in markdown
     assert "## Decision Trace Summary" in markdown
     assert "## RelationToken Summary" in markdown
+    assert "## UncertaintyToken Summary" in markdown
+    assert "## EvidenceToken Summary" in markdown
+    assert "## AffordanceToken Summary" in markdown
+    assert "## Replay Trace Summary" in markdown
+    assert "## Replay Artifact Summary" in markdown
+    assert "## Representative Decision Trace Summary" in markdown
+    assert "## Sampling Coverage and Stability Artifacts" in markdown
+    assert "## Sample-size Convergence Artifact" in markdown
     assert "## Scene Graph Baseline Summary" in markdown
+    assert "## Scene Graph vs RAST Differentiation Summary" in markdown
     assert "## Event-aware Planner Summary" in markdown
+    assert "## Uncertainty-aware Planner Summary" in markdown
+    assert "## Affordance-aware Planner Summary" in markdown
     assert "## Event-aware Ablation Summary" in markdown
     assert "## Threshold and Noise Sensitivity Summary" in markdown
+    assert "Affordance-aware RAST" in markdown
+    assert "affordance_token_count_total" in markdown
+    assert "affordance_type_counts" in markdown
+    assert "rast_vs_affordance_aware_disagreement_count" in markdown
+    assert "affordance_triggered_action_count" in markdown
+    assert "affordance_aware_decision_trace_coverage" in markdown
     assert "Event-aware RAST planner" in markdown
     assert "incremental update optimization is experimental" in markdown
     assert "rule-based planner explanations" in markdown
     assert "simplified graph" in markdown
+    assert "same-action-different-reason" in markdown
     assert "learned relation extraction" in markdown
+    assert "synthetic metadata uncertainty" in markdown
+    assert "metadata pointers" in markdown
+    assert "metadata/action trace reconstruction" in markdown
+    assert "navigation affordance" in markdown
+    assert "navigation affordance only" in markdown
+    assert "real robot action feasibility" in markdown
+    assert "EventToken, UncertaintyToken, EvidenceToken, AffordanceToken" in markdown
+    assert "현재 결과는 EventToken의 감지와 기록 검증" not in markdown
+    assert "현재 report는 EventToken이 step log와 episode summary" not in markdown
+    assert "EvidenceToken이 risk/uncertainty/event/planner decision evidence" in markdown
+    assert "decision replay markdown/json" in markdown
+    assert "AffordanceToken이 navigation affordance" in markdown
+    assert "Affordance-aware planner나 AffordanceToken이 task performance" in markdown
+    assert "EvidenceToken이 real sensor evidence" in markdown
+    assert "EvidenceToken, AffordanceToken, perception-bound adapter는 별도 Batch로 추가합니다." not in markdown
+    assert "EvidenceToken 추가" not in markdown
+    assert "AffordanceToken 추가" not in markdown
     assert "## Limitations" in markdown
+
+
+def test_generate_result_report_can_link_sampling_artifacts(tmp_path: Path) -> None:
+    results_path = tmp_path / "aggregate_results.csv"
+    write_fake_aggregate_results(results_path)
+    coverage_path = tmp_path / "sampling_coverage_report.md"
+    stability_path = tmp_path / "seed_stability_report.md"
+    convergence_path = tmp_path / "sample_size_convergence_report.md"
+    coverage_path.write_text("# coverage\n", encoding="utf-8")
+    stability_path.write_text("# stability\n", encoding="utf-8")
+    convergence_path.write_text("# convergence\n", encoding="utf-8")
+
+    markdown = generate_result_report(
+        results_path=results_path,
+        sampling_coverage_path=coverage_path,
+        seed_stability_path=stability_path,
+        sample_size_convergence_path=convergence_path,
+    )
+
+    assert "## Sampling Coverage and Stability Artifacts" in markdown
+    assert "## Sample-size Convergence Artifact" in markdown
+    assert str(coverage_path) in markdown
+    assert str(stability_path) in markdown
+    assert str(convergence_path) in markdown
+    assert "sampled extended result의 coverage/stability" in markdown
+    assert "sampling quality score" in markdown
 
 
 def test_write_result_report_creates_output_file(tmp_path: Path) -> None:
@@ -163,6 +226,14 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
         "event_token_count_total",
         "event_token_count_avg",
         "event_type_counts",
+        "evidence_token_count_total",
+        "evidence_token_count_avg",
+        "evidence_type_counts",
+        "risk_evidence_count_total",
+        "uncertainty_evidence_count_total",
+        "event_evidence_count_total",
+        "decision_evidence_count_total",
+        "decision_evidence_coverage",
         "update_mode",
         "changed_object_count_avg",
         "affected_token_count_avg",
@@ -217,6 +288,14 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
             "event_token_count_total": "2",
             "event_token_count_avg": "0.4",
             "event_type_counts": '{"object_appeared": 1, "risk_changed": 1}',
+            "evidence_token_count_total": "5",
+            "evidence_token_count_avg": "1.0",
+            "evidence_type_counts": '{"risk_feature": 1, "event_diff": 1, "planner_decision": 3}',
+            "risk_evidence_count_total": "1",
+            "uncertainty_evidence_count_total": "0",
+            "event_evidence_count_total": "1",
+            "decision_evidence_count_total": "3",
+            "decision_evidence_coverage": "1.0",
             "update_mode": "incremental",
             "changed_object_count_avg": "1.0",
             "affected_token_count_avg": "2.0",
@@ -257,6 +336,11 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
     assert "object_appeared" in markdown
     assert "risk_changed" in markdown
     assert "## Event-aware Planner Summary" in markdown
+    assert "## UncertaintyToken Summary" in markdown
+    assert "## Uncertainty-aware Planner Summary" in markdown
+    assert "## EvidenceToken Summary" in markdown
+    assert "## AffordanceToken Summary" in markdown
+    assert "## Replay Trace Summary" in markdown
     assert "## Event-aware Ablation Summary" in markdown
     assert "## Threshold and Noise Sensitivity Summary" in markdown
     assert "event_risk_increased" in markdown
@@ -269,6 +353,94 @@ def test_generate_result_report_summarizes_event_fields(tmp_path: Path) -> None:
     assert "## Decision Trace Summary" in markdown
     assert "## RelationToken Summary" in markdown
     assert "## Scene Graph Baseline Summary" in markdown
+    assert "## Scene Graph vs RAST Differentiation Summary" in markdown
+    assert "## Affordance-aware Planner Summary" in markdown
     assert "high_risk_token" in markdown
     assert "decision_trace_coverage" in markdown
+    assert "planner_decision" in markdown
+    assert "Decision evidence coverage" in markdown
+    assert "metadata/action trace reconstruction" in markdown
     assert "EventToken affects only the separate Event-aware RAST experimental planner" in markdown
+    assert "actual perception uncertainty calibration" in markdown or "실제 perception uncertainty calibration" in markdown
+
+
+def test_generate_result_report_handles_replay_index(tmp_path: Path) -> None:
+    results_path = tmp_path / "aggregate_results.csv"
+    replay_index_path = tmp_path / "replays" / "replay_index.json"
+    write_fake_aggregate_results(results_path)
+    replay_index_path.parent.mkdir()
+    replay_index_path.write_text(
+        json.dumps(
+            {
+                "suite_run_id": "suite_test",
+                "generated_at": "2026-06-12T00:00:00",
+                "replay_count": 1,
+                "entries": [
+                    {
+                        "scenario": "planner_disagreement",
+                        "run_dir": "runs/example",
+                        "case_type": "rast_vs_scene_graph_disagreement",
+                        "step": 2,
+                        "markdown_path": "runs/example/replays/planner_disagreement.md",
+                        "json_path": "runs/example/replays/planner_disagreement.json",
+                        "summary": "selected_action=RotateRight",
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    markdown = generate_result_report(results_path=results_path, replay_index_path=replay_index_path)
+
+    assert "## Replay Artifact Summary" in markdown
+    assert "replay_index.json" in markdown
+    assert "rast_vs_scene_graph_disagreement" in markdown
+    assert "runs/example/replays/planner_disagreement.md" in markdown
+
+
+def test_generate_result_report_without_replay_index_is_backward_compatible(tmp_path: Path) -> None:
+    results_path = tmp_path / "aggregate_results.csv"
+    write_fake_aggregate_results(results_path)
+
+    markdown = generate_result_report(results_path=results_path)
+
+    assert "## Replay Artifact Summary" in markdown
+    assert "No replay artifact index was provided or found." in markdown
+
+
+def test_generate_result_report_includes_suite_metadata_when_provided(tmp_path: Path) -> None:
+    results_path = tmp_path / "aggregate_results.csv"
+    metadata_path = tmp_path / "suite_metadata.json"
+    write_fake_aggregate_results(results_path)
+    metadata_path.write_text(
+        json.dumps(
+            {
+                "suite_run_id": "sampled_suite",
+                "config_path": "configs/windows_eval_suite_sampled.yaml",
+                "config_name": "windows_eval_suite_sampled",
+                "planned_runs_total": 8294400,
+                "executed_runs": 500,
+                "failed_runs": 0,
+                "sampling_mode": "stratified",
+                "sample_size": 500,
+                "sample_seed": 42,
+                "limit": None,
+                "allow_large_run": False,
+                "replay_export_enabled": True,
+                "replay_index_path": "runs/example/replays/replay_index.json",
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    markdown = generate_result_report(results_path=results_path, suite_metadata_path=metadata_path)
+
+    assert "## Suite Execution Metadata" in markdown
+    assert "planned_runs_total: 8294400" in markdown
+    assert "executed_runs: 500" in markdown
+    assert "sampling_mode: `stratified`" in markdown
+    assert "sample_seed: `42`" in markdown
+    assert "sampled subset of the extended grid" in markdown

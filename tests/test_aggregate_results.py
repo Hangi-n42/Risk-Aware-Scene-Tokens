@@ -15,6 +15,9 @@ def write_fake_summary(
     include_decision_fields: bool = False,
     include_scene_graph_fields: bool = False,
     include_event_aware_fields: bool = False,
+    include_uncertainty_fields: bool = False,
+    include_affordance_fields: bool = False,
+    include_evidence_fields: bool = False,
     include_sensitivity_fields: bool = False,
 ) -> None:
     payload = {
@@ -64,6 +67,11 @@ def write_fake_summary(
         payload["scene_graph_edge_count_avg"] = 2.0
         payload["rast_vs_scene_graph_disagreement_count"] = 1
         payload["scene_graph_vs_flat_feature_disagreement_count"] = 1
+        payload["rast_vs_scene_graph_same_action_different_reason_count"] = 2
+        payload["rast_vs_scene_graph_same_action_different_reason_rate"] = 0.2
+        payload["scene_graph_trigger_edge_count"] = 2
+        payload["rast_trigger_risk_token_count"] = 1
+        payload["event_aware_trigger_event_count"] = 0
         payload["scene_graph_decision_trace_coverage"] = 1.0
     if include_event_aware_fields:
         payload["event_aware_rast_action_counts"] = {"Stop": 1, "MoveAhead": 1}
@@ -74,6 +82,41 @@ def write_fake_summary(
         payload["rast_vs_event_aware_disagreement_count"] = 1
         payload["event_triggered_action_count"] = 1
         payload["event_aware_decision_trace_coverage"] = 1.0
+    if include_uncertainty_fields:
+        payload["uncertainty_token_count_total"] = 3
+        payload["uncertainty_token_count_avg"] = 0.3
+        payload["uncertainty_type_counts"] = {"unknown_object": 1, "position_uncertainty": 2}
+        payload["high_uncertainty_count_total"] = 1
+        payload["high_uncertainty_count_avg"] = 0.1
+        payload["uncertainty_aware_rast_action_counts"] = {"Stop": 1, "MoveAhead": 1}
+        payload["uncertainty_aware_rast_reason_code_counts"] = {
+            "high_uncertainty_near_path": 1,
+            "fallback_no_risk_move_ahead": 1,
+        }
+        payload["rast_vs_uncertainty_aware_disagreement_count"] = 1
+        payload["uncertainty_triggered_action_count"] = 1
+        payload["uncertainty_aware_decision_trace_coverage"] = 1.0
+    if include_affordance_fields:
+        payload["affordance_token_count_total"] = 4
+        payload["affordance_token_count_avg"] = 0.4
+        payload["affordance_type_counts"] = {"passable": 2, "inspect_required": 2}
+        payload["affordance_aware_rast_action_counts"] = {"Stop": 1, "MoveAhead": 1}
+        payload["affordance_aware_rast_reason_code_counts"] = {
+            "affordance_inspect_required": 1,
+            "affordance_passable_move_ahead": 1,
+        }
+        payload["rast_vs_affordance_aware_disagreement_count"] = 1
+        payload["affordance_triggered_action_count"] = 2
+        payload["affordance_aware_decision_trace_coverage"] = 1.0
+    if include_evidence_fields:
+        payload["evidence_token_count_total"] = 7
+        payload["evidence_token_count_avg"] = 0.7
+        payload["evidence_type_counts"] = {"risk_feature": 2, "planner_decision": 5}
+        payload["risk_evidence_count_total"] = 2
+        payload["uncertainty_evidence_count_total"] = 1
+        payload["event_evidence_count_total"] = 1
+        payload["decision_evidence_count_total"] = 5
+        payload["decision_evidence_coverage"] = 1.0
     if include_sensitivity_fields:
         payload["event_policy_variant"] = "no_risk_changed"
         payload["risk_threshold"] = 2.0
@@ -143,6 +186,17 @@ def test_aggregate_episode_summaries_writes_csv_and_json(tmp_path: Path) -> None
     assert rows[0]["event_aware_rast_reason_code_counts"] == {}
     assert rows[0]["rast_vs_event_aware_disagreement_count"] == 0
     assert rows[0]["event_triggered_action_count"] == 0
+    assert rows[0]["uncertainty_token_count_total"] == 0
+    assert rows[0]["uncertainty_type_counts"] == {}
+    assert rows[0]["rast_vs_uncertainty_aware_disagreement_count"] == 0
+    assert rows[0]["uncertainty_triggered_action_count"] == 0
+    assert rows[0]["affordance_token_count_total"] == 0
+    assert rows[0]["affordance_type_counts"] == {}
+    assert rows[0]["rast_vs_affordance_aware_disagreement_count"] == 0
+    assert rows[0]["affordance_triggered_action_count"] == 0
+    assert rows[0]["evidence_token_count_total"] == 0
+    assert rows[0]["evidence_type_counts"] == {}
+    assert rows[0]["decision_evidence_coverage"] == 0.0
     assert rows[0]["event_policy_variant"] == "full"
     assert rows[0]["position_noise_std"] == 0.0
     assert rows[0]["distance_noise_std"] == 0.0
@@ -296,6 +350,11 @@ def test_aggregate_episode_summaries_includes_scene_graph_fields(tmp_path: Path)
     assert rows[0]["scene_graph_edge_count_avg"] == 2.0
     assert rows[0]["rast_vs_scene_graph_disagreement_count"] == 1
     assert rows[0]["scene_graph_vs_flat_feature_disagreement_count"] == 1
+    assert rows[0]["rast_vs_scene_graph_same_action_different_reason_count"] == 2
+    assert rows[0]["rast_vs_scene_graph_same_action_different_reason_rate"] == 0.2
+    assert rows[0]["scene_graph_trigger_edge_count"] == 2
+    assert rows[0]["rast_trigger_risk_token_count"] == 1
+    assert rows[0]["event_aware_trigger_event_count"] == 0
     assert rows[0]["scene_graph_decision_trace_coverage"] == 1.0
 
 
@@ -336,6 +395,128 @@ def test_aggregate_episode_summaries_includes_event_aware_fields(tmp_path: Path)
     assert rows[0]["rast_vs_event_aware_disagreement_count"] == 1
     assert rows[0]["event_triggered_action_count"] == 1
     assert rows[0]["event_aware_decision_trace_coverage"] == 1.0
+
+
+def test_aggregate_episode_summaries_includes_uncertainty_fields(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run_uncertainty"
+    run_dir.mkdir()
+    summary_path = run_dir / "episode_summary.json"
+    write_fake_summary(
+        summary_path,
+        success=True,
+        near_miss_count=1,
+        include_uncertainty_fields=True,
+    )
+
+    rows = aggregate_episode_summaries(
+        [
+            {
+                "suite_run_id": "suite_test",
+                "scenario": "unknown_uncertain_object",
+                "seed": 0,
+                "apply_policy": "uncertainty_aware_rast",
+                "risk_threshold": 1.5,
+                "near_miss_threshold": 1.0,
+                "collision_threshold": 0.2,
+                "summary_path": str(summary_path),
+                "episode_output_dir": str(run_dir),
+                "status": "success",
+            }
+        ],
+        output_dir=tmp_path,
+    )
+
+    assert rows[0]["uncertainty_token_count_total"] == 3
+    assert rows[0]["uncertainty_token_count_avg"] == 0.3
+    assert rows[0]["uncertainty_type_counts"] == {"unknown_object": 1, "position_uncertainty": 2}
+    assert rows[0]["high_uncertainty_count_total"] == 1
+    assert rows[0]["uncertainty_aware_rast_action_counts"] == {"Stop": 1, "MoveAhead": 1}
+    assert rows[0]["uncertainty_aware_rast_reason_code_counts"] == {
+        "high_uncertainty_near_path": 1,
+        "fallback_no_risk_move_ahead": 1,
+    }
+    assert rows[0]["rast_vs_uncertainty_aware_disagreement_count"] == 1
+    assert rows[0]["uncertainty_triggered_action_count"] == 1
+    assert rows[0]["uncertainty_aware_decision_trace_coverage"] == 1.0
+
+
+def test_aggregate_episode_summaries_includes_affordance_fields(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run_affordance"
+    run_dir.mkdir()
+    summary_path = run_dir / "episode_summary.json"
+    write_fake_summary(
+        summary_path,
+        success=True,
+        near_miss_count=1,
+        include_affordance_fields=True,
+    )
+
+    rows = aggregate_episode_summaries(
+        [
+            {
+                "suite_run_id": "suite_test",
+                "scenario": "inspect_required_uncertain_path",
+                "seed": 0,
+                "apply_policy": "affordance_aware_rast",
+                "risk_threshold": 1.5,
+                "near_miss_threshold": 1.0,
+                "collision_threshold": 0.2,
+                "summary_path": str(summary_path),
+                "episode_output_dir": str(run_dir),
+                "status": "success",
+            }
+        ],
+        output_dir=tmp_path,
+    )
+
+    assert rows[0]["affordance_token_count_total"] == 4
+    assert rows[0]["affordance_token_count_avg"] == 0.4
+    assert rows[0]["affordance_type_counts"] == {"passable": 2, "inspect_required": 2}
+    assert rows[0]["affordance_aware_rast_action_counts"] == {"Stop": 1, "MoveAhead": 1}
+    assert rows[0]["affordance_aware_rast_reason_code_counts"] == {
+        "affordance_inspect_required": 1,
+        "affordance_passable_move_ahead": 1,
+    }
+    assert rows[0]["rast_vs_affordance_aware_disagreement_count"] == 1
+    assert rows[0]["affordance_triggered_action_count"] == 2
+    assert rows[0]["affordance_aware_decision_trace_coverage"] == 1.0
+
+
+def test_aggregate_episode_summaries_includes_evidence_fields(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run_evidence"
+    run_dir.mkdir()
+    summary_path = run_dir / "episode_summary.json"
+    write_fake_summary(
+        summary_path,
+        success=True,
+        near_miss_count=1,
+        include_evidence_fields=True,
+    )
+
+    rows = aggregate_episode_summaries(
+        [
+            {
+                "suite_run_id": "suite_test",
+                "scenario": "planner_disagreement",
+                "seed": 0,
+                "apply_policy": "rast",
+                "risk_threshold": 1.5,
+                "near_miss_threshold": 1.0,
+                "collision_threshold": 0.2,
+                "summary_path": str(summary_path),
+                "episode_output_dir": str(run_dir),
+                "status": "success",
+            }
+        ],
+        output_dir=tmp_path,
+    )
+
+    assert rows[0]["evidence_token_count_total"] == 7
+    assert rows[0]["evidence_token_count_avg"] == 0.7
+    assert rows[0]["evidence_type_counts"] == {"risk_feature": 2, "planner_decision": 5}
+    assert rows[0]["risk_evidence_count_total"] == 2
+    assert rows[0]["decision_evidence_count_total"] == 5
+    assert rows[0]["decision_evidence_coverage"] == 1.0
 
 
 def test_aggregate_episode_summaries_includes_variant_threshold_and_noise_fields(tmp_path: Path) -> None:

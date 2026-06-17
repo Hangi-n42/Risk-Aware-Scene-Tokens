@@ -15,8 +15,9 @@ def _graph_for_scenario(name: str):
         snapshot,
         entities,
         config=RelationTokenizerConfig(
-            near_agent_threshold=scenario.risk_threshold,
-            blocking_path_distance_threshold=scenario.risk_threshold,
+            near_agent_threshold=scenario.resolved_near_agent_relation_threshold,
+            near_path_lateral_threshold=scenario.resolved_near_path_relation_threshold,
+            blocking_path_distance_threshold=scenario.resolved_blocking_relation_threshold,
         ),
         goal=scenario.goal,
     )
@@ -41,3 +42,12 @@ def test_scene_graph_planner_moves_ahead_without_blocking_relation() -> None:
 
     assert decision.action == Action.MOVE_AHEAD
     assert decision.reason_code in {"graph_no_blocking_move_ahead", "graph_target_reachable"}
+
+
+def test_scene_graph_planner_uses_near_agent_relation_when_risk_can_be_low() -> None:
+    graph = _graph_for_scenario("relation_near_but_low_risk")
+
+    decision = plan_from_scene_graph(graph)
+
+    assert decision.action == Action.ROTATE_RIGHT
+    assert decision.reason_code == "graph_near_object"
