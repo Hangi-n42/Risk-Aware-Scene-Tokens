@@ -1,11 +1,18 @@
-scenarios: [clear_path, near_obstacle, far_obstacle, unknown_near_path, planner_disagreement, target_reachable, object_appears, object_disappears, object_moves, risk_increases]
+scenarios: [clear_path, near_obstacle, far_obstacle, unknown_near_path, planner_disagreement, target_reachable, object_appears, object_disappears, object_moves, risk_increases, relation_near_but_low_risk, blocking_relation_without_high_risk, risk_without_graph_blocking, event_changes_risk_but_graph_static, unknown_uncertain_object, partially_occluded_obstacle, noisy_position_boundary, low_sensor_agreement, uncertainty_without_high_risk, uncertainty_near_path, narrow_passage, passable_clear_gap, inspect_required_uncertain_path, avoid_required_blocking_path, target_reachable_affordance]
 seeds: [0]
 max_steps: 10
 risk_thresholds: [1.5]
+near_agent_relation_thresholds: []
+near_path_relation_thresholds: []
+blocking_relation_thresholds: []
 near_miss_thresholds: [1.0]
 collision_threshold: 0.2
-apply_policies: [rast, object_list, flat_feature, scene_graph, event_aware_rast]
+apply_policies: [rast, object_list, flat_feature, scene_graph, event_aware_rast, uncertainty_aware_rast, affordance_aware_rast]
 event_policy_variants: [full, logging_only, no_risk_changed]
 update_modes: [full_recompute, incremental]
 noise_settings: [{"position_noise_std": 0.0, "distance_noise_std": 0.0, "visibility_flip_prob": 0.0}, {"position_noise_std": 0.02, "distance_noise_std": 0.02, "visibility_flip_prob": 0.0}]
+classification_uncertainty_threshold: 0.5
+position_variance_threshold: 0.2
+occlusion_ratio_threshold: 0.5
+sensor_agreement_threshold: 0.6
 output_dir: runs/windows_eval_suite

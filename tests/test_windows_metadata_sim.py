@@ -67,6 +67,12 @@ def test_windows_metadata_sim_runner_writes_jsonl(tmp_path: Path) -> None:
     assert rows[0]["flat_feature_row_count"] == rows[0]["object_list_count"]
     assert "event_token_count" in rows[0]
     assert "event_types" in rows[0]
+    assert "evidence_token_count" in rows[0]
+    assert "evidence_types" in rows[0]
+    assert "evidence_token_ids" in rows[0]
+    assert "decision_evidence_count" in rows[0]
+    assert rows[0]["evidence_token_count"] >= rows[0]["decision_evidence_count"]
+    assert "evidence_token_ids" in rows[0]["rast_decision"]
     assert rows[0]["update_mode"] == "full_recompute"
     assert "changed_object_count" in rows[0]
     assert "affected_token_count" in rows[0]

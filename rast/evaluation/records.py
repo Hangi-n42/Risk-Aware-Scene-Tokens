@@ -28,18 +28,27 @@ class StepLogRecord(RASTBaseModel):
     flat_feature_selected_action: str | None = Field(default=None, description="Flat Feature planner action입니다.")
     scene_graph_selected_action: str | None = Field(default=None, description="Scene Graph planner action입니다.")
     event_aware_rast_selected_action: str | None = Field(default=None, description="Event-aware RAST planner action입니다.")
+    uncertainty_aware_rast_selected_action: str | None = Field(
+        default=None,
+        description="Uncertainty-aware RAST planner action입니다.",
+    )
 
     rast_decision: dict[str, Any] = Field(default_factory=dict, description="RAST planner decision trace입니다.")
     object_list_decision: dict[str, Any] = Field(default_factory=dict, description="Object List planner decision trace입니다.")
     flat_feature_decision: dict[str, Any] = Field(default_factory=dict, description="Flat Feature planner decision trace입니다.")
     scene_graph_decision: dict[str, Any] = Field(default_factory=dict, description="Scene Graph planner decision trace입니다.")
     event_aware_rast_decision: dict[str, Any] = Field(default_factory=dict, description="Event-aware RAST planner decision trace입니다.")
+    uncertainty_aware_rast_decision: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Uncertainty-aware RAST planner decision trace입니다.",
+    )
 
     rast_reason_code: str = Field(default="", description="RAST planner reason_code입니다.")
     object_list_reason_code: str = Field(default="", description="Object List planner reason_code입니다.")
     flat_feature_reason_code: str = Field(default="", description="Flat Feature planner reason_code입니다.")
     scene_graph_reason_code: str = Field(default="", description="Scene Graph planner reason_code입니다.")
     event_aware_rast_reason_code: str = Field(default="", description="Event-aware RAST planner reason_code입니다.")
+    uncertainty_aware_rast_reason_code: str = Field(default="", description="Uncertainty-aware RAST planner reason_code입니다.")
 
     rast_trigger_token_ids: list[str] = Field(default_factory=list, description="RAST action trigger token id 목록입니다.")
     rast_trigger_object_ids: list[str] = Field(default_factory=list, description="RAST action trigger object id 목록입니다.")
@@ -54,6 +63,10 @@ class StepLogRecord(RASTBaseModel):
         default_factory=list,
         description="Event-aware RAST trigger token id 목록입니다.",
     )
+    uncertainty_aware_rast_trigger_token_ids: list[str] = Field(
+        default_factory=list,
+        description="Uncertainty-aware RAST trigger token id 목록입니다.",
+    )
 
     baseline_disagreed: bool | None = Field(default=None, description="호환용 RAST vs Object List disagreement입니다.")
     rast_vs_object_list_disagreed: bool | None = Field(default=None, description="RAST와 Object List action이 다른지 여부입니다.")
@@ -63,16 +76,27 @@ class StepLogRecord(RASTBaseModel):
         description="Object List와 Flat Feature action이 다른지 여부입니다.",
     )
     rast_vs_event_aware_disagreed: bool | None = Field(default=None, description="RAST와 Event-aware RAST action이 다른지 여부입니다.")
+    rast_vs_uncertainty_aware_disagreed: bool | None = Field(
+        default=None,
+        description="RAST와 Uncertainty-aware RAST action이 다른지 여부입니다.",
+    )
     rast_vs_scene_graph_disagreed: bool | None = Field(default=None, description="RAST와 Scene Graph action이 다른지 여부입니다.")
     scene_graph_vs_flat_feature_disagreed: bool | None = Field(
         default=None,
         description="Scene Graph와 Flat Feature action이 다른지 여부입니다.",
+    )
+    rast_vs_scene_graph_same_action_different_reason: bool | None = Field(
+        default=None,
+        description="RAST와 Scene Graph action은 같지만 reason_code가 다른지 여부입니다.",
     )
 
     entity_token_count: int = Field(default=0, ge=0, description="EntityToken 개수입니다.")
     risk_token_count: int = Field(default=0, ge=0, description="RiskToken 개수입니다.")
     relation_token_count: int = Field(default=0, ge=0, description="RelationToken 개수입니다.")
     relation_types: list[str] = Field(default_factory=list, description="step에서 생성된 RelationToken type 목록입니다.")
+    uncertainty_token_count: int = Field(default=0, ge=0, description="UncertaintyToken 개수입니다.")
+    uncertainty_types: list[str] = Field(default_factory=list, description="step에서 생성된 UncertaintyToken type 목록입니다.")
+    high_uncertainty_count: int = Field(default=0, ge=0, description="level이 high인 UncertaintyToken 개수입니다.")
     event_token_count: int = Field(default=0, ge=0, description="EventToken 개수입니다.")
     event_types: list[str] = Field(default_factory=list, description="step에서 감지된 EventToken type 목록입니다.")
     total_token_count: int = Field(default=0, ge=0, description="전체 RAST token 개수입니다.")
@@ -80,6 +104,9 @@ class StepLogRecord(RASTBaseModel):
     flat_feature_row_count: int = Field(default=0, ge=0, description="Flat Feature Table row 개수입니다.")
     scene_graph_node_count: int = Field(default=0, ge=0, description="Scene Graph node 개수입니다.")
     scene_graph_edge_count: int = Field(default=0, ge=0, description="Scene Graph edge 개수입니다.")
+    scene_graph_trigger_edge_count: int = Field(default=0, ge=0, description="Scene Graph decision trigger edge 수입니다.")
+    rast_trigger_risk_token_count: int = Field(default=0, ge=0, description="RAST decision trigger RiskToken 수입니다.")
+    event_aware_trigger_event_count: int = Field(default=0, ge=0, description="Event-aware decision trigger EventToken 수입니다.")
 
     update_mode: str = Field(default="full_recompute", description="Token update mode입니다.")
     changed_object_count: int = Field(default=0, ge=0, description="semantic diff에서 바뀐 object 수입니다.")
@@ -100,10 +127,41 @@ class StepLogRecord(RASTBaseModel):
 
     event_policy_variant: str = Field(default="full", description="Event-aware RAST policy ablation variant입니다.")
     risk_threshold: float | None = Field(default=None, ge=0, description="RiskToken 생성에 사용한 threshold입니다.")
+    near_agent_relation_threshold: float | None = Field(default=None, ge=0, description="near_agent relation threshold입니다.")
+    near_path_relation_threshold: float | None = Field(default=None, ge=0, description="near_path lateral relation threshold입니다.")
+    blocking_relation_threshold: float | None = Field(default=None, ge=0, description="blocking_path distance relation threshold입니다.")
     near_miss_threshold: float | None = Field(default=None, ge=0, description="Near-miss 계산에 사용한 threshold입니다.")
     position_noise_std: float = Field(default=0.0, ge=0, description="metadata position synthetic noise 표준편차입니다.")
     distance_noise_std: float = Field(default=0.0, ge=0, description="metadata distance synthetic noise 표준편차입니다.")
     visibility_flip_prob: float = Field(default=0.0, ge=0, le=1, description="metadata visibility flip 확률입니다.")
+
+    evidence_token_count: int = Field(default=0, ge=0, description="EvidenceToken 개수입니다.")
+    evidence_types: list[str] = Field(default_factory=list, description="step에서 생성된 EvidenceToken type 목록입니다.")
+    evidence_token_ids: list[str] = Field(default_factory=list, description="step에서 생성된 EvidenceToken id 목록입니다.")
+    risk_evidence_count: int = Field(default=0, ge=0, description="RiskToken 관련 evidence 개수입니다.")
+    uncertainty_evidence_count: int = Field(default=0, ge=0, description="UncertaintyToken 관련 evidence 개수입니다.")
+    event_evidence_count: int = Field(default=0, ge=0, description="EventToken 관련 evidence 개수입니다.")
+    decision_evidence_count: int = Field(default=0, ge=0, description="PlannerDecision 관련 evidence 개수입니다.")
+
+    affordance_aware_rast_selected_action: str | None = Field(
+        default=None,
+        description="Affordance-aware RAST planner action?낅땲??",
+    )
+    affordance_aware_rast_decision: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Affordance-aware RAST planner decision trace?낅땲??",
+    )
+    affordance_aware_rast_reason_code: str = Field(default="", description="Affordance-aware RAST planner reason_code?낅땲??")
+    affordance_aware_rast_trigger_token_ids: list[str] = Field(
+        default_factory=list,
+        description="Affordance-aware RAST trigger token id 紐⑸줉?낅땲??",
+    )
+    rast_vs_affordance_aware_disagreed: bool | None = Field(
+        default=None,
+        description="RAST? Affordance-aware RAST action???ㅻⅨ吏 ?щ??낅땲??",
+    )
+    affordance_token_count: int = Field(default=0, ge=0, description="AffordanceToken 媛쒖닔?낅땲??")
+    affordance_types: list[str] = Field(default_factory=list, description="step?먯꽌 ?앹꽦??AffordanceToken type 紐⑸줉?낅땲??")
 
     @classmethod
     def from_parts(
@@ -129,12 +187,16 @@ class StepLogRecord(RASTBaseModel):
         _populate_decision_fields(kwargs, "flat_feature")
         _populate_decision_fields(kwargs, "scene_graph")
         _populate_decision_fields(kwargs, "event_aware_rast")
+        _populate_decision_fields(kwargs, "uncertainty_aware_rast")
+        _populate_decision_fields(kwargs, "affordance_aware_rast")
 
         rast_action = kwargs.get("rast_selected_action") or selected_action
         object_list_action = kwargs.get("object_list_selected_action")
         flat_feature_action = kwargs.get("flat_feature_selected_action")
         scene_graph_action = kwargs.get("scene_graph_selected_action")
         event_aware_action = kwargs.get("event_aware_rast_selected_action")
+        uncertainty_aware_action = kwargs.get("uncertainty_aware_rast_selected_action")
+        affordance_aware_action = kwargs.get("affordance_aware_rast_selected_action")
 
         if object_list_action is not None and kwargs.get("rast_vs_object_list_disagreed") is None:
             kwargs["rast_vs_object_list_disagreed"] = rast_action != object_list_action
@@ -148,6 +210,10 @@ class StepLogRecord(RASTBaseModel):
             kwargs["object_list_vs_flat_feature_disagreed"] = object_list_action != flat_feature_action
         if event_aware_action is not None and kwargs.get("rast_vs_event_aware_disagreed") is None:
             kwargs["rast_vs_event_aware_disagreed"] = rast_action != event_aware_action
+        if uncertainty_aware_action is not None and kwargs.get("rast_vs_uncertainty_aware_disagreed") is None:
+            kwargs["rast_vs_uncertainty_aware_disagreed"] = rast_action != uncertainty_aware_action
+        if affordance_aware_action is not None and kwargs.get("rast_vs_affordance_aware_disagreed") is None:
+            kwargs["rast_vs_affordance_aware_disagreed"] = rast_action != affordance_aware_action
         if scene_graph_action is not None and kwargs.get("rast_vs_scene_graph_disagreed") is None:
             kwargs["rast_vs_scene_graph_disagreed"] = rast_action != scene_graph_action
         if (
@@ -158,6 +224,21 @@ class StepLogRecord(RASTBaseModel):
             kwargs["scene_graph_vs_flat_feature_disagreed"] = scene_graph_action != flat_feature_action
         if kwargs.get("baseline_disagreed") is None:
             kwargs["baseline_disagreed"] = kwargs.get("rast_vs_object_list_disagreed")
+        if scene_graph_action is not None and kwargs.get("rast_vs_scene_graph_same_action_different_reason") is None:
+            rast_reason = str(kwargs.get("rast_reason_code") or "")
+            scene_graph_reason = str(kwargs.get("scene_graph_reason_code") or "")
+            kwargs["rast_vs_scene_graph_same_action_different_reason"] = (
+                rast_action == scene_graph_action
+                and bool(rast_reason)
+                and bool(scene_graph_reason)
+                and rast_reason != scene_graph_reason
+            )
+        kwargs.setdefault("rast_trigger_risk_token_count", len(kwargs.get("rast_trigger_token_ids") or []))
+        kwargs.setdefault(
+            "scene_graph_trigger_edge_count",
+            0 if kwargs.get("scene_graph_reason_code") == "graph_no_blocking_move_ahead" else len(kwargs.get("scene_graph_trigger_object_ids") or []),
+        )
+        kwargs.setdefault("event_aware_trigger_event_count", len(kwargs.get("event_aware_rast_trigger_event_types") or []))
 
         return cls(
             run_id=run_id,
@@ -218,3 +299,7 @@ def _populate_decision_fields(kwargs: dict[str, Any], planner_prefix: str) -> No
         trigger_features = decision_payload.get("trigger_features") or {}
         kwargs.setdefault("event_aware_rast_trigger_token_ids", trigger_token_ids)
         kwargs.setdefault("event_aware_rast_trigger_event_types", list(trigger_features.get("event_types") or []))
+    elif planner_prefix == "uncertainty_aware_rast":
+        kwargs.setdefault("uncertainty_aware_rast_trigger_token_ids", trigger_token_ids)
+    elif planner_prefix == "affordance_aware_rast":
+        kwargs.setdefault("affordance_aware_rast_trigger_token_ids", trigger_token_ids)

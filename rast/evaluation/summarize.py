@@ -67,20 +67,65 @@ def summarize_by_key(rows: list[dict[str, Any]], key: str) -> list[dict[str, Any
                 "rast_vs_event_aware_disagreement_avg": average(
                     _to_float(item.get("rast_vs_event_aware_disagreement_count")) for item in items
                 ),
+                "rast_vs_uncertainty_aware_disagreement_avg": average(
+                    _to_float(item.get("rast_vs_uncertainty_aware_disagreement_count")) for item in items
+                ),
+                "rast_vs_affordance_aware_disagreement_avg": average(
+                    _to_float(item.get("rast_vs_affordance_aware_disagreement_count")) for item in items
+                ),
                 "rast_vs_scene_graph_disagreement_avg": average(
                     _to_float(item.get("rast_vs_scene_graph_disagreement_count")) for item in items
                 ),
                 "scene_graph_vs_flat_feature_disagreement_avg": average(
                     _to_float(item.get("scene_graph_vs_flat_feature_disagreement_count")) for item in items
                 ),
+                "rast_vs_scene_graph_same_action_different_reason_avg": average(
+                    _to_float(item.get("rast_vs_scene_graph_same_action_different_reason_count")) for item in items
+                ),
+                "rast_vs_scene_graph_same_action_different_reason_rate_avg": average(
+                    _to_float(item.get("rast_vs_scene_graph_same_action_different_reason_rate")) for item in items
+                ),
+                "scene_graph_trigger_edge_count_avg": average(
+                    _to_float(item.get("scene_graph_trigger_edge_count")) for item in items
+                ),
+                "rast_trigger_risk_token_count_avg": average(
+                    _to_float(item.get("rast_trigger_risk_token_count")) for item in items
+                ),
+                "event_aware_trigger_event_count_avg": average(
+                    _to_float(item.get("event_aware_trigger_event_count")) for item in items
+                ),
                 "event_triggered_action_count_avg": average(
                     _to_float(item.get("event_triggered_action_count")) for item in items
+                ),
+                "uncertainty_triggered_action_count_avg": average(
+                    _to_float(item.get("uncertainty_triggered_action_count")) for item in items
+                ),
+                "affordance_triggered_action_count_avg": average(
+                    _to_float(item.get("affordance_triggered_action_count")) for item in items
                 ),
                 "relation_token_count_total_avg": average(
                     _to_float(item.get("relation_token_count_total")) for item in items
                 ),
                 "relation_token_count_avg": average(_to_float(item.get("relation_token_count_avg")) for item in items),
                 "relation_type_counts": dict(_merge_count_dicts(items, "relation_type_counts")),
+                "uncertainty_token_count_total_avg": average(
+                    _to_float(item.get("uncertainty_token_count_total")) for item in items
+                ),
+                "uncertainty_token_count_avg": average(
+                    _to_float(item.get("uncertainty_token_count_avg")) for item in items
+                ),
+                "uncertainty_type_counts": dict(_merge_count_dicts(items, "uncertainty_type_counts")),
+                "high_uncertainty_count_total_avg": average(
+                    _to_float(item.get("high_uncertainty_count_total")) for item in items
+                ),
+                "high_uncertainty_count_avg": average(_to_float(item.get("high_uncertainty_count_avg")) for item in items),
+                "affordance_token_count_total_avg": average(
+                    _to_float(item.get("affordance_token_count_total")) for item in items
+                ),
+                "affordance_token_count_avg": average(
+                    _to_float(item.get("affordance_token_count_avg")) for item in items
+                ),
+                "affordance_type_counts": dict(_merge_count_dicts(items, "affordance_type_counts")),
                 "scene_graph_node_count_avg": average(
                     _to_float(item.get("scene_graph_node_count_avg")) for item in items
                 ),
@@ -92,6 +137,26 @@ def summarize_by_key(rows: list[dict[str, Any]], key: str) -> list[dict[str, Any
                 ),
                 "event_token_count_avg": average(_to_float(item.get("event_token_count_avg")) for item in items),
                 "event_type_counts": dict(_merge_event_type_counts(items)),
+                "evidence_token_count_total_avg": average(
+                    _to_float(item.get("evidence_token_count_total")) for item in items
+                ),
+                "evidence_token_count_avg": average(_to_float(item.get("evidence_token_count_avg")) for item in items),
+                "evidence_type_counts": dict(_merge_count_dicts(items, "evidence_type_counts")),
+                "risk_evidence_count_total_avg": average(
+                    _to_float(item.get("risk_evidence_count_total")) for item in items
+                ),
+                "uncertainty_evidence_count_total_avg": average(
+                    _to_float(item.get("uncertainty_evidence_count_total")) for item in items
+                ),
+                "event_evidence_count_total_avg": average(
+                    _to_float(item.get("event_evidence_count_total")) for item in items
+                ),
+                "decision_evidence_count_total_avg": average(
+                    _to_float(item.get("decision_evidence_count_total")) for item in items
+                ),
+                "decision_evidence_coverage_avg": average(
+                    _to_float(item.get("decision_evidence_coverage")) for item in items
+                ),
                 "changed_object_count_avg": average(_to_float(item.get("changed_object_count_avg")) for item in items),
                 "affected_token_count_avg": average(_to_float(item.get("affected_token_count_avg")) for item in items),
                 "full_recompute_latency_avg_ms": average(
@@ -110,6 +175,15 @@ def summarize_by_key(rows: list[dict[str, Any]], key: str) -> list[dict[str, Any
                 "event_aware_rast_reason_code_counts": dict(
                     _merge_count_dicts(items, "event_aware_rast_reason_code_counts")
                 ),
+                "uncertainty_aware_rast_reason_code_counts": dict(
+                    _merge_count_dicts(items, "uncertainty_aware_rast_reason_code_counts")
+                ),
+                "affordance_aware_rast_action_counts": dict(
+                    _merge_count_dicts(items, "affordance_aware_rast_action_counts")
+                ),
+                "affordance_aware_rast_reason_code_counts": dict(
+                    _merge_count_dicts(items, "affordance_aware_rast_reason_code_counts")
+                ),
                 "event_policy_variant_action_counts": dict(
                     _merge_nested_count_dicts(items, "event_policy_variant_action_counts")
                 ),
@@ -127,6 +201,12 @@ def summarize_by_key(rows: list[dict[str, Any]], key: str) -> list[dict[str, Any
                 ),
                 "event_aware_decision_trace_coverage_avg": average(
                     _to_float(item.get("event_aware_decision_trace_coverage")) for item in items
+                ),
+                "uncertainty_aware_decision_trace_coverage_avg": average(
+                    _to_float(item.get("uncertainty_aware_decision_trace_coverage")) for item in items
+                ),
+                "affordance_aware_decision_trace_coverage_avg": average(
+                    _to_float(item.get("affordance_aware_decision_trace_coverage")) for item in items
                 ),
                 "latency_avg_ms": average(_to_float(item.get("latency_avg_ms")) for item in items),
                 "planning_latency_avg_ms": average(_to_float(item.get("planning_latency_avg_ms")) for item in items),
@@ -160,17 +240,42 @@ def write_summary_csv(summary: dict[str, list[dict[str, Any]]], path: Path) -> N
         "rast_vs_flat_feature_disagreement_avg",
         "object_list_vs_flat_feature_disagreement_avg",
         "rast_vs_event_aware_disagreement_avg",
+        "rast_vs_uncertainty_aware_disagreement_avg",
+        "rast_vs_affordance_aware_disagreement_avg",
         "rast_vs_scene_graph_disagreement_avg",
         "scene_graph_vs_flat_feature_disagreement_avg",
+        "rast_vs_scene_graph_same_action_different_reason_avg",
+        "rast_vs_scene_graph_same_action_different_reason_rate_avg",
+        "scene_graph_trigger_edge_count_avg",
+        "rast_trigger_risk_token_count_avg",
+        "event_aware_trigger_event_count_avg",
         "event_triggered_action_count_avg",
+        "uncertainty_triggered_action_count_avg",
+        "affordance_triggered_action_count_avg",
         "relation_token_count_total_avg",
         "relation_token_count_avg",
         "relation_type_counts",
+        "uncertainty_token_count_total_avg",
+        "uncertainty_token_count_avg",
+        "uncertainty_type_counts",
+        "high_uncertainty_count_total_avg",
+        "high_uncertainty_count_avg",
+        "affordance_token_count_total_avg",
+        "affordance_token_count_avg",
+        "affordance_type_counts",
         "scene_graph_node_count_avg",
         "scene_graph_edge_count_avg",
         "event_token_count_total_avg",
         "event_token_count_avg",
         "event_type_counts",
+        "evidence_token_count_total_avg",
+        "evidence_token_count_avg",
+        "evidence_type_counts",
+        "risk_evidence_count_total_avg",
+        "uncertainty_evidence_count_total_avg",
+        "event_evidence_count_total_avg",
+        "decision_evidence_count_total_avg",
+        "decision_evidence_coverage_avg",
         "changed_object_count_avg",
         "affected_token_count_avg",
         "full_recompute_latency_avg_ms",
@@ -181,12 +286,17 @@ def write_summary_csv(summary: dict[str, list[dict[str, Any]]], path: Path) -> N
         "flat_feature_reason_code_counts",
         "scene_graph_reason_code_counts",
         "event_aware_rast_reason_code_counts",
+        "uncertainty_aware_rast_reason_code_counts",
+        "affordance_aware_rast_action_counts",
+        "affordance_aware_rast_reason_code_counts",
         "event_policy_variant_action_counts",
         "event_policy_variant_reason_code_counts",
         "rast_trigger_token_count_total_avg",
         "decision_trace_coverage_avg",
         "scene_graph_decision_trace_coverage_avg",
         "event_aware_decision_trace_coverage_avg",
+        "uncertainty_aware_decision_trace_coverage_avg",
+        "affordance_aware_decision_trace_coverage_avg",
         "latency_avg_ms",
         "planning_latency_avg_ms",
     ]
@@ -209,19 +319,52 @@ def write_summary_csv(summary: dict[str, list[dict[str, Any]]], path: Path) -> N
                             "object_list_vs_flat_feature_disagreement_avg"
                         ],
                         "rast_vs_event_aware_disagreement_avg": row["rast_vs_event_aware_disagreement_avg"],
+                        "rast_vs_uncertainty_aware_disagreement_avg": row[
+                            "rast_vs_uncertainty_aware_disagreement_avg"
+                        ],
+                        "rast_vs_affordance_aware_disagreement_avg": row[
+                            "rast_vs_affordance_aware_disagreement_avg"
+                        ],
                         "rast_vs_scene_graph_disagreement_avg": row["rast_vs_scene_graph_disagreement_avg"],
                         "scene_graph_vs_flat_feature_disagreement_avg": row[
                             "scene_graph_vs_flat_feature_disagreement_avg"
                         ],
+                        "rast_vs_scene_graph_same_action_different_reason_avg": row[
+                            "rast_vs_scene_graph_same_action_different_reason_avg"
+                        ],
+                        "rast_vs_scene_graph_same_action_different_reason_rate_avg": row[
+                            "rast_vs_scene_graph_same_action_different_reason_rate_avg"
+                        ],
+                        "scene_graph_trigger_edge_count_avg": row["scene_graph_trigger_edge_count_avg"],
+                        "rast_trigger_risk_token_count_avg": row["rast_trigger_risk_token_count_avg"],
+                        "event_aware_trigger_event_count_avg": row["event_aware_trigger_event_count_avg"],
                         "event_triggered_action_count_avg": row["event_triggered_action_count_avg"],
+                        "uncertainty_triggered_action_count_avg": row["uncertainty_triggered_action_count_avg"],
+                        "affordance_triggered_action_count_avg": row["affordance_triggered_action_count_avg"],
                         "relation_token_count_total_avg": row["relation_token_count_total_avg"],
                         "relation_token_count_avg": row["relation_token_count_avg"],
                         "relation_type_counts": json.dumps(row["relation_type_counts"], ensure_ascii=False),
+                        "uncertainty_token_count_total_avg": row["uncertainty_token_count_total_avg"],
+                        "uncertainty_token_count_avg": row["uncertainty_token_count_avg"],
+                        "uncertainty_type_counts": json.dumps(row["uncertainty_type_counts"], ensure_ascii=False),
+                        "high_uncertainty_count_total_avg": row["high_uncertainty_count_total_avg"],
+                        "high_uncertainty_count_avg": row["high_uncertainty_count_avg"],
+                        "affordance_token_count_total_avg": row["affordance_token_count_total_avg"],
+                        "affordance_token_count_avg": row["affordance_token_count_avg"],
+                        "affordance_type_counts": json.dumps(row["affordance_type_counts"], ensure_ascii=False),
                         "scene_graph_node_count_avg": row["scene_graph_node_count_avg"],
                         "scene_graph_edge_count_avg": row["scene_graph_edge_count_avg"],
                         "event_token_count_total_avg": row["event_token_count_total_avg"],
                         "event_token_count_avg": row["event_token_count_avg"],
                         "event_type_counts": json.dumps(row["event_type_counts"], ensure_ascii=False),
+                        "evidence_token_count_total_avg": row["evidence_token_count_total_avg"],
+                        "evidence_token_count_avg": row["evidence_token_count_avg"],
+                        "evidence_type_counts": json.dumps(row["evidence_type_counts"], ensure_ascii=False),
+                        "risk_evidence_count_total_avg": row["risk_evidence_count_total_avg"],
+                        "uncertainty_evidence_count_total_avg": row["uncertainty_evidence_count_total_avg"],
+                        "event_evidence_count_total_avg": row["event_evidence_count_total_avg"],
+                        "decision_evidence_count_total_avg": row["decision_evidence_count_total_avg"],
+                        "decision_evidence_coverage_avg": row["decision_evidence_coverage_avg"],
                         "changed_object_count_avg": row["changed_object_count_avg"],
                         "affected_token_count_avg": row["affected_token_count_avg"],
                         "full_recompute_latency_avg_ms": row["full_recompute_latency_avg_ms"],
@@ -244,6 +387,18 @@ def write_summary_csv(summary: dict[str, list[dict[str, Any]]], path: Path) -> N
                             row["event_aware_rast_reason_code_counts"],
                             ensure_ascii=False,
                         ),
+                        "uncertainty_aware_rast_reason_code_counts": json.dumps(
+                            row["uncertainty_aware_rast_reason_code_counts"],
+                            ensure_ascii=False,
+                        ),
+                        "affordance_aware_rast_action_counts": json.dumps(
+                            row["affordance_aware_rast_action_counts"],
+                            ensure_ascii=False,
+                        ),
+                        "affordance_aware_rast_reason_code_counts": json.dumps(
+                            row["affordance_aware_rast_reason_code_counts"],
+                            ensure_ascii=False,
+                        ),
                         "event_policy_variant_action_counts": json.dumps(
                             row["event_policy_variant_action_counts"],
                             ensure_ascii=False,
@@ -259,6 +414,12 @@ def write_summary_csv(summary: dict[str, list[dict[str, Any]]], path: Path) -> N
                         ],
                         "event_aware_decision_trace_coverage_avg": row[
                             "event_aware_decision_trace_coverage_avg"
+                        ],
+                        "uncertainty_aware_decision_trace_coverage_avg": row[
+                            "uncertainty_aware_decision_trace_coverage_avg"
+                        ],
+                        "affordance_aware_decision_trace_coverage_avg": row[
+                            "affordance_aware_decision_trace_coverage_avg"
                         ],
                         "latency_avg_ms": row["latency_avg_ms"],
                         "planning_latency_avg_ms": row["planning_latency_avg_ms"],

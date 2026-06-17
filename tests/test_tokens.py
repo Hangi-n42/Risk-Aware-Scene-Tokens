@@ -1,7 +1,7 @@
 import pytest
 
 from rast.schemas.common import SCHEMA_VERSION, Vector3
-from rast.schemas.tokens import EntityToken, EventToken, RiskToken
+from rast.schemas.tokens import EntityToken, EventToken, EvidenceToken, RiskToken, UncertaintyToken
 
 
 def test_entity_token_defaults_and_round_trip() -> None:
@@ -58,6 +58,47 @@ def test_event_token_serializes_required_contract() -> None:
     assert payload["type"] == "EventToken"
     assert payload["event_type"] == "object_moved"
     assert payload["confidence"] == 1.0
+
+
+def test_uncertainty_token_serializes_required_contract() -> None:
+    token = UncertaintyToken(
+        token_id="unc_1",
+        uncertainty_type="partial_occlusion",
+        entity_id="Box|uncertain",
+        level="high",
+        recommended_action="inspect_before_passing",
+        occluded_by="Chair|1",
+        timestamp=3,
+    )
+
+    payload = token.to_dict()
+
+    assert payload["schema_version"] == SCHEMA_VERSION
+    assert payload["type"] == "UncertaintyToken"
+    assert payload["uncertainty_type"] == "partial_occlusion"
+    assert payload["level"] == "high"
+    assert payload["confidence"] == 1.0
+
+
+def test_evidence_token_serializes_metadata_pointer_contract() -> None:
+    token = EvidenceToken(
+        token_id="ev_1",
+        evidence_type="risk_feature",
+        source="windows_metadata_sim_metadata",
+        pointer="metadata://WindowsRoom1/step/1/objects/Box|1",
+        entity_id="Box|1",
+        related_token_ids=["risk_1"],
+        snapshot_ref="windows_metadata_sim:WindowsRoom1:step:1",
+        evidence_features={"risk_score": 0.8},
+        timestamp=1,
+    )
+
+    payload = token.to_dict()
+
+    assert payload["schema_version"] == SCHEMA_VERSION
+    assert payload["type"] == "EvidenceToken"
+    assert payload["evidence_type"] == "risk_feature"
+    assert payload["related_token_ids"] == ["risk_1"]
 
 
 def test_entity_token_requires_distance_to_agent() -> None:

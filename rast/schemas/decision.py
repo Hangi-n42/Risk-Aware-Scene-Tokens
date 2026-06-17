@@ -22,6 +22,8 @@ class PlannerDecision(RASTBaseModel):
     trigger_features: dict[str, Any] = Field(default_factory=dict, description="action 선택에 사용된 주요 feature 값입니다.")
     confidence: float = Field(default=1.0, ge=0, le=1, description="rule-based decision confidence입니다.")
 
+    evidence_token_ids: list[str] = Field(default_factory=list, description="decision trace와 연결된 EvidenceToken id 목록입니다.")
+
     @property
     def value(self) -> str:
         """기존 Action 반환 경로와의 호환을 위해 action.value를 노출합니다."""

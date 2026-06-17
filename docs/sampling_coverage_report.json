@@ -1,0 +1,418 @@
+{
+  "results_path": "runs\\windows_eval_suite_extended_seed_sweep\\seed_sweep_20260612_231815\\seed_42\\windows_eval_suite_20260612_231908\\aggregate_results.csv",
+  "metadata_path": "runs\\windows_eval_suite_extended_seed_sweep\\seed_sweep_20260612_231815\\seed_42\\windows_eval_suite_20260612_231908\\suite_metadata.json",
+  "row_count": 500,
+  "suite_run_id": "windows_eval_suite_20260612_231908",
+  "axes": {
+    "scenario": {
+      "observed_values": [
+        "avoid_required_blocking_path",
+        "blocking_relation_without_high_risk",
+        "clear_path",
+        "event_changes_risk_but_graph_static",
+        "far_obstacle",
+        "inspect_required_uncertain_path",
+        "low_sensor_agreement",
+        "narrow_passage",
+        "near_obstacle",
+        "noisy_position_boundary",
+        "object_appears",
+        "object_disappears",
+        "object_moves",
+        "partially_occluded_obstacle",
+        "passable_clear_gap",
+        "planner_disagreement",
+        "relation_near_but_low_risk",
+        "risk_increases",
+        "risk_without_graph_blocking",
+        "target_reachable",
+        "target_reachable_affordance",
+        "uncertainty_near_path",
+        "uncertainty_without_high_risk",
+        "unknown_near_path",
+        "unknown_uncertain_object"
+      ],
+      "observed_counts": {
+        "avoid_required_blocking_path": 20,
+        "blocking_relation_without_high_risk": 20,
+        "clear_path": 20,
+        "event_changes_risk_but_graph_static": 20,
+        "far_obstacle": 20,
+        "inspect_required_uncertain_path": 20,
+        "low_sensor_agreement": 20,
+        "narrow_passage": 20,
+        "near_obstacle": 20,
+        "noisy_position_boundary": 20,
+        "object_appears": 20,
+        "object_disappears": 20,
+        "object_moves": 20,
+        "partially_occluded_obstacle": 20,
+        "passable_clear_gap": 20,
+        "planner_disagreement": 20,
+        "relation_near_but_low_risk": 20,
+        "risk_increases": 20,
+        "risk_without_graph_blocking": 20,
+        "target_reachable": 20,
+        "target_reachable_affordance": 20,
+        "uncertainty_near_path": 20,
+        "uncertainty_without_high_risk": 20,
+        "unknown_near_path": 20,
+        "unknown_uncertain_object": 20
+      },
+      "expected_values": [
+        "clear_path",
+        "near_obstacle",
+        "far_obstacle",
+        "unknown_near_path",
+        "target_reachable",
+        "planner_disagreement",
+        "object_appears",
+        "object_disappears",
+        "object_moves",
+        "risk_increases",
+        "relation_near_but_low_risk",
+        "blocking_relation_without_high_risk",
+        "risk_without_graph_blocking",
+        "event_changes_risk_but_graph_static",
+        "unknown_uncertain_object",
+        "partially_occluded_obstacle",
+        "noisy_position_boundary",
+        "low_sensor_agreement",
+        "uncertainty_without_high_risk",
+        "uncertainty_near_path",
+        "narrow_passage",
+        "passable_clear_gap",
+        "inspect_required_uncertain_path",
+        "avoid_required_blocking_path",
+        "target_reachable_affordance"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "apply_policy": {
+      "observed_values": [
+        "affordance_aware_rast",
+        "event_aware_rast",
+        "flat_feature",
+        "object_list",
+        "rast",
+        "scene_graph",
+        "uncertainty_aware_rast"
+      ],
+      "observed_counts": {
+        "affordance_aware_rast": 75,
+        "event_aware_rast": 50,
+        "flat_feature": 75,
+        "object_list": 75,
+        "rast": 75,
+        "scene_graph": 75,
+        "uncertainty_aware_rast": 75
+      },
+      "expected_values": [
+        "object_list",
+        "flat_feature",
+        "scene_graph",
+        "rast",
+        "event_aware_rast",
+        "uncertainty_aware_rast",
+        "affordance_aware_rast"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "update_mode": {
+      "observed_values": [
+        "full_recompute",
+        "incremental"
+      ],
+      "observed_counts": {
+        "full_recompute": 325,
+        "incremental": 175
+      },
+      "expected_values": [
+        "full_recompute",
+        "incremental"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "event_policy_variant": {
+      "observed_values": [
+        "full",
+        "logging_only",
+        "no_object_appeared",
+        "no_object_disappeared",
+        "no_object_moved",
+        "no_risk_changed"
+      ],
+      "observed_counts": {
+        "full": 9,
+        "logging_only": 9,
+        "no_object_appeared": 8,
+        "no_object_disappeared": 8,
+        "no_object_moved": 8,
+        "no_risk_changed": 8
+      },
+      "expected_values": [
+        "full",
+        "logging_only",
+        "no_risk_changed",
+        "no_object_appeared",
+        "no_object_moved",
+        "no_object_disappeared"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "`apply_policy=event_aware_rast`",
+      "row_count": 50
+    },
+    "risk_threshold": {
+      "observed_values": [
+        "1",
+        "1.5",
+        "2"
+      ],
+      "observed_counts": {
+        "1": 167,
+        "1.5": 166,
+        "2": 167
+      },
+      "expected_values": [
+        "1",
+        "1.5",
+        "2"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "near_miss_threshold": {
+      "observed_values": [
+        "0.75",
+        "1"
+      ],
+      "observed_counts": {
+        "0.75": 243,
+        "1": 257
+      },
+      "expected_values": [
+        "0.75",
+        "1"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "near_agent_relation_threshold": {
+      "observed_values": [
+        "1",
+        "1.5"
+      ],
+      "observed_counts": {
+        "1": 273,
+        "1.5": 227
+      },
+      "expected_values": [
+        "1",
+        "1.5"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "near_path_relation_threshold": {
+      "observed_values": [
+        "0.5",
+        "0.75"
+      ],
+      "observed_counts": {
+        "0.5": 232,
+        "0.75": 268
+      },
+      "expected_values": [
+        "0.5",
+        "0.75"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "blocking_relation_threshold": {
+      "observed_values": [
+        "0.35",
+        "0.5"
+      ],
+      "observed_counts": {
+        "0.35": 236,
+        "0.5": 264
+      },
+      "expected_values": [
+        "0.35",
+        "0.5"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "classification_uncertainty_threshold": {
+      "observed_values": [
+        "0.4",
+        "0.6"
+      ],
+      "observed_counts": {
+        "0.4": 245,
+        "0.6": 255
+      },
+      "expected_values": [
+        "0.4",
+        "0.6"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "position_variance_threshold": {
+      "observed_values": [
+        "0.03",
+        "0.05"
+      ],
+      "observed_counts": {
+        "0.03": 231,
+        "0.05": 269
+      },
+      "expected_values": [
+        "0.03",
+        "0.05"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "occlusion_ratio_threshold": {
+      "observed_values": [
+        "0.3",
+        "0.5"
+      ],
+      "observed_counts": {
+        "0.3": 233,
+        "0.5": 267
+      },
+      "expected_values": [
+        "0.3",
+        "0.5"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "sensor_agreement_threshold": {
+      "observed_values": [
+        "0.5",
+        "0.7"
+      ],
+      "observed_counts": {
+        "0.5": 256,
+        "0.7": 244
+      },
+      "expected_values": [
+        "0.5",
+        "0.7"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "position_noise_std": {
+      "observed_values": [
+        "0",
+        "0.02",
+        "0.05"
+      ],
+      "observed_counts": {
+        "0": 165,
+        "0.02": 167,
+        "0.05": 168
+      },
+      "expected_values": [
+        "0",
+        "0.02",
+        "0.05"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "distance_noise_std": {
+      "observed_values": [
+        "0",
+        "0.02",
+        "0.05"
+      ],
+      "observed_counts": {
+        "0": 171,
+        "0.02": 167,
+        "0.05": 162
+      },
+      "expected_values": [
+        "0",
+        "0.02",
+        "0.05"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    },
+    "visibility_flip_prob": {
+      "observed_values": [
+        "0",
+        "0.05"
+      ],
+      "observed_counts": {
+        "0": 251,
+        "0.05": 249
+      },
+      "expected_values": [
+        "0",
+        "0.05"
+      ],
+      "coverage_rate": 1.0,
+      "missing_values": [],
+      "underrepresented_values": [],
+      "row_scope": "all rows",
+      "row_count": 500
+    }
+  },
+  "interpretation_note": "Missing or underrepresented values indicate sampling coverage gaps, not planner performance changes."
+}

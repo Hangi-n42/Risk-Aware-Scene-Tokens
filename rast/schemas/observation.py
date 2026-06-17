@@ -43,6 +43,23 @@ class ObjectMetadata(RASTBaseModel):
     visible: bool | None = Field(default=None, description="Simulator visibility flag입니다.")
     size: Vector3 | None = Field(default=None, description="객체 크기 또는 bounding box size입니다.")
     bbox_2d: BBox2D | None = Field(default=None, description="원본 이미지 영역 pointer입니다.")
+    classification_confidence: float = Field(
+        default=1.0,
+        ge=0,
+        le=1,
+        description="Synthetic metadata의 classification confidence입니다. 실제 perception confidence가 아닙니다.",
+    )
+    classification_uncertainty: float = Field(
+        default=0.0,
+        ge=0,
+        le=1,
+        description="Synthetic metadata의 classification uncertainty proxy입니다.",
+    )
+    position_variance: float = Field(default=0.0, ge=0, description="Synthetic metadata의 position variance proxy입니다.")
+    occlusion_ratio: float = Field(default=0.0, ge=0, le=1, description="Synthetic partial occlusion ratio입니다.")
+    sensor_agreement: float = Field(default=1.0, ge=0, le=1, description="Synthetic multi-sensor agreement proxy입니다.")
+    possible_categories: list[str] = Field(default_factory=list, description="분류가 불확실할 때 가능한 category 후보입니다.")
+    is_unknown: bool = Field(default=False, description="UnknownObject 계열 object인지 여부입니다.")
     raw: dict[str, Any] = Field(
         default_factory=dict,
         description="디버깅용 최소 원본 metadata 조각입니다. 대용량 raw dump 저장은 피합니다.",

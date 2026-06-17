@@ -1,0 +1,29 @@
+# WindowsMetadataSim extended sensitivity suite입니다.
+# 기본 suite보다 조합 수가 크므로 명시적으로 --config로 지정하고 dry-run으로 먼저 확인합니다.
+
+scenarios: [clear_path, near_obstacle, far_obstacle, unknown_near_path, target_reachable, planner_disagreement, object_appears, object_disappears, object_moves, risk_increases, relation_near_but_low_risk, blocking_relation_without_high_risk, risk_without_graph_blocking, event_changes_risk_but_graph_static, unknown_uncertain_object, partially_occluded_obstacle, noisy_position_boundary, low_sensor_agreement, uncertainty_without_high_risk, uncertainty_near_path, narrow_passage, passable_clear_gap, inspect_required_uncertain_path, avoid_required_blocking_path, target_reachable_affordance]
+seeds: [0]
+max_steps: 10
+
+apply_policies: [object_list, flat_feature, scene_graph, rast, event_aware_rast, uncertainty_aware_rast, affordance_aware_rast]
+update_modes: [full_recompute, incremental]
+event_policy_variants: [full, logging_only, no_risk_changed, no_object_appeared, no_object_moved, no_object_disappeared]
+
+risk_thresholds: [1.0, 1.5, 2.0]
+near_miss_thresholds: [0.75, 1.0]
+collision_threshold: 0.2
+near_agent_relation_thresholds: [1.0, 1.5]
+near_path_relation_thresholds: [0.5, 0.75]
+blocking_relation_thresholds: [0.35, 0.5]
+
+classification_uncertainty_thresholds: [0.4, 0.6]
+position_variance_thresholds: [0.03, 0.05]
+occlusion_ratio_thresholds: [0.3, 0.5]
+sensor_agreement_thresholds: [0.5, 0.7]
+
+position_noise_std: [0.0, 0.02, 0.05]
+distance_noise_std: [0.0, 0.02, 0.05]
+visibility_flip_prob: [0.0, 0.05]
+
+output_dir: runs/windows_eval_suite_extended
+large_run_warning_threshold: 5000

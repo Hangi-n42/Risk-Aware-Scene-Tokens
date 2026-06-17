@@ -32,12 +32,14 @@ class StepMetrics(RASTBaseModel):
     flat_feature_selected_action: str = Field(default="", description="Flat Feature planner action입니다.")
     scene_graph_selected_action: str = Field(default="", description="Scene Graph planner action입니다.")
     event_aware_rast_selected_action: str = Field(default="", description="Event-aware RAST planner action입니다.")
+    uncertainty_aware_rast_selected_action: str = Field(default="", description="Uncertainty-aware RAST planner action입니다.")
 
     rast_reason_code: str = Field(default="", description="RAST planner reason_code입니다.")
     object_list_reason_code: str = Field(default="", description="Object List planner reason_code입니다.")
     flat_feature_reason_code: str = Field(default="", description="Flat Feature planner reason_code입니다.")
     scene_graph_reason_code: str = Field(default="", description="Scene Graph planner reason_code입니다.")
     event_aware_rast_reason_code: str = Field(default="", description="Event-aware RAST planner reason_code입니다.")
+    uncertainty_aware_rast_reason_code: str = Field(default="", description="Uncertainty-aware RAST planner reason_code입니다.")
     rast_trigger_token_ids: list[str] = Field(default_factory=list, description="RAST trigger token id 목록입니다.")
     rast_trigger_object_ids: list[str] = Field(default_factory=list, description="RAST trigger object id 목록입니다.")
     object_list_trigger_object_ids: list[str] = Field(default_factory=list, description="Object List trigger object id 목록입니다.")
@@ -45,19 +47,34 @@ class StepMetrics(RASTBaseModel):
     scene_graph_trigger_object_ids: list[str] = Field(default_factory=list, description="Scene Graph trigger object id 목록입니다.")
     event_aware_rast_trigger_event_types: list[str] = Field(default_factory=list, description="Event-aware RAST trigger event type 목록입니다.")
     event_aware_rast_trigger_token_ids: list[str] = Field(default_factory=list, description="Event-aware RAST trigger token id 목록입니다.")
+    uncertainty_aware_rast_trigger_token_ids: list[str] = Field(
+        default_factory=list,
+        description="Uncertainty-aware RAST trigger token id 목록입니다.",
+    )
 
     baseline_disagreed: bool = Field(description="호환용 RAST vs Object List disagreement입니다.")
     rast_vs_object_list_disagreed: bool = Field(description="RAST와 Object List action이 다른지 여부입니다.")
     rast_vs_flat_feature_disagreed: bool = Field(description="RAST와 Flat Feature action이 다른지 여부입니다.")
     object_list_vs_flat_feature_disagreed: bool = Field(description="Object List와 Flat Feature action이 다른지 여부입니다.")
     rast_vs_event_aware_disagreed: bool = Field(default=False, description="RAST와 Event-aware RAST action이 다른지 여부입니다.")
+    rast_vs_uncertainty_aware_disagreed: bool = Field(
+        default=False,
+        description="RAST와 Uncertainty-aware RAST action이 다른지 여부입니다.",
+    )
     rast_vs_scene_graph_disagreed: bool = Field(default=False, description="RAST와 Scene Graph action이 다른지 여부입니다.")
     scene_graph_vs_flat_feature_disagreed: bool = Field(default=False, description="Scene Graph와 Flat Feature action이 다른지 여부입니다.")
+    rast_vs_scene_graph_same_action_different_reason: bool = Field(
+        default=False,
+        description="RAST와 Scene Graph action은 같지만 reason_code가 다른지 여부입니다.",
+    )
 
     entity_token_count: int = Field(ge=0, description="step별 EntityToken 수입니다.")
     risk_token_count: int = Field(ge=0, description="step별 RiskToken 수입니다.")
     relation_token_count: int = Field(default=0, ge=0, description="step별 RelationToken 수입니다.")
     relation_types: list[str] = Field(default_factory=list, description="step에서 생성된 RelationToken relation 목록입니다.")
+    uncertainty_token_count: int = Field(default=0, ge=0, description="step별 UncertaintyToken 수입니다.")
+    uncertainty_types: list[str] = Field(default_factory=list, description="step에서 생성된 UncertaintyToken type 목록입니다.")
+    high_uncertainty_count: int = Field(default=0, ge=0, description="step별 high level UncertaintyToken 수입니다.")
     event_token_count: int = Field(default=0, ge=0, description="step별 EventToken 수입니다.")
     event_types: list[str] = Field(default_factory=list, description="step에서 감지된 EventToken type 목록입니다.")
     total_token_count: int = Field(ge=0, description="step별 전체 RAST token 수입니다.")
@@ -65,6 +82,9 @@ class StepMetrics(RASTBaseModel):
     flat_feature_row_count: int = Field(ge=0, description="Flat Feature Table row 수입니다.")
     scene_graph_node_count: int = Field(default=0, ge=0, description="Scene Graph node 수입니다.")
     scene_graph_edge_count: int = Field(default=0, ge=0, description="Scene Graph edge 수입니다.")
+    scene_graph_trigger_edge_count: int = Field(default=0, ge=0, description="Scene Graph decision trigger edge 수입니다.")
+    rast_trigger_risk_token_count: int = Field(default=0, ge=0, description="RAST decision trigger RiskToken 수입니다.")
+    event_aware_trigger_event_count: int = Field(default=0, ge=0, description="Event-aware decision trigger EventToken 수입니다.")
 
     near_miss: bool = Field(description="near-miss hook 결과입니다.")
     collision: bool = Field(description="collision hook 결과입니다.")
@@ -82,10 +102,36 @@ class StepMetrics(RASTBaseModel):
     incremental_update_benefit: float = Field(default=0.0, description="full recompute 대비 incremental latency benefit입니다.")
     event_policy_variant: str = Field(default="full", description="Event-aware planner policy ablation variant입니다.")
     risk_threshold: float | None = Field(default=None, ge=0, description="RiskToken 생성 threshold입니다.")
+    near_agent_relation_threshold: float | None = Field(default=None, ge=0, description="near_agent relation threshold입니다.")
+    near_path_relation_threshold: float | None = Field(default=None, ge=0, description="near_path lateral relation threshold입니다.")
+    blocking_relation_threshold: float | None = Field(default=None, ge=0, description="blocking_path distance relation threshold입니다.")
     near_miss_threshold: float | None = Field(default=None, ge=0, description="Near-miss threshold입니다.")
     position_noise_std: float = Field(default=0.0, ge=0, description="Synthetic metadata position noise 표준편차입니다.")
     distance_noise_std: float = Field(default=0.0, ge=0, description="Synthetic metadata distance noise 표준편차입니다.")
     visibility_flip_prob: float = Field(default=0.0, ge=0, le=1, description="Synthetic metadata visibility flip 확률입니다.")
+
+
+    evidence_token_count: int = Field(default=0, ge=0, description="step별 EvidenceToken 수입니다.")
+    evidence_types: list[str] = Field(default_factory=list, description="step별 EvidenceToken type 목록입니다.")
+    evidence_token_ids: list[str] = Field(default_factory=list, description="step별 EvidenceToken id 목록입니다.")
+    risk_evidence_count: int = Field(default=0, ge=0, description="step별 risk evidence 수입니다.")
+    uncertainty_evidence_count: int = Field(default=0, ge=0, description="step별 uncertainty evidence 수입니다.")
+    event_evidence_count: int = Field(default=0, ge=0, description="step별 event evidence 수입니다.")
+    decision_evidence_count: int = Field(default=0, ge=0, description="step별 planner decision evidence 수입니다.")
+
+
+    affordance_aware_rast_selected_action: str = Field(default="", description="Affordance-aware RAST planner action?낅땲??")
+    affordance_aware_rast_reason_code: str = Field(default="", description="Affordance-aware RAST planner reason_code?낅땲??")
+    affordance_aware_rast_trigger_token_ids: list[str] = Field(
+        default_factory=list,
+        description="Affordance-aware RAST trigger token id 紐⑸줉?낅땲??",
+    )
+    rast_vs_affordance_aware_disagreed: bool = Field(
+        default=False,
+        description="RAST? Affordance-aware RAST action???ㅻⅨ吏 ?щ??낅땲??",
+    )
+    affordance_token_count: int = Field(default=0, ge=0, description="step蹂?AffordanceToken ?섏엯?덈떎.")
+    affordance_types: list[str] = Field(default_factory=list, description="step?먯꽌 ?앹꽦??AffordanceToken type 紐⑸줉?낅땲??")
 
 
 class EpisodeSummary(RASTBaseModel):
@@ -109,12 +155,20 @@ class EpisodeSummary(RASTBaseModel):
     flat_feature_action_counts: dict[str, int] = Field(default_factory=dict, description="Flat Feature planner action별 count입니다.")
     scene_graph_action_counts: dict[str, int] = Field(default_factory=dict, description="Scene Graph planner action별 count입니다.")
     event_aware_rast_action_counts: dict[str, int] = Field(default_factory=dict, description="Event-aware RAST planner action별 count입니다.")
+    uncertainty_aware_rast_action_counts: dict[str, int] = Field(
+        default_factory=dict,
+        description="Uncertainty-aware RAST planner action별 count입니다.",
+    )
 
     rast_reason_code_counts: dict[str, int] = Field(default_factory=dict, description="RAST planner reason_code별 count입니다.")
     object_list_reason_code_counts: dict[str, int] = Field(default_factory=dict, description="Object List planner reason_code별 count입니다.")
     flat_feature_reason_code_counts: dict[str, int] = Field(default_factory=dict, description="Flat Feature planner reason_code별 count입니다.")
     scene_graph_reason_code_counts: dict[str, int] = Field(default_factory=dict, description="Scene Graph planner reason_code별 count입니다.")
     event_aware_rast_reason_code_counts: dict[str, int] = Field(default_factory=dict, description="Event-aware RAST planner reason_code별 count입니다.")
+    uncertainty_aware_rast_reason_code_counts: dict[str, int] = Field(
+        default_factory=dict,
+        description="Uncertainty-aware RAST planner reason_code별 count입니다.",
+    )
     event_policy_variant_action_counts: dict[str, dict[str, int]] = Field(default_factory=dict, description="Event policy variant별 action count입니다.")
     event_policy_variant_reason_code_counts: dict[str, dict[str, int]] = Field(default_factory=dict, description="Event policy variant별 reason_code count입니다.")
     rast_trigger_token_count_total: int = Field(default=0, ge=0, description="RAST decision trigger token 총 개수입니다.")
@@ -125,10 +179,40 @@ class EpisodeSummary(RASTBaseModel):
     rast_vs_flat_feature_disagreement_count: int = Field(ge=0, description="RAST vs Flat Feature disagreement count입니다.")
     object_list_vs_flat_feature_disagreement_count: int = Field(ge=0, description="Object List vs Flat Feature disagreement count입니다.")
     rast_vs_event_aware_disagreement_count: int = Field(default=0, ge=0, description="RAST vs Event-aware RAST disagreement count입니다.")
+    rast_vs_uncertainty_aware_disagreement_count: int = Field(
+        default=0,
+        ge=0,
+        description="RAST vs Uncertainty-aware RAST disagreement count입니다.",
+    )
     rast_vs_scene_graph_disagreement_count: int = Field(default=0, ge=0, description="RAST vs Scene Graph disagreement count입니다.")
     scene_graph_vs_flat_feature_disagreement_count: int = Field(default=0, ge=0, description="Scene Graph vs Flat Feature disagreement count입니다.")
+    rast_vs_scene_graph_same_action_different_reason_count: int = Field(
+        default=0,
+        ge=0,
+        description="RAST와 Scene Graph action은 같지만 reason_code가 다른 step 수입니다.",
+    )
+    rast_vs_scene_graph_same_action_different_reason_rate: float = Field(
+        default=0.0,
+        ge=0,
+        le=1,
+        description="RAST와 Scene Graph의 same-action-different-reason step 비율입니다.",
+    )
+    scene_graph_trigger_edge_count: int = Field(default=0, ge=0, description="Scene Graph decision trigger edge 총 수입니다.")
+    rast_trigger_risk_token_count: int = Field(default=0, ge=0, description="RAST decision trigger RiskToken 총 수입니다.")
+    event_aware_trigger_event_count: int = Field(default=0, ge=0, description="Event-aware decision trigger EventToken 총 수입니다.")
     event_triggered_action_count: int = Field(default=0, ge=0, description="Event-aware planner가 event 기반 reason_code로 action을 고른 step 수입니다.")
+    uncertainty_triggered_action_count: int = Field(
+        default=0,
+        ge=0,
+        description="Uncertainty-aware planner가 uncertainty 기반 reason_code로 action을 고른 step 수입니다.",
+    )
     event_aware_decision_trace_coverage: float = Field(default=0.0, ge=0, le=1, description="Event-aware planner reason_code가 기록된 step 비율입니다.")
+    uncertainty_aware_decision_trace_coverage: float = Field(
+        default=0.0,
+        ge=0,
+        le=1,
+        description="Uncertainty-aware planner reason_code가 기록된 step 비율입니다.",
+    )
     scene_graph_decision_trace_coverage: float = Field(default=0.0, ge=0, le=1, description="Scene Graph planner reason_code가 기록된 step 비율입니다.")
 
     entity_token_count_total: int = Field(ge=0, description="episode 전체 EntityToken 수입니다.")
@@ -136,6 +220,11 @@ class EpisodeSummary(RASTBaseModel):
     relation_token_count_total: int = Field(default=0, ge=0, description="episode 전체 RelationToken 수입니다.")
     relation_token_count_avg: float = Field(default=0.0, ge=0, description="step당 평균 RelationToken 수입니다.")
     relation_type_counts: dict[str, int] = Field(default_factory=dict, description="RelationToken relation별 count입니다.")
+    uncertainty_token_count_total: int = Field(default=0, ge=0, description="episode 전체 UncertaintyToken 수입니다.")
+    uncertainty_token_count_avg: float = Field(default=0.0, ge=0, description="step당 평균 UncertaintyToken 수입니다.")
+    uncertainty_type_counts: dict[str, int] = Field(default_factory=dict, description="UncertaintyToken type별 count입니다.")
+    high_uncertainty_count_total: int = Field(default=0, ge=0, description="episode 전체 high level UncertaintyToken 수입니다.")
+    high_uncertainty_count_avg: float = Field(default=0.0, ge=0, description="step당 평균 high level UncertaintyToken 수입니다.")
     event_token_count_total: int = Field(default=0, ge=0, description="episode 전체 EventToken 수입니다.")
     event_token_count_avg: float = Field(default=0.0, ge=0, description="step당 평균 EventToken 수입니다.")
     event_type_counts: dict[str, int] = Field(default_factory=dict, description="EventToken type별 count입니다.")
@@ -163,7 +252,45 @@ class EpisodeSummary(RASTBaseModel):
     incremental_update_benefit_avg: float = Field(default=0.0, description="full recompute 대비 incremental benefit 평균입니다.")
     event_policy_variant: str = Field(default="full", description="Event-aware planner policy ablation variant입니다.")
     risk_threshold: float | None = Field(default=None, ge=0, description="RiskToken 생성 threshold입니다.")
+    near_agent_relation_threshold: float | None = Field(default=None, ge=0, description="near_agent relation threshold입니다.")
+    near_path_relation_threshold: float | None = Field(default=None, ge=0, description="near_path lateral relation threshold입니다.")
+    blocking_relation_threshold: float | None = Field(default=None, ge=0, description="blocking_path distance relation threshold입니다.")
     near_miss_threshold: float | None = Field(default=None, ge=0, description="Near-miss threshold입니다.")
     position_noise_std: float = Field(default=0.0, ge=0, description="Synthetic metadata position noise 표준편차입니다.")
     distance_noise_std: float = Field(default=0.0, ge=0, description="Synthetic metadata distance noise 표준편차입니다.")
     visibility_flip_prob: float = Field(default=0.0, ge=0, le=1, description="Synthetic metadata visibility flip 확률입니다.")
+    evidence_token_count_total: int = Field(default=0, ge=0, description="episode 전체 EvidenceToken 수입니다.")
+    evidence_token_count_avg: float = Field(default=0.0, ge=0, description="step당 평균 EvidenceToken 수입니다.")
+    evidence_type_counts: dict[str, int] = Field(default_factory=dict, description="EvidenceToken type별 count입니다.")
+    risk_evidence_count_total: int = Field(default=0, ge=0, description="episode 전체 risk evidence 수입니다.")
+    uncertainty_evidence_count_total: int = Field(default=0, ge=0, description="episode 전체 uncertainty evidence 수입니다.")
+    event_evidence_count_total: int = Field(default=0, ge=0, description="episode 전체 event evidence 수입니다.")
+    decision_evidence_count_total: int = Field(default=0, ge=0, description="episode 전체 decision evidence 수입니다.")
+    decision_evidence_coverage: float = Field(default=0.0, ge=0, le=1, description="planner decision step 중 evidence pointer가 연결된 비율입니다.")
+    affordance_token_count_total: int = Field(default=0, ge=0, description="episode ?꾩껜 AffordanceToken ?섏엯?덈떎.")
+    affordance_token_count_avg: float = Field(default=0.0, ge=0, description="step???됯퇏 AffordanceToken ?섏엯?덈떎.")
+    affordance_type_counts: dict[str, int] = Field(default_factory=dict, description="AffordanceToken type蹂?count?낅땲??")
+    affordance_aware_rast_action_counts: dict[str, int] = Field(
+        default_factory=dict,
+        description="Affordance-aware RAST planner action蹂?count?낅땲??",
+    )
+    affordance_aware_rast_reason_code_counts: dict[str, int] = Field(
+        default_factory=dict,
+        description="Affordance-aware RAST planner reason_code蹂?count?낅땲??",
+    )
+    rast_vs_affordance_aware_disagreement_count: int = Field(
+        default=0,
+        ge=0,
+        description="RAST vs Affordance-aware RAST disagreement count?낅땲??",
+    )
+    affordance_triggered_action_count: int = Field(
+        default=0,
+        ge=0,
+        description="Affordance-aware planner媛 affordance 湲곕컲 reason_code濡?action??怨좊Ⅸ step ?섏엯?덈떎.",
+    )
+    affordance_aware_decision_trace_coverage: float = Field(
+        default=0.0,
+        ge=0,
+        le=1,
+        description="Affordance-aware planner reason_code媛 湲곕줉??step 鍮꾩쑉?낅땲??",
+    )

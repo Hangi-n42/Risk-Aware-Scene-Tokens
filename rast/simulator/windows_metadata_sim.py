@@ -27,6 +27,13 @@ class SimObject:
     position: Vector3
     size: Vector3
     bbox_2d: dict[str, float] | None = None
+    classification_confidence: float = 1.0
+    classification_uncertainty: float = 0.0
+    position_variance: float = 0.0
+    occlusion_ratio: float = 0.0
+    sensor_agreement: float = 1.0
+    possible_categories: list[str] = field(default_factory=list)
+    is_unknown: bool | None = None
 
 
 @dataclass
@@ -207,6 +214,13 @@ class WindowsMetadataSim:
             "visible": visible,
             "distance": distance,
             "bbox2D": obj.bbox_2d,
+            "classification_confidence": obj.classification_confidence,
+            "classification_uncertainty": obj.classification_uncertainty,
+            "position_variance": obj.position_variance,
+            "occlusion_ratio": obj.occlusion_ratio,
+            "sensor_agreement": obj.sensor_agreement,
+            "possible_categories": list(obj.possible_categories),
+            "is_unknown": obj.is_unknown if obj.is_unknown is not None else obj.object_type.lower().startswith("unknown"),
         }
 
     def _apply_object_schedule(self) -> None:
@@ -297,6 +311,13 @@ def _object_from_dict(data: dict[str, Any]) -> SimObject:
         position=_vector_from_config(data["position"]),
         size=_vector_from_config(data.get("size", {"x": 0.5, "y": 0.5, "z": 0.5})),
         bbox_2d=data.get("bbox_2d"),
+        classification_confidence=float(data.get("classification_confidence", 1.0)),
+        classification_uncertainty=float(data.get("classification_uncertainty", 0.0)),
+        position_variance=float(data.get("position_variance", 0.0)),
+        occlusion_ratio=float(data.get("occlusion_ratio", 0.0)),
+        sensor_agreement=float(data.get("sensor_agreement", 1.0)),
+        possible_categories=[str(item) for item in data.get("possible_categories", [])],
+        is_unknown=data.get("is_unknown"),
     )
 
 
@@ -331,6 +352,13 @@ def _copy_object(obj: SimObject) -> SimObject:
         position=Vector3(x=obj.position.x, y=obj.position.y, z=obj.position.z),
         size=Vector3(x=obj.size.x, y=obj.size.y, z=obj.size.z),
         bbox_2d=dict(obj.bbox_2d) if obj.bbox_2d is not None else None,
+        classification_confidence=obj.classification_confidence,
+        classification_uncertainty=obj.classification_uncertainty,
+        position_variance=obj.position_variance,
+        occlusion_ratio=obj.occlusion_ratio,
+        sensor_agreement=obj.sensor_agreement,
+        possible_categories=list(obj.possible_categories),
+        is_unknown=obj.is_unknown,
     )
 
 

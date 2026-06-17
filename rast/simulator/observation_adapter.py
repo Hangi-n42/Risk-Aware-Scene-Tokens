@@ -116,9 +116,28 @@ def _object_metadata_from_ai2thor(item: Mapping[str, Any], *, index: int) -> Obj
         category=str(category),
         position=_vector_from_value(position_source, context=f"objects[{index}].position"),
         distance_to_agent=_optional_float(_first_present(item, "distance", "distance_to_agent")),
+        confidence=float(_first_present(item, "confidence", "classificationConfidence", "classification_confidence", default=1.0)),
         visible=_optional_bool(item.get("visible")),
         size=size,
         bbox_2d=bbox_2d,
+        classification_confidence=float(
+            _first_present(item, "classification_confidence", "classificationConfidence", "confidence", default=1.0)
+        ),
+        classification_uncertainty=float(
+            _first_present(item, "classification_uncertainty", "classificationUncertainty", default=0.0)
+        ),
+        position_variance=float(_first_present(item, "position_variance", "positionVariance", default=0.0)),
+        occlusion_ratio=float(_first_present(item, "occlusion_ratio", "occlusionRatio", default=0.0)),
+        sensor_agreement=float(_first_present(item, "sensor_agreement", "sensorAgreement", default=1.0)),
+        possible_categories=list(_first_present(item, "possible_categories", "possibleCategories", default=[])),
+        is_unknown=bool(
+            _first_present(
+                item,
+                "is_unknown",
+                "isUnknown",
+                default=str(category).lower().startswith("unknown"),
+            )
+        ),
         raw=_minimal_raw(item),
     )
 
@@ -137,7 +156,19 @@ def _optional_size(item: Mapping[str, Any]) -> Vector3 | None:
 def _minimal_raw(item: Mapping[str, Any]) -> dict[str, Any]:
     """로그 비대화를 피하기 위해 adapter 검증에 유용한 최소 원본 필드만 보존합니다."""
 
-    keys = ("objectId", "objectType", "visible", "distance")
+    keys = (
+        "objectId",
+        "objectType",
+        "visible",
+        "distance",
+        "classification_confidence",
+        "classification_uncertainty",
+        "position_variance",
+        "occlusion_ratio",
+        "sensor_agreement",
+        "possible_categories",
+        "is_unknown",
+    )
     return {key: item[key] for key in keys if key in item}
 
 

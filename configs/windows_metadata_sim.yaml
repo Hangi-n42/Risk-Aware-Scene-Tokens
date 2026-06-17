@@ -3,10 +3,17 @@ scenario: clear_path
 max_steps: 5
 risk_threshold: 1.5
 object_list_threshold: 1.5
+near_agent_relation_threshold: 1.5
+near_path_relation_threshold: 0.5
+blocking_relation_threshold: 1.5
 collision_threshold: 0.2
 near_miss_threshold: 1.0
 event_movement_threshold: 0.1
 risk_score_delta_threshold: 0.1
+classification_uncertainty_threshold: 0.5
+position_variance_threshold: 0.2
+occlusion_ratio_threshold: 0.5
+sensor_agreement_threshold: 0.6
 update_mode: full_recompute
 event_policy_variant: full
 seed: 0
@@ -40,6 +47,12 @@ objects:
       y: 80.0
       width: 72.0
       height: 120.0
+    classification_confidence: 1.0
+    classification_uncertainty: 0.0
+    position_variance: 0.0
+    occlusion_ratio: 0.0
+    sensor_agreement: 1.0
+    possible_categories: []
 
   - object_id: Sofa|windows|far|+02.40|+00.00|+02.60
     object_type: Sofa
@@ -51,6 +64,12 @@ objects:
       x: 1.8
       y: 0.8
       z: 0.9
+    classification_confidence: 1.0
+    classification_uncertainty: 0.0
+    position_variance: 0.0
+    occlusion_ratio: 0.0
+    sensor_agreement: 1.0
+    possible_categories: []
 
   - object_id: Mug|windows|target|+01.20|+00.90|+01.30
     object_type: Mug
@@ -62,6 +81,12 @@ objects:
       x: 0.12
       y: 0.12
       z: 0.12
+    classification_confidence: 1.0
+    classification_uncertainty: 0.0
+    position_variance: 0.0
+    occlusion_ratio: 0.0
+    sensor_agreement: 1.0
+    possible_categories: []
 
   - object_id: UnknownObject|windows|+00.90|+00.00|-00.60
     object_type: UnknownObject
@@ -73,3 +98,10 @@ objects:
       x: 0.5
       y: 0.5
       z: 0.5
+    classification_confidence: 0.5
+    classification_uncertainty: 0.6
+    position_variance: 0.0
+    occlusion_ratio: 0.0
+    sensor_agreement: 1.0
+    possible_categories: [UnknownObject, Bag, Box]
+    is_unknown: true
