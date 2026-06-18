@@ -85,6 +85,9 @@ curl.exe -X POST http://localhost:8000/api/run-scenario -H "Content-Type: applic
 
 이 repository는 캡스톤 OSS 최종 제출을 위해 API/UI 실행, Docker 실행, CI, runbook, 제출 체크리스트를 포함합니다. 단, 모든 demo는 `WindowsMetadataSim` metadata-only prototype이며 real robot, real-world performance, real perception robustness를 주장하지 않습니다.
 
+- Deployment URL: `TBD`
+- Latest release: `TBD`
+
 ### API/UI
 
 ```powershell
@@ -113,6 +116,9 @@ curl.exe http://localhost:8000/health
 
 - [Runbook](RUNBOOK.md)
 - [Submission Checklist](docs/submission_checklist.md)
+- [Deployment Guide](docs/deployment_guide.md)
+- [Release Guide](docs/release_guide.md)
+- [3-minute Demo Script](docs/demo_script_3min.md)
 - [Model/Data Card](MODEL_CARD.md)
 - [Retrospective](RETROSPECTIVE.md)
 - [Changelog](CHANGELOG.md)
