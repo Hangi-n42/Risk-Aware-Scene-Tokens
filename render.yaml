@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: rast-mvp0
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    autoDeploy: false
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "8000"

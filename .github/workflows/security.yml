@@ -1,0 +1,33 @@
+name: Security
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 3 * * 1"
+
+jobs:
+  pip-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install project and audit tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+          python -m pip install pip-audit
+
+      - name: Run pip-audit informative scan
+        run: |
+          mkdir -p .pip-audit-cache
+          pip-audit --local --progress-spinner off --cache-dir .pip-audit-cache || {
+            echo "::warning::pip-audit reported vulnerabilities or dependency collection issues. This security workflow is informative and does not block the capstone submission PR."
+            exit 0
+          }

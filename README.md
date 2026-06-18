@@ -51,6 +51,78 @@ python experiments\run_windows_eval_suite.py --config configs\windows_eval_suite
 
 주의: `configs/windows_eval_suite_extended.yaml`의 전체 extended grid는 매우 큽니다. 전체 조합을 실행하지 말고 `--dry-run`, `--sample-size`, 또는 `--limit`를 사용하십시오.
 
+## Run the API locally
+
+캡스톤 OSS 제출용으로 기존 `WindowsMetadataSim` + RAST token/planner/evaluation pipeline을 FastAPI API와 최소 HTML UI로 노출합니다. 이 API도 metadata simulator prototype이며 real robot 또는 real perception 성능을 주장하지 않습니다.
+
+```powershell
+uvicorn apps.api.main:app --host 0.0.0.0 --port 8000
+```
+
+## Try the API
+
+```powershell
+curl.exe -X POST http://localhost:8000/api/run-scenario -H "Content-Type: application/json" -d "{\"scenario\":\"clear_path\",\"apply_policy\":\"rast\",\"max_steps\":5,\"update_mode\":\"full_recompute\"}"
+```
+
+주요 endpoint:
+
+- `GET /health`
+- `GET /api/scenarios`
+- `GET /api/policies`
+- `POST /api/run-scenario`
+- `GET /api/reports/latest`
+- `GET /metrics`
+
+## Open API Docs
+
+- `http://localhost:8000/docs`
+- `http://localhost:8000/`
+
+## Capstone OSS Submission
+
+![CI](https://github.com/Hangi-n42/Risk-Aware-Scene-Tokens/actions/workflows/ci.yml/badge.svg)
+
+이 repository는 캡스톤 OSS 최종 제출을 위해 API/UI 실행, Docker 실행, CI, runbook, 제출 체크리스트를 포함합니다. 단, 모든 demo는 `WindowsMetadataSim` metadata-only prototype이며 real robot, real-world performance, real perception robustness를 주장하지 않습니다.
+
+- Deployment URL: `TBD`
+- Latest release: `TBD`
+
+### API/UI
+
+```powershell
+uvicorn apps.api.main:app --host 0.0.0.0 --port 8000
+```
+
+- UI: `http://localhost:8000/`
+- API docs: `http://localhost:8000/docs`
+- Healthcheck: `http://localhost:8000/health`
+- Metrics: `http://localhost:8000/metrics`
+
+### Docker
+
+```powershell
+docker build -t rast-mvp0 .
+docker run --rm -p 8000:8000 rast-mvp0
+```
+
+Healthcheck:
+
+```powershell
+curl.exe http://localhost:8000/health
+```
+
+### Submission Documents
+
+- [Runbook](RUNBOOK.md)
+- [Submission Checklist](docs/submission_checklist.md)
+- [Deployment Guide](docs/deployment_guide.md)
+- [Release Guide](docs/release_guide.md)
+- [3-minute Demo Script](docs/demo_script_3min.md)
+- [Model/Data Card](MODEL_CARD.md)
+- [Retrospective](RETROSPECTIVE.md)
+- [Changelog](CHANGELOG.md)
+
 ## Reproducibility
 
 상세 재현 절차는 [Reproducibility Guide](docs/reproducibility_guide.md)를 보십시오. 이 guide에는 default report, sampled extended report, comparison report, sampling coverage, seed stability, sample-size convergence, replay artifact를 재생성하는 명령이 정리되어 있습니다.

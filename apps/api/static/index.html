@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAST MVP-0 Demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f6f7f9;
+      color: #18202a;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+    }
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+    .note {
+      margin: 0 0 24px;
+      color: #526070;
+      line-height: 1.5;
+    }
+    form {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 12px;
+      align-items: end;
+      padding: 16px;
+      background: #ffffff;
+      border: 1px solid #d8dee7;
+      border-radius: 8px;
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    select,
+    input,
+    button {
+      min-height: 40px;
+      border-radius: 6px;
+      border: 1px solid #bac4d0;
+      padding: 8px 10px;
+      font: inherit;
+    }
+    button {
+      border: none;
+      background: #1f6feb;
+      color: #ffffff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #8ca9d6;
+      cursor: wait;
+    }
+    section {
+      margin-top: 20px;
+      padding: 16px;
+      background: #ffffff;
+      border: 1px solid #d8dee7;
+      border-radius: 8px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .metric {
+      padding: 12px;
+      border: 1px solid #e3e8ef;
+      border-radius: 6px;
+      background: #fbfcfe;
+    }
+    .metric strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #526070;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    pre {
+      overflow: auto;
+      white-space: pre-wrap;
+      background: #101820;
+      color: #ecf3ff;
+      border-radius: 6px;
+      padding: 14px;
+      line-height: 1.45;
+    }
+    @media (max-width: 760px) {
+      body {
+        padding: 16px;
+      }
+      form {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>RAST MVP-0 Demo</h1>
+    <p class="note">
+      WindowsMetadataSim metadata-only prototype입니다. 실제 로봇, 실제 RGB-D perception, real-world safety 성능을 의미하지 않습니다.
+    </p>
+    <form id="run-form">
+      <label>
+        Scenario
+        <select id="scenario"></select>
+      </label>
+      <label>
+        Policy
+        <select id="policy"></select>
+      </label>
+      <label>
+        Update mode
+        <select id="update-mode">
+          <option value="full_recompute">full_recompute</option>
+          <option value="incremental">incremental</option>
+        </select>
+      </label>
+      <label>
+        Max steps
+        <input id="max-steps" type="number" min="1" max="50" value="5" />
+      </label>
+      <button id="run-button" type="submit">Run</button>
+    </form>
+
+    <section aria-live="polite">
+      <h2>Result</h2>
+      <div class="grid" id="summary-grid"></div>
+      <h3>Trace preview</h3>
+      <pre id="trace">Run a scenario to see the trace preview.</pre>
+    </section>
+  </main>
+
+  <script>
+    const scenarioSelect = document.querySelector("#scenario");
+    const policySelect = document.querySelector("#policy");
+    const form = document.querySelector("#run-form");
+    const button = document.querySelector("#run-button");
+    const summaryGrid = document.querySelector("#summary-grid");
+    const trace = document.querySelector("#trace");
+
+    async function loadOptions() {
+      const [scenarioResponse, policyResponse] = await Promise.all([
+        fetch("/api/scenarios"),
+        fetch("/api/policies")
+      ]);
+      const scenarios = await scenarioResponse.json();
+      const policies = await policyResponse.json();
+      scenarioSelect.innerHTML = scenarios.scenarios
+        .map((name) => `<option value="${name}">${name}</option>`)
+        .join("");
+      policySelect.innerHTML = policies.policies
+        .map((name) => `<option value="${name}">${name}</option>`)
+        .join("");
+      scenarioSelect.value = "clear_path";
+      policySelect.value = "rast";
+    }
+
+    function metric(label, value) {
+      return `<div class="metric"><strong>${label}</strong><span>${value}</span></div>`;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      button.disabled = true;
+      button.textContent = "Running";
+      summaryGrid.innerHTML = "";
+      trace.textContent = "Running...";
+      try {
+        const response = await fetch("/api/run-scenario", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            scenario: scenarioSelect.value,
+            apply_policy: policySelect.value,
+            update_mode: document.querySelector("#update-mode").value,
+            max_steps: Number(document.querySelector("#max-steps").value)
+          })
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.detail || "Scenario run failed.");
+        }
+        const tokenCounts = payload.token_counts || {};
+        summaryGrid.innerHTML = [
+          metric("Selected action", payload.selected_action || ""),
+          metric("Reason code", payload.reason_code || ""),
+          metric("Steps", payload.step_count || 0),
+          metric("Near miss / collision", `${payload.near_miss_count || 0} / ${payload.collision_count || 0}`),
+          metric("Entity / Risk", `${tokenCounts.entity || 0} / ${tokenCounts.risk || 0}`),
+          metric("Uncertainty / Affordance", `${tokenCounts.uncertainty || 0} / ${tokenCounts.affordance || 0}`)
+        ].join("");
+        trace.textContent = JSON.stringify(payload.replay_trace_preview || [], null, 2);
+      } catch (error) {
+        trace.textContent = String(error);
+      } finally {
+        button.disabled = false;
+        button.textContent = "Run";
+      }
+    });
+
+    loadOptions().catch((error) => {
+      trace.textContent = String(error);
+    });
+  </script>
+</body>
+</html>

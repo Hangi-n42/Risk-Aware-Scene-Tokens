@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run tests
+        run: python -m pytest
+
+      - name: API import smoke
+        run: python -c "from apps.api.main import app; print(app.title)"
+
+      - name: Mini WindowsMetadataSim eval
+        run: python experiments/run_windows_metadata_sim.py --scenario clear_path --max-steps 3 --apply-policy rast --output-dir runs/ci_smoke
+
+      - name: API health smoke
+        run: |
+          python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 8000 &
+          API_PID=$!
+          trap "kill ${API_PID}" EXIT
+          sleep 3
+          curl -fsS http://127.0.0.1:8000/health
