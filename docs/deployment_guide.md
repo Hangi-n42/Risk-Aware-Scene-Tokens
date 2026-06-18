@@ -4,9 +4,11 @@
 
 ## Deployment URL
 
-- Deployment URL: `TBD`
-- Healthcheck: `/health`
-- Metrics: `/metrics`
+- Deployment URL: `https://risk-aware-scene-tokens.onrender.com`
+- Healthcheck: `https://risk-aware-scene-tokens.onrender.com/health`
+- Metrics: `https://risk-aware-scene-tokens.onrender.com/metrics`
+- API docs: `https://risk-aware-scene-tokens.onrender.com/docs`
+- UI: `https://risk-aware-scene-tokens.onrender.com/`
 - Port: `8000`
 
 ## Local Docker 실행

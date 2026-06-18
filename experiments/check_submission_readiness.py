@@ -30,10 +30,11 @@ REQUIRED_FILES = (
 
 MANUAL_PLACEHOLDERS = (
     "GitHub public URL",
-    "deployment URL",
     "release URL",
     "demo video URL",
 )
+
+DEPLOYMENT_URL = "https://risk-aware-scene-tokens.onrender.com"
 
 
 def run_checks() -> list[str]:
@@ -53,6 +54,16 @@ def run_checks() -> list[str]:
     for placeholder in MANUAL_PLACEHOLDERS:
         if placeholder not in checklist:
             failures.append(f"submission_checklist.md missing Manual placeholder: {placeholder}")
+    if DEPLOYMENT_URL not in checklist:
+        failures.append("submission_checklist.md missing deployed Render URL.")
+
+    deployment_guide = _read_text("docs/deployment_guide.md")
+    for relative_path, content in (
+        ("README.md", readme),
+        ("docs/deployment_guide.md", deployment_guide),
+    ):
+        if DEPLOYMENT_URL not in content:
+            failures.append(f"{relative_path} missing deployed Render URL.")
 
     failures.extend(_check_fastapi_app())
     return failures

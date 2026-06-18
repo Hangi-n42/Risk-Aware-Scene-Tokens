@@ -27,8 +27,8 @@
 | Rollback plan | Done | `RUNBOOK.md` |
 | Logs/metrics/observability explanation | Done | `RUNBOOK.md`와 `/metrics` |
 | GitHub public URL | Manual | repository public 설정 확인 후 제출 양식에 기입 |
-| PR #4 merge | Manual/Pending | CI 확인 후 maintainer가 merge |
-| deployment URL | Manual/Pending | Render/Railway/Fly 등 배포 후 기입 |
+| PR #4 merge | Done | PR #4 merge 완료 |
+| deployment URL | Done | `https://risk-aware-scene-tokens.onrender.com` |
 | release URL | Manual/Pending | `v1.0.0+` GitHub Release 생성 후 기입 |
 | demo video URL | Manual/Pending | 3분 demo video 업로드 후 기입 |
 | final submitted GitHub URL | Manual/Pending | 최종 제출 양식에 main branch 또는 release URL 기입 |

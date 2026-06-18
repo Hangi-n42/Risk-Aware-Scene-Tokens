@@ -6,142 +6,749 @@
   <title>RAST MVP-0 Demo</title>
   <style>
     :root {
-      color-scheme: light;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f6f7f9;
-      color: #18202a;
+      color-scheme: dark;
+      --bg: #0b1020;
+      --panel: rgba(17, 24, 39, 0.86);
+      --panel-strong: rgba(21, 31, 52, 0.96);
+      --line: rgba(148, 163, 184, 0.28);
+      --line-strong: rgba(148, 163, 184, 0.46);
+      --text: #eef4ff;
+      --muted: #a9b7cb;
+      --blue: #6fb7ff;
+      --cyan: #4de1d2;
+      --green: #74e39a;
+      --amber: #f4c95d;
+      --red: #ff6b80;
+      --violet: #ad8cff;
+      --magenta: #f58bd7;
+      --card-radius: 8px;
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Noto Sans KR", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      min-height: 100vh;
       margin: 0;
-      padding: 32px;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(67, 126, 255, 0.2), transparent 26%),
+        radial-gradient(circle at 82% 4%, rgba(77, 225, 210, 0.12), transparent 24%),
+        linear-gradient(135deg, #08111f 0%, #111827 52%, #15192c 100%);
+      color: var(--text);
     }
+
     main {
-      max-width: 1040px;
+      width: min(1440px, calc(100% - 32px));
       margin: 0 auto;
+      padding: 24px 0 36px;
     }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero-copy,
+    .mission-card,
+    .control-panel,
+    .sim-panel,
+    .side-panel,
+    .trace-panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 18px 70px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-copy {
+      min-height: 260px;
+      padding: clamp(22px, 4vw, 42px);
+      border-radius: var(--card-radius);
+      display: grid;
+      align-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--blue), var(--violet), var(--amber));
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 18px var(--cyan);
+    }
+
     h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
+      max-width: 880px;
+      margin: 0;
+      font-size: clamp(34px, 5.2vw, 76px);
+      line-height: 0.96;
+      letter-spacing: 0;
     }
-    .note {
-      margin: 0 0 24px;
-      color: #526070;
+
+    .subtitle {
+      max-width: 920px;
+      margin: 18px 0 0;
+      color: #d9e6f7;
+      font-size: clamp(17px, 2vw, 23px);
       line-height: 1.5;
     }
+
+    .scope {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .mission-card {
+      border-radius: var(--card-radius);
+      padding: 22px;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+    }
+
+    .mission-title {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .mission-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mission-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 36px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.64);
+      color: #e8f1ff;
+      font-size: 14px;
+    }
+
+    .dot {
+      flex: 0 0 auto;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 14px currentColor;
+    }
+
+    .dot.risk { background: var(--red); color: var(--red); }
+    .dot.uncertainty { background: var(--amber); color: var(--amber); }
+    .dot.evidence { background: var(--violet); color: var(--violet); }
+    .dot.affordance { background: var(--green); color: var(--green); }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 320px minmax(420px, 1fr) 330px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .control-panel,
+    .sim-panel,
+    .side-panel,
+    .trace-panel {
+      border-radius: var(--card-radius);
+    }
+
+    .control-panel {
+      padding: 18px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-heading h2,
+    .panel-heading h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 28px;
+      padding: 5px 9px;
+      border: 1px solid rgba(77, 225, 210, 0.38);
+      border-radius: 999px;
+      color: #bffdf5;
+      background: rgba(77, 225, 210, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 16px var(--cyan);
+    }
+
     form {
       display: grid;
-      grid-template-columns: repeat(4, minmax(150px, 1fr));
       gap: 12px;
-      align-items: end;
-      padding: 16px;
-      background: #ffffff;
-      border: 1px solid #d8dee7;
-      border-radius: 8px;
     }
+
     label {
       display: grid;
       gap: 6px;
-      font-weight: 700;
+      color: #d7e4f6;
       font-size: 13px;
+      font-weight: 750;
     }
+
     select,
     input,
     button {
-      min-height: 40px;
+      min-height: 42px;
       border-radius: 6px;
-      border: 1px solid #bac4d0;
+      border: 1px solid var(--line-strong);
       padding: 8px 10px;
+      background: rgba(2, 8, 23, 0.68);
+      color: var(--text);
       font: inherit;
     }
+
     button {
-      border: none;
-      background: #1f6feb;
-      color: #ffffff;
-      font-weight: 700;
+      border: 0;
+      margin-top: 4px;
+      background: linear-gradient(135deg, #4de1d2, #6fb7ff 52%, #ad8cff);
+      color: #06101f;
+      font-weight: 850;
       cursor: pointer;
+      box-shadow: 0 12px 32px rgba(77, 225, 210, 0.18);
     }
+
     button:disabled {
-      background: #8ca9d6;
+      filter: grayscale(0.5);
       cursor: wait;
+      opacity: 0.72;
     }
-    section {
-      margin-top: 20px;
-      padding: 16px;
-      background: #ffffff;
-      border: 1px solid #d8dee7;
-      border-radius: 8px;
-    }
-    .grid {
+
+    .preset-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
     }
-    .metric {
-      padding: 12px;
-      border: 1px solid #e3e8ef;
-      border-radius: 6px;
-      background: #fbfcfe;
+
+    .preset {
+      min-height: 36px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.78);
+      color: #d9e6f7;
+      box-shadow: none;
+      font-size: 12px;
+      font-weight: 750;
     }
-    .metric strong {
+
+    .sim-panel {
+      overflow: hidden;
+      min-height: 700px;
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(8, 13, 26, 0.96)),
+        var(--panel-strong);
+    }
+
+    .sim-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sim-header h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .sim-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      color: #d8e6f8;
+      background: rgba(2, 8, 23, 0.46);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      padding: 16px;
+    }
+
+    #sim-canvas {
       display: block;
-      margin-bottom: 6px;
-      color: #526070;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      border-radius: 8px;
+      background: #06101f;
+    }
+
+    .viewport-badge {
+      position: absolute;
+      left: 28px;
+      top: 28px;
+      display: grid;
+      gap: 2px;
+      padding: 8px 10px;
+      border: 1px solid rgba(77, 225, 210, 0.32);
+      border-radius: 6px;
+      background: rgba(2, 8, 23, 0.76);
+      color: #d9fbff;
+      font-size: 12px;
+    }
+
+    .viewport-badge strong {
+      font-size: 13px;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 7px 9px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.58);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 14px currentColor;
+    }
+
+    .side-panel {
+      display: grid;
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .decision-card {
+      border: 1px solid rgba(77, 225, 210, 0.28);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(77, 225, 210, 0.12), rgba(111, 183, 255, 0.08)),
+        rgba(15, 23, 42, 0.72);
+      padding: 14px;
+    }
+
+    .decision-card .label {
+      color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
+      font-weight: 800;
     }
-    pre {
-      overflow: auto;
-      white-space: pre-wrap;
-      background: #101820;
-      color: #ecf3ff;
-      border-radius: 6px;
-      padding: 14px;
+
+    .action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 6px;
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .reason {
+      margin-top: 10px;
+      color: #d9e6f7;
       line-height: 1.45;
+      font-size: 14px;
     }
-    @media (max-width: 760px) {
-      body {
-        padding: 16px;
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .metric {
+      min-height: 72px;
+      padding: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 6px;
+      background: rgba(2, 8, 23, 0.5);
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .metric span {
+      color: #f8fbff;
+      font-size: 22px;
+      font-weight: 850;
+      word-break: break-word;
+    }
+
+    .token-stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .token-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 38px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 6px;
+      background: rgba(2, 8, 23, 0.42);
+      font-size: 13px;
+    }
+
+    .token-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #e8f1ff;
+      font-weight: 750;
+    }
+
+    .token-count {
+      color: #ffffff;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .trace-panel {
+      grid-column: 1 / -1;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .trace-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .trace-header h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .trace-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
+      gap: 0;
+    }
+
+    .timeline {
+      padding: 16px;
+      border-right: 1px solid var(--line);
+    }
+
+    .timeline-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .timeline-list li {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 10px;
+      min-height: 44px;
+      padding: 9px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 6px;
+      background: rgba(2, 8, 23, 0.38);
+      font-size: 13px;
+    }
+
+    .step-index {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 26px;
+      border-radius: 999px;
+      background: rgba(111, 183, 255, 0.12);
+      color: #b9dcff;
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+    }
+
+    pre {
+      margin: 0;
+      min-height: 280px;
+      max-height: 430px;
+      overflow: auto;
+      padding: 16px;
+      background: #050915;
+      color: #dbeafe;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .empty {
+      color: var(--muted);
+    }
+
+    @media (max-width: 1180px) {
+      .workspace {
+        grid-template-columns: 300px 1fr;
       }
-      form {
+
+      .side-panel {
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(280px, 0.85fr) minmax(320px, 1.15fr);
+      }
+    }
+
+    @media (max-width: 860px) {
+      main {
+        width: min(100% - 24px, 720px);
+        padding-top: 12px;
+      }
+
+      .hero,
+      .workspace,
+      .side-panel,
+      .trace-grid {
         grid-template-columns: 1fr;
+      }
+
+      .control-panel {
+        position: static;
+      }
+
+      .legend {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .timeline {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
       }
     }
   </style>
 </head>
 <body>
   <main>
-    <h1>RAST MVP-0 Demo</h1>
-    <p class="note">
-      WindowsMetadataSim metadata-only prototype입니다. 실제 로봇, 실제 RGB-D perception, real-world safety 성능을 의미하지 않습니다.
-    </p>
-    <form id="run-form">
-      <label>
-        Scenario
-        <select id="scenario"></select>
-      </label>
-      <label>
-        Policy
-        <select id="policy"></select>
-      </label>
-      <label>
-        Update mode
-        <select id="update-mode">
-          <option value="full_recompute">full_recompute</option>
-          <option value="incremental">incremental</option>
-        </select>
-      </label>
-      <label>
-        Max steps
-        <input id="max-steps" type="number" min="1" max="50" value="5" />
-      </label>
-      <button id="run-button" type="submit">Run</button>
-    </form>
+    <section class="hero" aria-label="RAST MVP-0 introduction">
+      <div class="hero-copy">
+        <div class="eyebrow">Deployable embodied AI decision support</div>
+        <h1>RAST MVP-0: Risk-Aware Scene Tokens</h1>
+        <p class="subtitle">
+          위험, 불확실성, 관계, 이벤트, 근거, 행동가능성 토큰을 생성하고 planner가 어떤 행동을 왜 선택했는지 설명합니다.
+        </p>
+        <p class="scope">
+          이 화면은 WindowsMetadataSim metadata simulator를 시각화한 데모입니다. 실제 로봇, 실제 3D physics, RGB-D perception, real-world safety 성능을 의미하지 않습니다.
+        </p>
+      </div>
+      <aside class="mission-card">
+        <div>
+          <p class="mission-title">Token contract</p>
+          <ul class="mission-list">
+            <li><span class="dot risk"></span>Risk / uncertainty aware scene interpretation</li>
+            <li><span class="dot"></span>Relation / event driven planner context</li>
+            <li><span class="dot evidence"></span>Evidence-linked decision trace</li>
+            <li><span class="dot affordance"></span>Navigation affordance reasoning</li>
+          </ul>
+        </div>
+        <span class="status-pill">Hosted API ready</span>
+      </aside>
+    </section>
 
-    <section aria-live="polite">
-      <h2>Result</h2>
-      <div class="grid" id="summary-grid"></div>
-      <h3>Trace preview</h3>
-      <pre id="trace">Run a scenario to see the trace preview.</pre>
+    <section class="workspace" aria-label="Scenario runner workspace">
+      <aside class="control-panel">
+        <div class="panel-heading">
+          <h2>Mission Control</h2>
+          <span class="status-pill" id="api-status">Connecting</span>
+        </div>
+        <form id="run-form">
+          <label>
+            Scenario
+            <select id="scenario"></select>
+          </label>
+          <label>
+            Policy
+            <select id="policy"></select>
+          </label>
+          <label>
+            Update mode
+            <select id="update-mode">
+              <option value="full_recompute">full_recompute</option>
+              <option value="incremental">incremental</option>
+            </select>
+          </label>
+          <label>
+            Max steps
+            <input id="max-steps" type="number" min="1" max="50" value="5" />
+          </label>
+          <div class="preset-row" aria-label="Demo presets">
+            <button class="preset" type="button" data-preset="uncertainty">Uncertainty demo</button>
+            <button class="preset" type="button" data-preset="affordance">Affordance demo</button>
+          </div>
+          <button id="run-button" type="submit">Run scenario</button>
+        </form>
+      </aside>
+
+      <section class="sim-panel" aria-live="polite">
+        <div class="sim-header">
+          <h2>Metadata Robot Viewport</h2>
+          <div class="sim-meta">
+            <span class="chip" id="scenario-chip">scenario: -</span>
+            <span class="chip" id="policy-chip">policy: -</span>
+            <span class="chip" id="step-chip">steps: 0</span>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="sim-canvas" width="960" height="600" aria-label="Robot-like metadata simulator viewport"></canvas>
+          <div class="viewport-badge">
+            <strong>Oracle metadata view</strong>
+            <span>2D visualization, not real physics</span>
+          </div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="swatch" style="background: var(--cyan); color: var(--cyan);"></span>Agent path</div>
+          <div class="legend-item"><span class="swatch" style="background: var(--red); color: var(--red);"></span>Risk token</div>
+          <div class="legend-item"><span class="swatch" style="background: var(--amber); color: var(--amber);"></span>Uncertainty</div>
+          <div class="legend-item"><span class="swatch" style="background: var(--violet); color: var(--violet);"></span>Evidence</div>
+          <div class="legend-item"><span class="swatch" style="background: var(--green); color: var(--green);"></span>Affordance</div>
+          <div class="legend-item"><span class="swatch" style="background: var(--blue); color: var(--blue);"></span>Relation edge</div>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <div class="decision-card">
+          <span class="label">Planner decision</span>
+          <div class="action">
+            <span id="selected-action">Ready</span>
+            <span id="action-symbol">◇</span>
+          </div>
+          <p class="reason" id="decision-reason">Scenario를 실행하면 action, reason_code, trigger token, evidence pointer가 표시됩니다.</p>
+        </div>
+
+        <div>
+          <div class="panel-heading">
+            <h3>Run Metrics</h3>
+          </div>
+          <div class="metric-grid" id="summary-grid">
+            <div class="metric"><strong>Status</strong><span>Idle</span></div>
+            <div class="metric"><strong>Tokens</strong><span>0</span></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel-heading">
+            <h3>Token Matrix</h3>
+          </div>
+          <div class="token-stack" id="token-stack"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="trace-panel" aria-label="Replay trace preview">
+      <div class="trace-header">
+        <h2>Decision Replay Trace</h2>
+        <span class="chip">metadata/action/evidence trace</span>
+      </div>
+      <div class="trace-grid">
+        <div class="timeline">
+          <ul class="timeline-list" id="timeline-list">
+            <li class="empty">Run a scenario to see step-level planner reasons.</li>
+          </ul>
+        </div>
+        <pre id="trace">Run a scenario to see the structured replay preview.</pre>
+      </div>
     </section>
   </main>
 
@@ -151,35 +758,232 @@
     const form = document.querySelector("#run-form");
     const button = document.querySelector("#run-button");
     const summaryGrid = document.querySelector("#summary-grid");
+    const tokenStack = document.querySelector("#token-stack");
     const trace = document.querySelector("#trace");
+    const canvas = document.querySelector("#sim-canvas");
+    const ctx = canvas.getContext("2d");
+    const apiStatus = document.querySelector("#api-status");
+    const selectedAction = document.querySelector("#selected-action");
+    const actionSymbol = document.querySelector("#action-symbol");
+    const decisionReason = document.querySelector("#decision-reason");
+    const timelineList = document.querySelector("#timeline-list");
+    const scenarioChip = document.querySelector("#scenario-chip");
+    const policyChip = document.querySelector("#policy-chip");
+    const stepChip = document.querySelector("#step-chip");
+
+    const tokenColors = {
+      entity: "#6fb7ff",
+      risk: "#ff6b80",
+      relation: "#4de1d2",
+      event: "#f58bd7",
+      uncertainty: "#f4c95d",
+      evidence: "#ad8cff",
+      affordance: "#74e39a"
+    };
+
+    const scenarioProfiles = {
+      clear_path: {
+        objects: [
+          {x: 0.24, y: 0.72, label: "chair", kind: "entity"},
+          {x: 0.76, y: 0.28, label: "target", kind: "affordance"}
+        ]
+      },
+      uncertainty_without_high_risk: {
+        objects: [
+          {x: 0.42, y: 0.44, label: "unknown", kind: "uncertainty"},
+          {x: 0.72, y: 0.72, label: "sofa", kind: "entity"}
+        ]
+      },
+      inspect_required_uncertain_path: {
+        objects: [
+          {x: 0.52, y: 0.48, label: "occluded", kind: "uncertainty"},
+          {x: 0.38, y: 0.31, label: "gap", kind: "affordance"}
+        ]
+      },
+      avoid_required_blocking_path: {
+        objects: [
+          {x: 0.5, y: 0.46, label: "blocker", kind: "risk"},
+          {x: 0.68, y: 0.34, label: "edge", kind: "relation"}
+        ]
+      },
+      planner_disagreement: {
+        objects: [
+          {x: 0.36, y: 0.48, label: "near", kind: "relation"},
+          {x: 0.64, y: 0.5, label: "risk?", kind: "risk"}
+        ]
+      },
+      object_appears: {
+        objects: [
+          {x: 0.55, y: 0.42, label: "appears", kind: "event"},
+          {x: 0.78, y: 0.74, label: "mug", kind: "entity"}
+        ]
+      },
+      object_moves: {
+        objects: [
+          {x: 0.45, y: 0.42, label: "moving", kind: "event"},
+          {x: 0.58, y: 0.55, label: "path", kind: "relation"}
+        ]
+      },
+      risk_increases: {
+        objects: [
+          {x: 0.5, y: 0.5, label: "risk ↑", kind: "event"},
+          {x: 0.62, y: 0.35, label: "unknown", kind: "risk"}
+        ]
+      },
+      narrow_passage: {
+        objects: [
+          {x: 0.42, y: 0.46, label: "wall", kind: "risk"},
+          {x: 0.58, y: 0.46, label: "wall", kind: "risk"},
+          {x: 0.5, y: 0.34, label: "narrow", kind: "affordance"}
+        ]
+      },
+      passable_clear_gap: {
+        objects: [
+          {x: 0.32, y: 0.48, label: "left", kind: "relation"},
+          {x: 0.68, y: 0.48, label: "right", kind: "relation"},
+          {x: 0.5, y: 0.3, label: "passable", kind: "affordance"}
+        ]
+      },
+      target_reachable_affordance: {
+        objects: [
+          {x: 0.5, y: 0.18, label: "target", kind: "affordance"},
+          {x: 0.77, y: 0.64, label: "chair", kind: "entity"}
+        ]
+      }
+    };
+
+    const fallbackProfile = {
+      objects: [
+        {x: 0.35, y: 0.42, label: "object", kind: "entity"},
+        {x: 0.67, y: 0.5, label: "token", kind: "relation"}
+      ]
+    };
+
+    let lastPayload = null;
+    let animationStartedAt = performance.now();
+    let animationFrame = 0;
 
     async function loadOptions() {
-      const [scenarioResponse, policyResponse] = await Promise.all([
+      const [healthResponse, scenarioResponse, policyResponse] = await Promise.all([
+        fetch("/health"),
         fetch("/api/scenarios"),
         fetch("/api/policies")
       ]);
+      if (!healthResponse.ok) {
+        throw new Error("API healthcheck failed.");
+      }
       const scenarios = await scenarioResponse.json();
       const policies = await policyResponse.json();
       scenarioSelect.innerHTML = scenarios.scenarios
-        .map((name) => `<option value="${name}">${name}</option>`)
+        .map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`)
         .join("");
       policySelect.innerHTML = policies.policies
-        .map((name) => `<option value="${name}">${name}</option>`)
+        .map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`)
         .join("");
-      scenarioSelect.value = "clear_path";
-      policySelect.value = "rast";
+      scenarioSelect.value = scenarios.scenarios.includes("inspect_required_uncertain_path")
+        ? "inspect_required_uncertain_path"
+        : "clear_path";
+      policySelect.value = policies.policies.includes("affordance_aware_rast")
+        ? "affordance_aware_rast"
+        : "rast";
+      document.querySelector("#update-mode").value = "incremental";
+      apiStatus.textContent = "API online";
+      updateChips();
+      startAnimation();
     }
 
     function metric(label, value) {
-      return `<div class="metric"><strong>${label}</strong><span>${value}</span></div>`;
+      return `<div class="metric"><strong>${escapeHtml(label)}</strong><span>${escapeHtml(String(value))}</span></div>`;
+    }
+
+    function tokenRow(name, count, color) {
+      return [
+        `<div class="token-row">`,
+        `<span class="token-name"><span class="swatch" style="background:${color}; color:${color};"></span>${escapeHtml(name)}</span>`,
+        `<span class="token-count">${escapeHtml(String(count || 0))}</span>`,
+        `</div>`
+      ].join("");
+    }
+
+    function updateChips() {
+      scenarioChip.textContent = `scenario: ${scenarioSelect.value || "-"}`;
+      policyChip.textContent = `policy: ${policySelect.value || "-"}`;
+      stepChip.textContent = `steps: ${lastPayload?.step_count || 0}`;
+    }
+
+    function actionIcon(action) {
+      if (action === "MoveAhead") return "↑";
+      if (action === "RotateRight") return "↻";
+      if (action === "RotateLeft") return "↺";
+      if (action === "Stop") return "■";
+      return "◇";
+    }
+
+    function renderResult(payload) {
+      const tokenCounts = payload.token_counts || {};
+      const tokenTotals = payload.token_count_totals || {};
+      const totalTokens = Object.values(tokenTotals).reduce((sum, value) => sum + Number(value || 0), 0);
+      const decision = payload.planner_decision_summary || {};
+      selectedAction.textContent = payload.selected_action || "Ready";
+      actionSymbol.textContent = actionIcon(payload.selected_action);
+      decisionReason.textContent = [
+        decision.reason_code || payload.reason_code || "reason unavailable",
+        decision.reason_text || "",
+        decision.trigger_token_ids?.length ? `trigger tokens: ${decision.trigger_token_ids.join(", ")}` : "",
+        decision.evidence_token_ids?.length ? `evidence: ${decision.evidence_token_ids.slice(0, 4).join(", ")}` : ""
+      ].filter(Boolean).join(" · ");
+      summaryGrid.innerHTML = [
+        metric("Final action", payload.selected_action || ""),
+        metric("Reason code", payload.reason_code || ""),
+        metric("Steps", payload.step_count || 0),
+        metric("Near miss / collision", `${payload.near_miss_count || 0} / ${payload.collision_count || 0}`),
+        metric("Total tokens", totalTokens),
+        metric("Avg latency", `${formatMs(payload.latency_summary?.latency_avg_ms)} ms`)
+      ].join("");
+      tokenStack.innerHTML = [
+        tokenRow("EntityToken", tokenCounts.entity, tokenColors.entity),
+        tokenRow("RiskToken", tokenCounts.risk, tokenColors.risk),
+        tokenRow("RelationToken", tokenCounts.relation, tokenColors.relation),
+        tokenRow("EventToken", tokenCounts.event, tokenColors.event),
+        tokenRow("UncertaintyToken", tokenCounts.uncertainty, tokenColors.uncertainty),
+        tokenRow("EvidenceToken", tokenCounts.evidence, tokenColors.evidence),
+        tokenRow("AffordanceToken", tokenCounts.affordance, tokenColors.affordance)
+      ].join("");
+      renderTimeline(payload.replay_trace_preview || []);
+      trace.textContent = JSON.stringify(payload.replay_trace_preview || [], null, 2);
+      updateChips();
+      animationStartedAt = performance.now();
+      startAnimation();
+    }
+
+    function renderTimeline(steps) {
+      if (!steps.length) {
+        timelineList.innerHTML = `<li class="empty">No replay trace returned.</li>`;
+        return;
+      }
+      timelineList.innerHTML = steps.map((step) => {
+        const reason = step.selected_policy_reason_code || "reason unavailable";
+        const triggers = [
+          ...(step.trigger_token_ids || []),
+          ...(step.trigger_object_ids || [])
+        ].slice(0, 3);
+        return [
+          `<li>`,
+          `<span class="step-index">${escapeHtml(String(step.step))}</span>`,
+          `<span><strong>${escapeHtml(step.action || "")}</strong><br>${escapeHtml(reason)}${triggers.length ? `<br><small>${escapeHtml(triggers.join(", "))}</small>` : ""}</span>`,
+          `</li>`
+        ].join("");
+      }).join("");
     }
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       button.disabled = true;
-      button.textContent = "Running";
-      summaryGrid.innerHTML = "";
-      trace.textContent = "Running...";
+      button.textContent = "Running scenario";
+      trace.textContent = "Running metadata simulator...";
+      selectedAction.textContent = "Running";
+      actionSymbol.textContent = "…";
+      decisionReason.textContent = "Tokenizers and planners are generating a decision trace.";
       try {
         const response = await fetch("/api/run-scenario", {
           method: "POST",
@@ -195,26 +999,256 @@
         if (!response.ok) {
           throw new Error(payload.detail || "Scenario run failed.");
         }
-        const tokenCounts = payload.token_counts || {};
-        summaryGrid.innerHTML = [
-          metric("Selected action", payload.selected_action || ""),
-          metric("Reason code", payload.reason_code || ""),
-          metric("Steps", payload.step_count || 0),
-          metric("Near miss / collision", `${payload.near_miss_count || 0} / ${payload.collision_count || 0}`),
-          metric("Entity / Risk", `${tokenCounts.entity || 0} / ${tokenCounts.risk || 0}`),
-          metric("Uncertainty / Affordance", `${tokenCounts.uncertainty || 0} / ${tokenCounts.affordance || 0}`)
-        ].join("");
-        trace.textContent = JSON.stringify(payload.replay_trace_preview || [], null, 2);
+        lastPayload = payload;
+        renderResult(payload);
       } catch (error) {
         trace.textContent = String(error);
+        decisionReason.textContent = "Scenario execution failed. Check the API response details below.";
       } finally {
         button.disabled = false;
-        button.textContent = "Run";
+        button.textContent = "Run scenario";
       }
     });
 
+    document.querySelectorAll("[data-preset]").forEach((buttonElement) => {
+      buttonElement.addEventListener("click", () => {
+        const preset = buttonElement.dataset.preset;
+        if (preset === "uncertainty") {
+          setIfExists(scenarioSelect, "inspect_required_uncertain_path");
+          setIfExists(policySelect, "uncertainty_aware_rast");
+        } else {
+          setIfExists(scenarioSelect, "target_reachable_affordance");
+          setIfExists(policySelect, "affordance_aware_rast");
+        }
+        document.querySelector("#update-mode").value = "incremental";
+        document.querySelector("#max-steps").value = "5";
+        lastPayload = null;
+        updateChips();
+        startAnimation();
+      });
+    });
+
+    scenarioSelect.addEventListener("change", () => {
+      lastPayload = null;
+      updateChips();
+      startAnimation();
+    });
+    policySelect.addEventListener("change", updateChips);
+
+    function setIfExists(select, value) {
+      if ([...select.options].some((option) => option.value === value)) {
+        select.value = value;
+      }
+    }
+
+    function startAnimation() {
+      cancelAnimationFrame(animationFrame);
+      drawScene();
+    }
+
+    function drawScene() {
+      const width = canvas.width;
+      const height = canvas.height;
+      const now = performance.now();
+      const elapsed = Math.min((now - animationStartedAt) / 1200, 1);
+      const pulse = (Math.sin(now / 240) + 1) / 2;
+      ctx.clearRect(0, 0, width, height);
+      drawBackground(width, height);
+      drawPath(width, height);
+      drawObjects(width, height, pulse);
+      drawRobot(width, height, elapsed);
+      drawDecisionBeam(width, height, pulse);
+      animationFrame = requestAnimationFrame(drawScene);
+    }
+
+    function drawBackground(width, height) {
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, "#071426");
+      gradient.addColorStop(0.56, "#0f1d36");
+      gradient.addColorStop(1, "#101626");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.11)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= width; x += 48) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= height; y += 48) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+    }
+
+    function drawPath(width, height) {
+      const center = width / 2;
+      ctx.save();
+      ctx.fillStyle = "rgba(77, 225, 210, 0.08)";
+      ctx.strokeStyle = "rgba(77, 225, 210, 0.4)";
+      ctx.lineWidth = 2;
+      roundRect(center - 118, 54, 236, height - 108, 24);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([10, 14]);
+      ctx.strokeStyle = "rgba(111, 183, 255, 0.58)";
+      ctx.beginPath();
+      ctx.moveTo(center, height - 82);
+      ctx.lineTo(center, 92);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawObjects(width, height, pulse) {
+      const profile = scenarioProfiles[scenarioSelect.value] || fallbackProfile;
+      const relationCenter = {x: width / 2, y: height * 0.77};
+      profile.objects.forEach((object, index) => {
+        const x = object.x * width;
+        const y = object.y * height;
+        const color = tokenColors[object.kind] || tokenColors.entity;
+        ctx.save();
+        ctx.strokeStyle = `${hexToRgba(color, 0.42 + pulse * 0.18)}`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(relationCenter.x, relationCenter.y);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.fillStyle = hexToRgba(color, 0.16 + pulse * 0.08);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        const radius = 20 + (object.kind === "risk" || object.kind === "uncertainty" ? pulse * 5 : 0);
+        roundRect(x - radius, y - radius, radius * 2, radius * 2, 8);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "#f8fbff";
+        ctx.font = "700 13px Inter, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(object.label, x, y + radius + 18);
+        ctx.fillStyle = color;
+        ctx.font = "800 11px Inter, Arial";
+        ctx.fillText(object.kind.toUpperCase(), x, y - radius - 8);
+        if (index === 0 && lastPayload?.reason_code) {
+          ctx.strokeStyle = hexToRgba(color, 0.62);
+          ctx.setLineDash([5, 9]);
+          ctx.beginPath();
+          ctx.arc(x, y, radius + 12 + pulse * 8, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+      });
+    }
+
+    function drawRobot(width, height, elapsed) {
+      const traceSteps = lastPayload?.replay_trace_preview || [];
+      const action = lastPayload?.selected_action || "Ready";
+      const moveDistance = action === "MoveAhead" ? 92 * elapsed : 24 * elapsed;
+      const x = width / 2;
+      const y = height * 0.8 - moveDistance;
+      const angle = action === "RotateRight" ? elapsed * 0.9 : action === "RotateLeft" ? -elapsed * 0.9 : 0;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.fillStyle = "rgba(77, 225, 210, 0.14)";
+      ctx.strokeStyle = "rgba(77, 225, 210, 0.5)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, 56, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#4de1d2";
+      ctx.strokeStyle = "#e9fffb";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -34);
+      ctx.lineTo(30, 26);
+      ctx.lineTo(-30, 26);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#06101f";
+      ctx.beginPath();
+      ctx.arc(0, -7, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.fillStyle = "#d9fbff";
+      ctx.font = "800 13px Inter, Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(`RAST agent · ${traceSteps.length || 0} step trace`, x, y + 78);
+    }
+
+    function drawDecisionBeam(width, height, pulse) {
+      const decision = lastPayload?.planner_decision_summary || {};
+      if (!lastPayload) return;
+      const triggerCount = (decision.trigger_token_ids || []).length + (decision.evidence_token_ids || []).length;
+      const color = triggerCount ? "#ad8cff" : "#4de1d2";
+      ctx.save();
+      ctx.strokeStyle = hexToRgba(color, 0.35 + pulse * 0.22);
+      ctx.lineWidth = 3;
+      ctx.setLineDash([12, 12]);
+      ctx.beginPath();
+      ctx.moveTo(width / 2 - 130, height * 0.82);
+      ctx.quadraticCurveTo(width / 2, height * 0.58, width / 2 + 130, height * 0.35);
+      ctx.stroke();
+      ctx.fillStyle = hexToRgba(color, 0.14);
+      roundRect(width / 2 + 92, height * 0.3, 210, 64, 8);
+      ctx.fill();
+      ctx.fillStyle = "#f8fbff";
+      ctx.font = "800 13px Inter, Arial";
+      ctx.textAlign = "left";
+      ctx.fillText("Planner reason", width / 2 + 108, height * 0.3 + 24);
+      ctx.font = "700 12px Inter, Arial";
+      ctx.fillText(lastPayload.reason_code || "no reason", width / 2 + 108, height * 0.3 + 44);
+      ctx.restore();
+    }
+
+    function roundRect(x, y, width, height, radius) {
+      const r = Math.min(radius, width / 2, height / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + width, y, x + width, y + height, r);
+      ctx.arcTo(x + width, y + height, x, y + height, r);
+      ctx.arcTo(x, y + height, x, y, r);
+      ctx.arcTo(x, y, x + width, y, r);
+      ctx.closePath();
+    }
+
+    function hexToRgba(hex, alpha) {
+      const value = hex.replace("#", "");
+      const red = parseInt(value.slice(0, 2), 16);
+      const green = parseInt(value.slice(2, 4), 16);
+      const blue = parseInt(value.slice(4, 6), 16);
+      return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+    }
+
+    function formatMs(value) {
+      const number = Number(value || 0);
+      return number < 10 ? number.toFixed(3) : number.toFixed(2);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    window.addEventListener("beforeunload", () => {
+      cancelAnimationFrame(animationFrame);
+    });
+
     loadOptions().catch((error) => {
+      apiStatus.textContent = "API offline";
       trace.textContent = String(error);
+      startAnimation();
     });
   </script>
 </body>

@@ -85,7 +85,7 @@ curl.exe -X POST http://localhost:8000/api/run-scenario -H "Content-Type: applic
 
 이 repository는 캡스톤 OSS 최종 제출을 위해 API/UI 실행, Docker 실행, CI, runbook, 제출 체크리스트를 포함합니다. 단, 모든 demo는 `WindowsMetadataSim` metadata-only prototype이며 real robot, real-world performance, real perception robustness를 주장하지 않습니다.
 
-- Deployment URL: `TBD`
+- Deployment URL: `https://risk-aware-scene-tokens.onrender.com`
 - Latest release: `TBD`
 
 ### API/UI
@@ -98,6 +98,15 @@ uvicorn apps.api.main:app --host 0.0.0.0 --port 8000
 - API docs: `http://localhost:8000/docs`
 - Healthcheck: `http://localhost:8000/health`
 - Metrics: `http://localhost:8000/metrics`
+
+### Deployed API
+
+- UI: `https://risk-aware-scene-tokens.onrender.com/`
+- API docs: `https://risk-aware-scene-tokens.onrender.com/docs`
+- Healthcheck: `https://risk-aware-scene-tokens.onrender.com/health`
+- Metrics: `https://risk-aware-scene-tokens.onrender.com/metrics`
+
+배포된 Render API smoke test에서는 `clear_path` scenario와 `rast` policy가 정상 실행되었고, planner decision, token counts, latency summary, replay trace preview가 반환되었습니다.
 
 ### Docker
 
