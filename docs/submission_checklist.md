@@ -29,9 +29,9 @@
 | GitHub public URL | Manual | repository public 설정 확인 후 제출 양식에 기입 |
 | PR #4 merge | Done | PR #4 merge 완료 |
 | deployment URL | Done | `https://risk-aware-scene-tokens.onrender.com` |
-| release URL | Manual/Pending | `v1.0.0+` GitHub Release 생성 후 기입 |
+| release URL | Done | `https://github.com/Hangi-n42/Risk-Aware-Scene-Tokens/releases/tag/v1.0.0` |
 | demo video URL | Manual/Pending | 3분 demo video 업로드 후 기입 |
-| final submitted GitHub URL | Manual/Pending | 최종 제출 양식에 main branch 또는 release URL 기입 |
+| final submitted GitHub URL | Manual/Pending | `https://github.com/Hangi-n42/Risk-Aware-Scene-Tokens` |
 
 ## Scope Warning
 
