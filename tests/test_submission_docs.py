@@ -51,3 +51,11 @@ def test_pyproject_uses_httpx_for_fastapi_test_client() -> None:
     assert '"uvicorn' in pyproject
     assert '"httpx>=' in pyproject
     assert "httpx2" not in pyproject
+
+
+def test_security_workflow_is_informative() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "security.yml").read_text(encoding="utf-8")
+
+    assert "pip-audit --local" in workflow
+    assert "::warning::pip-audit reported vulnerabilities" in workflow
+    assert "exit 0" in workflow
