@@ -26,13 +26,9 @@
 | Final readiness checker | Done | `experiments/check_submission_readiness.py` |
 | Rollback plan | Done | `RUNBOOK.md` |
 | Logs/metrics/observability explanation | Done | `RUNBOOK.md`와 `/metrics` |
-| GitHub public URL | Manual | repository public 설정 확인 후 제출 양식에 기입 |
+| GitHub public URL | Done | D완료 |
 | PR #4 merge | Done | PR #4 merge 완료 |
 | deployment URL | Done | `https://risk-aware-scene-tokens.onrender.com` |
 | release URL | Done | `https://github.com/Hangi-n42/Risk-Aware-Scene-Tokens/releases/tag/v1.0.0` |
-| demo video URL | Manual/Pending | 3분 demo video 업로드 후 기입 |
-| final submitted GitHub URL | Manual/Pending | `https://github.com/Hangi-n42/Risk-Aware-Scene-Tokens` |
-
-## Scope Warning
-
-이 제출물은 `WindowsMetadataSim` metadata-only RAST MVP-0 prototype입니다. real robot 성능, real-world safety, real perception robustness, visual replay를 주장하지 않습니다.
+| demo video URL | Done | `Https://youtu.be/vtScU-iHKNQ` |
+| final submitted GitHub URL | Done | `https://github.com/Hangi-n42/Risk-Aware-Scene-Tokens` |
